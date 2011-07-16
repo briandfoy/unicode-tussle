@@ -1,3 +1,6 @@
+Unicode::Tussle is a distribution of curious and various Unicode
+utilities written by Tom Christiansen.
+
 You can install this using in the usual Perl fashion
 
 	perl Makefile.PL
@@ -13,11 +16,11 @@ the file, you can read it with perldoc.
 If you want to read it before you install it, you can use
 perldoc directly on the module file.
 
-	perldoc  lib/Tussle.pm
+	perldoc  lib/Unicode/Tussle.pm
 	
 This module is also in Github:
 
-	http://github.com/briandfoy/
+	https://github.com/briandfoy/Unicode-Tussle
 
 
 Enjoy, 
