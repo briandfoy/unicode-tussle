@@ -1,0 +1,37 @@
+#!/usr/bin/env perl
+
+use v5.12;
+use utf8;
+use strict;
+use autodie;
+use warnings; 
+use warnings qw< FATAL utf8 >;
+use feature qw< unicode_strings >;
+use open        qw< :std  :utf8   >;
+## use charnames   qw< :full >;
+
+# These are core modules:
+use Carp                qw< carp croak confess cluck >;
+use File::Basename      qw< basename >;
+use Unicode::Normalize  qw< NFD NFC >;
+
+$0 = basename($0);  # shorter messages
+## $| = 1;
+
+$SIG{__DIE__} = sub {
+    confess "Uncaught exception: @_" unless $^S;
+};
+
+$SIG{__WARN__} = sub {
+    if ($^S) { cluck   "Trapped warning: @_" } 
+    else     { confess "Deadly warning: @_"  }
+};
+
+
+while (my $string = <>) {
+    print NFC(lc(NFD($string)));
+} 
+
+END { 
+    close STDOUT;
+}

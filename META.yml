@@ -1,0 +1,30 @@
+---
+abstract: "Tom's Unicode Scripts So Life is Easier"
+author:
+  - 'brian d foy <bdfoy@cpan.org>'
+build_requires: {}
+configure_requires:
+  Module::Build: 0.38
+dynamic_config: 1
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110440'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Unicode-Tussle
+provides:
+  Unicode::Tussle:
+    file: lib/Unicode/Tussle.pm
+    version: 1.01
+requires:
+  Lingua::EN::Syllable: 0
+  Lingua::JA::Romanize::Japanese: 0
+  Lingua::KO::Hangul::Util: 0
+  Lingua::KO::Romanize::Hangul: 0
+  Lingua::ZH::Romanize::Pinyin: 0
+  Unicode::GCString: 0
+  Unicode::Unihan: 0
+  perl: v5.10.0
+resources:
+  license: http://dev.perl.org/licenses/
+version: 1.01

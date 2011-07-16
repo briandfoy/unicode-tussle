@@ -1,0 +1,989 @@
+#!/usr/bin/env perl
+#
+# sample output run appended as data
+
+use utf8;
+use strict;
+use 5.10.1;
+use autodie;
+# delay fatal warnings till runtime; otherwise screws up compiler msgs
+use warnings; # qw[ FATAL all   ];
+use open        qw[ :utf8 :std  ];
+use charnames   qw[ :full       ];
+
+use Carp        qw[ carp croak cluck confess ];
+use Encode      qw[ decode      ];
+
+use constant SHOW_UNIHAN => 1;
+
+# UAX#24 et alios
+use Unicode::UCD qw{
+    charinfo charblock charscript
+    charblocks charscripts charinrange
+    general_categories bidi_types
+    compexcl casefold casespec namedseq
+};
+
+use Unicode::Normalize qw[ NFC NFD ];   # UAX#15
+use Unicode::Unihan;                    # UAX#38
+use Unicode::GCString;                  # UAX#29
+use Unicode::LineBreak qw(:all);        # UAX#14-C2
+
+use Lingua::KO::Hangul::Util    qw[ :all ];
+
+use Lingua::JA::Romanize::Japanese;
+use Lingua::ZH::Romanize::Pinyin;
+use Lingua::KO::Romanize::Hangul;
+
+sub utf8::is_utf8;  # this one is built-in!
+
+sub apply_tones($$);
+sub banner;
+sub banner_paragraph($$);
+sub char_inform(_);
+sub entrapment();
+sub hangul(_);
+sub pinyin(_);
+sub romaji(_);
+sub said($$);
+sub tabbed_sizing;
+sub utf8(_);
+sub wrap_line($);
+sub wrap_paragraph($);
+
+entrapment();
+
+my $vietnamese = <<'DONE WITH VIETNAMESE';
+    For example, in Vietnamese both tree leaves and the sky are xanh
+    (to distinguish, one may use xanh lá cây "leaf grue" for green and
+    xanh dương "ocean grue" for blue).
+DONE WITH VIETNAMESE
+
+my $thai = <<'DONE WITH THAI';
+    In the Thai language, เขียว (khiaw) means green except when referring
+    to the sky or the sea, when it means blue; เขียวชอุ่ม (khiaw cha-um), เขี
+    ยวขจี (khiaw khachi), and เขียวแปร๊ด (khiaw praed) have all meant either intense
+    blue or garish green, although the latter is becoming more usual as
+    the language 'learns' to distinguish blue and green.
+DONE WITH THAI
+
+my $chinese = <<'DONE WITH CHINESE';
+
+$path = "婴儿服饰";
+
+漢字 kanji
+東京 Tōkyō
+京都 Kyōto
+
+春曉　　孟浩然	Ceon1 Hiu2　　Maang6 Hou6jin4 
+春眠不覺曉，	Ceon1 min4 bat1 gok3 hiu2, 
+處處聞啼鳥。	cyu3 cyu3 man4 tai4 niu5. 
+夜來風雨聲，	Je6 loi4 fung1 jyu5 sing1, 
+花落知多少？	faa1 lok6 zi1 do1 siu2? 
+
+    Due to its status as a prestige dialect, it often called "Standard Cantonese" (simplified Chinese: 标准粤语; traditional Chinese: 標準粵語; Jyutping: biu1zeon2 jyut6jyu5; Guangdong Romanization：Biu1 zên2 yud6 yu5).
+
+    Chinese has a word 青 (qīng) that can refer to both, though it also has
+    separate words for blue (蓝 / 藍, lán) and green (绿 / 綠, lǜ).
+
+    The modern Chinese language has the blue-green distinction (蓝/ 藍
+    lán for blue and 绿 / 緑 lǜ for green); however, another word which
+    predates the modern vernacular, qīng (Chinese: 青), is also used. It
+    can refer to either blue or green, or even (though much less
+    frequently) to black, as in xuánqīng (Chinese: 玄青 where Chinese: 玄
+    refers to black). For example, the Flag of the Republic of China is
+    today still referred to as qīng tiān, bái rì, mǎn dì hóng ("Blue
+    Sky, White Sun, Whole Ground Red" — Chinese: 青天，白日，满地红);
+    whereas qīng cài (Chinese: 青菜) is the Chinese word for "green
+    vegetable". Qīng 青 was the traditional designation of both blue and
+    green for much of the history of the Chinese language, while 蓝 lán
+    and 绿 lǜ were introduced relatively more recently, as a part of the
+    adoption of modern Vernacular Chinese as the social norm, replacing
+    Classical Chinese.
+
+    The Chinese version is simply, 妈妈给我们的钱,我已经买了糖了. Māma gěi wǒmen de qián, wǒ yǐjīng mǎile táng le. This is translated somewhat directly as, "The money Mom gave us, I already bought candy," lacking a preface as in English.
+
+    Another major difference between the syntax of Chinese and languages like English lies in the stacking order of modifying clauses. 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证. Zuótiān fāpíqì de wàijiāo jǐngchá qǔxiāole méiyǒu jiāoqián de nàxiē rén de rùjìngzhèng. Using the Chinese order in English, that sentence would be [blah blah blah].
+
+    Tones http://en.wikipedia.org/wiki/Cantonese_phonology#Tones
+
+    Guangzhou Cantonese has seven tones, but Hong Kong Cantonese has six with
+    the high-falling tone merging with the high tone. Although it is often said
+    to have nine or eleven, the additional tones added in the counts are
+    entering tones. In Chinese, the number of possible tones depends on the
+    syllable type. There are six contour tones in syllables that end in a vowel
+    or nasal consonant. (Some of these have more than one realization, but such
+    differences are seldom used to distinguish words.) In syllables that end in
+    a stop consonant, the number of tones is reduced to three; in Chinese
+    descriptions, these "entering tones" are treated separately, so that
+    Cantonese is traditionally said to have nine tones. However, phonetically
+    these are a conflation of tone and syllable type; the number of phonemic
+    tones is six in Hong Kong and seven in Guangzhou.
+
+    Syllable type       Open syllables                                                                     Stopped syllables
+
+                                            d.=dark, l.=light, U.=upper, L.=lower
+	Tone name	d.level	      d.rising	   d.depart.	 l.level	l.rising     l.depart.	   U. d.enter. L. d.enter.  l.enter.
+			(陰平)	      (陰上)	   (陰去)	 (陽平)		(陽上)	     (陽去)	   (上陰入)    (下陰入)	    (陽入)
+    Description		high level    medium	   medium	 low falling	low	     low	   high		medium	    low
+			high falling  rising	   level	 v.l. level	rising	     level	   level	level	    level
+    Yale or Jyutping
+	 tone number	1	      2		    3		  4		5	      6		    7 (or 1)	8 (or 3)    9 (or 6)
+      Example		詩	      史	    試		  時		市	      是	    識		錫	    食
+      Tone letter	siː˥, siː˥˧   siː˧˥	    siː˧	  siː˨˩, siː˩	siː˩˧	      siː˨	    sɪk˥	sɛːk˧	    sɪk˨
+      IPA diacritic	síː, sîː      sǐː	    sīː		  si̖ː, sı̏ː	  si̗ː		 sìː	       sɪ́k	    sɛ̄ːk	 sɪ̀k
+      Yale diacritic	sī, sì	      sí	    si		  sīh, sìh	síh	      sih	    sīk		sek	    sihk
+
+
+For purposes of meters in Chinese poetry, the first and fourth tones are the "level tones" (平聲), while the rest are the "oblique tones" (仄聲).
+
+The first tone can be either high level or high falling usually without affecting the meaning of the words being spoken. Most speakers are in general not consciously aware of when they use and when to use high level and high falling. In Hong Kong, most speakers have merged the high and high falling tones. In Guangzhou, the high falling tone is disappearing as well, but is still prevalent among certain words (saam-high falling means the number three, where saam-high means shirt).
+
+The numbers "394052786" when pronounced in Cantonese, will give the nine tones in order (Romanisation (Yale) saam1, gau2, sei3, ling4, ng5, yi6, chat7, baat8, luk9), thus giving a good mnemonic for remembering the nine tones.
+
+DONE WITH CHINESE
+
+my $korean = <<'DONE WITH KOREAN';
+
+漢字 kanji
+東京 Tōkyō
+京都 Kyōto
+
+    The Korean word 푸르다 (pureuda) can mean either green or blue.
+
+    The native Korean word 푸르다 (Revised Romanization: pureu-da adj.) may
+    mean either blue or green, or bluish green. This word 푸르다 is used as
+    in 푸른 하늘 (pureun haneul, blue sky) for blue or as in 푸른 숲 (pureun
+    sup, green forest) for green. Distinct words for blue and green are
+    also used; 파란 (paran adj.), 파란색/파랑 (paransaek/parang n.) for blue,
+    초록 (chorok adj./n.), 초록색 (choroksaek n. or for short, 녹색 noksaek n.)
+    for green. However, in the case of a traffic light, paran is used
+    for the green light meaning go, even though the word is typically
+    used to mean blue. Cheong 청 is also used for both blue and green. It
+    is a loan from Chinese (靑, pinyin: qing) and is used in the proper
+    name Cheong Wa Dae (청와대 or Hanja: 靑瓦臺), the Blue House, which is the
+    executive office and official residence of the President of the
+    Republic of Korea.
+DONE WITH KOREAN
+
+my $japanese = <<'DONE WITH JAPANESE';
+
+    文字化け mojibake
+
+
+呼ぶ
+
+    Tokyo (東京 Tōkyō, "Eastern Capital"), officially Tokyo Metropolis (東京都 Tōkyō-to),is one of the 47 prefectures of Japan. It is located on the eastern side of the main island Honshū and includes the Izu Islands and Ogasawara Islands. Tokyo Metropolis was formed in 1943 from the merger of the former Tokyo Prefecture (東京府 Tōkyō-fu) and the city of Tokyo (東京市 Tōkyō-shi).
+
+    Kyoto (京都 Kyōto) (Japanese pronunciation: [kʲoːto]) is a city in the central part of the island of Honshū, Japan. 
+
+    The Japanese language is written with a combination of three scripts: Chinese characters called kanji (漢字), and two syllabic scripts made up of modified Chinese characters, hiragana (ひらがな or 平仮名) and katakana (カタカナ or 片仮名). The Latin alphabet, rōmaji (ローマ字), is also often used in modern Japanese, especially for company names and logos, advertising, and when entering Japanese text into a computer.
+
+The main distinction in Japanese accents is
+between Tokyo-type 	(東京式 	Tōkyō-shiki?)
+and Kyoto-Osaka-type 	(京阪式 	Keihan-shiki?),
+though Kyūshū-type dialects form a third, smaller group.
+
+    In Japanese, the word for blue (青 ao) is often used for colors that
+    English speakers would refer to as green, such as the color of a
+    traffic signal meaning "go".
+
+    The Japanese word ao (青, n., aoi (青い, adj.)), exactly the same
+    kanji character as the Chinese qīng above, can refer to either blue
+    or green depending on the situation. Modern Japanese has also
+    adopted the Chinese word for green (緑 midori), although this was
+    not always so. Ancient Japanese did not have this distinction: the
+    word midori only came into use in the Heian period, and at that time
+    (and for a long time thereafter) midori was still considered a shade
+    of ao. Educational materials distinguishing green and blue only came
+    into use after World War II, during the Occupation[citation needed]:
+    thus, even though most Japanese consider them to be green, the word
+    ao is still used to describe certain vegetables, apples and
+    vegetation. Ao is also the name for the color of a traffic light,
+    which is bluer than in English-speaking countries. However, most
+    other objects—a green car, a green sweater, and so forth—will
+    generally be called midori. Japanese people also sometimes use the
+    word guriin (グリーン), based on the English word "green", for colors.
+    The language also has several other words meaning specific shades of
+    green and blue.
+
+DONE WITH JAPANESE
+
+my @langs = qw{
+    Mandarin Cantonese
+    JapaneseKun JapaneseOn
+    Korean HanyuPinlu
+    Vietnamese
+};
+
+
+banner_paragraph(Chinese => $chinese);
+
+if (SHOW_UNIHAN) {
+    char_inform for $chinese =~ /[^\0-\x7f]/g;
+    print "\n";
+}
+
+for my $cjk_string ($chinese =~ /\p{Han}+/g) {
+    wrap_line sprintf "CJK %s is %s in Mandarin.",  $cjk_string, said(Mandarin => $cjk_string);
+    wrap_line sprintf "CJK %s is %s in Cantonese.", $cjk_string, said(Cantonese => $cjk_string);
+    wrap_line sprintf "CJK %s is %s in Pinyin.\n\n",    $cjk_string, pinyin($cjk_string);
+}
+
+
+banner_paragraph(Korean => $korean);
+
+if (SHOW_UNIHAN) {
+    char_inform for $korean =~ /[^\0-\x7f]/g;
+    print "\n";
+}
+
+for my $cjk_string ($korean =~ /\p{Han}+/g) {
+    wrap_line sprintf "CJK %s is %s in Korean.", $cjk_string, said(Korean => $cjk_string);
+}
+
+
+for my $hangul_string ($korean =~ /\p{Hangul}+/g) {
+    wrap_line sprintf "Korean %s is %s.", $hangul_string, hangul($hangul_string);
+    next;
+
+    ##################
+    # internal romanization
+
+    my @namelist = ();
+    for my $char (split //, $hangul_string) {
+        for(getHangulName(ord $char)) {
+            next unless length;
+            s/^HANGUL SYLLABLE //;
+            push @namelist, $_;
+        }
+    }
+    printf "Korean(int) %s is %s.\n", $hangul_string, lc join("-", @namelist);
+}
+
+banner_paragraph(Japanese => $japanese);
+
+if (SHOW_UNIHAN) {
+    char_inform for $japanese =~ /[^\0-\x7f]/g;
+    print "\n";
+}
+
+for my $cjk_string ($japanese =~ /\p{Han}+/g) {
+    printf "CJK %s is %s in Japanese.\n", $cjk_string, said(JapaneseOn => $cjk_string);
+}
+print "\n";
+
+for my $kanji_string ($japanese =~ /[\p{Han}\p{Kana}\p{InKatakana}\p{InHiragana}]+/g) {
+    printf "Japanese %s is %s.\n", $kanji_string, romaji($kanji_string);
+}
+
+
+exit;
+
+sub entrapment() {
+    $SIG{__DIE__} = sub {
+        croak "\n$0: death trap caught exception: @_" unless $^S;
+    };
+    $SIG{__WARN__} = sub {
+        # dunno why, but carp and cluck do the same thing here
+        my $kvetch = "\n$0: warn trap caught warning: @_";
+        warn $kvetch;
+        die "fatal(ized) warning";
+    };
+}
+
+sub banner {
+    say "\n====@_====\n";
+}
+
+
+sub tabbed_sizing {
+    my ($self, $cols, $pre, $spc, $str) = @_;
+    my $spcstr = $spc.$str;
+    while ($spcstr =~ s/^( *)(\t+)//) {
+        $cols += length($1);
+        $cols += length($2) * 8 - $cols % 8;
+    }
+    $cols += $self->strsize(0, '', '', $spcstr);
+    return $cols;
+};
+
+sub banner_paragraph($$) {
+    my ($name, $text) = @_;
+    banner(uc $name);
+    wrap_paragraph($text);
+}
+
+
+UNITCHECK {
+
+### Public Configuration Attributes (unused variable!!)
+state $LB_default_config = {
+    BreakIndent => 'YES',
+    CharactersMax => 998,
+    ColumnsMin => 0,
+    ColumnsMax => 76,
+    ComplexBreaking => 'YES',
+    Context => 'NONEASTASIAN',
+    Format => "SIMPLE",
+    HangulAsAL => 'NO',
+    LegacyCM => 'YES',
+    Newline => "\n",
+    SizingMethod => 'UAX11',
+    TailorEA => [],
+    TailorLB => [],
+    UrgentBreaking => undef,
+    UserBreaking => [],
+};
+
+state $formatter = new Unicode::LineBreak (
+# makes for fewer linebreaks on this dataset:
+    Context => "NONEASTASIAN",      # EASTASIAN, NONEATSIAN
+    ColumnsMax => 72,
+    Format => "SIMPLE",             # SIMPLE, NEWLINE, TRIM
+    HangulAsAL => "YES",
+    SizingMethod    => \&tabbed_sizing,  # for tab handling
+    TailorLB => [
+        ord("\t") => LB_SP,
+        LEFT_QUOTES()  => LB_OP,
+        RIGHT_QUOTES() => LB_CL,
+    ],
+);
+
+sub wrap_line($) {
+    my($text) = @_;
+    $formatter->config(Newline => ("\n" . " " x 4));
+    say $formatter->break($text);
+}
+
+sub wrap_paragraph($) {
+    my ($text) = @_;
+    $formatter->config(Newline => "\n");
+
+    for (split /\R{2,}/, $text) {
+        s/(?:(?![\N{NO-BREAK SPACE}\t])\p{White_Space})+/ /g;
+        s/^\s+//;
+        s/\s+$//;
+        say $formatter->break($_), "\n";
+    }
+
+}
+
+} # end UNITCHECK
+
+UNITCHECK {
+
+state $uh = new Unicode::Unihan;
+
+sub char_inform(_) {
+
+    state $seen = { };
+
+    my $string = shift;
+    for my $char ( split //, $string ) {
+        # next if $seen->{$char}++;
+        my $ci = charinfo(ord $char);
+        my $name   = $ci->{name};
+        my $script = $ci->{script};
+        my $cat = $ci->{category};
+
+        my $gcs = Unicode::GCString->new($char);
+        my $columns = $gcs->columns();
+        #next unless $columns == 2;
+
+        printf " %s%s U+%04X %2s", $char, " " x (2 - $columns), ord($char), $cat;
+        printf " %-6s %s\n", $script, $name;
+
+        for my $lang (@langs) {
+            my @data = $uh->$lang($char);
+            next unless @data && $data[0];
+            # dumb thing doesn't have the utf8 flag on
+            printf "  %-12s %s\n", $lang, join(", ", map { utf8 } @data);
+        }
+    }
+}
+
+
+sub said($$) {
+    my ($lang, $string) = @_;
+    my @retlist = ();
+    for my $char ( split //, $string ) {
+        my @data = $uh->$lang($char);
+        next unless @data && $data[0];
+        my $best = lc utf8($data[0]);
+        if ($best =~ /\d/) {
+            $best = apply_tones($lang, $best);
+        }
+        for ($best) {
+            s/\h.*//;
+        }
+        push @retlist, $best;
+    }
+    return join(" ", @retlist);
+}
+
+}  # end UNITCHECK
+
+
+sub apply_tones($$) {
+    my ($lang, $string) = @_;
+
+    return $string unless $string =~ / \d \b /x;
+
+    state $mandarin_tones = {
+    # don't use COMBINING TONE MARKs because they don't evaporate when NFC'd
+        1 => "\N{COMBINING MACRON}",            # 1 is macron 青 qīng qing1
+        2 => "\N{COMBINING ACUTE ACCENT}",      # 2 is acute  藍 lán  lan2
+        3 => "\N{COMBINING CARON}",             # 3 is caron  满 mǎn  man3
+        4 => "\N{COMBINING GRAVE ACCENT}",      # 4 is grave  綠 lǜ   lü4
+        5 => "",   # tone 5 doesn't transliterate
+    };
+
+    state $cantonese_supers = {
+        1 => "\N{SUPERSCRIPT ONE}",
+        2 => "\N{SUPERSCRIPT TWO}",
+        3 => "\N{SUPERSCRIPT THREE}",
+        4 => "\N{SUPERSCRIPT FOUR}",
+        5 => "\N{SUPERSCRIPT FIVE}",
+        6 => "\N{SUPERSCRIPT SIX}",
+        7 => "\N{SUPERSCRIPT SEVEN}",
+        8 => "\N{SUPERSCRIPT EIGHT}",
+        9 => "\N{SUPERSCRIPT NINE}",
+    };
+
+    state $cantonese_tones = {
+        1 => "\N{MODIFIER LETTER EXTRA-HIGH TONE BAR}",                                  # ˥
+        2 => "\N{MODIFIER LETTER MID TONE BAR}\N{MODIFIER LETTER EXTRA-HIGH TONE BAR}",  # ˧˥
+        3 => "\N{MODIFIER LETTER MID TONE BAR}",                                         # ˧
+        4 => "\N{MODIFIER LETTER LOW TONE BAR}\N{MODIFIER LETTER EXTRA-LOW TONE BAR}",   # ˨˩
+        5 => "\N{MODIFIER LETTER EXTRA-LOW TONE BAR}\N{MODIFIER LETTER MID TONE BAR}",   # ˩˧
+        6 => "\N{MODIFIER LETTER LOW TONE BAR}",                                         # ˨
+        7 => "\N{MODIFIER LETTER EXTRA-HIGH TONE BAR}",                                  # ˥
+        8 => "\N{MODIFIER LETTER MID TONE BAR}",                                         # ˧
+        9 => "\N{MODIFIER LETTER LOW TONE BAR}",                                         # ˨
+    };
+
+    my $tones = undef;
+
+### Something is broken with given() here
+###    given ($lang) {
+###        when ("Mandarin")  { $tones = $mandarin_tones  }
+###        when ("Cantonese") { $tones = $cantonese_tones }
+###        default            { die "unexpected language" }
+###    }
+
+    if ($lang eq "Cantonese") {
+        my ($tones, $supers) = ($string, $string);
+        $tones  =~ s/(\d)\b/$cantonese_tones->{$1}/g;
+        $supers =~ s/(\d)\b/$cantonese_supers->{$1}/g;
+        return "$supers/$tones";
+    }
+
+    if ($lang ne "Mandarin") {
+        die "unknown tone language $lang";
+    }
+
+    state $digits = join("", sort keys %$mandarin_tones);
+    $string = NFD($string);
+    $string =~ s{
+                    (?<VOWEL>       (?=[aeiou]) \X      )
+                \K  (?<CODA>        [:\w] *             )
+                    (?<TONE>        (?=[$digits]) \d \b )
+    }{
+        $mandarin_tones->{ $+{TONE} }
+        . $+{CODA}
+    }gexo;
+
+    return NFC($string);
+}
+
+sub utf8(_) {
+    my $str = shift();
+    return utf8::is_utf8($str)
+        ? $str
+        : decode("UTF-8", $str);
+}
+
+sub romaji(_) {
+    my $kanji = shift();
+    state $conv = new Lingua::JA::Romanize::Japanese;
+    my $roman = $conv->chars($kanji);
+    for ($roman) {
+        s/ //g;
+        s/(\p{Latin})\K\N{KATAKANA-HIRAGANA PROLONGED SOUND MARK}/$1/g;
+    }
+    return $roman;
+}
+
+sub hangul(_) {
+    my $hangul = shift();
+    state $conv = new Lingua::KO::Romanize::Hangul;
+    my $roman = $conv->chars($hangul);
+    return $roman;
+}
+
+sub pinyin(_) {
+    my $chinese = shift();
+    state $conv = new Lingua::ZH::Romanize::Pinyin;
+    my $roman = $conv->chars($chinese);
+    $roman =~ s{ / \w+ \b }{}gx;
+    return apply_tones("Mandarin", $roman);
+}
+
+__END__
+
+====CHINESE====
+
+春曉 孟浩然	Ceon1 Hiu2 Maang6 Hou6jin4
+
+春眠不覺曉，	Ceon1 min4 bat1 gok3 hiu2,
+
+處處聞啼鳥。	cyu3 cyu3 man4 tai4 niu5.
+
+夜來風雨聲，	Je6 loi4 fung1 jyu5 sing1,
+
+花落知多少？	faa1 lok6 zi1 do1 siu2?
+
+Due to its status as a prestige dialect, it often called "Standard 
+Cantonese" (simplified Chinese: 标准粤语; traditional Chinese: 標準粵語; 
+Jyutping: biu1zeon2 jyut6jyu5; Guangdong Romanization：Biu1 zên2 yud6 
+yu5).
+
+Chinese has a word 青 (qīng) that can refer to both, though it also has 
+separate words for blue (蓝 / 藍, lán) and green (绿 / 綠, lǜ).
+
+The modern Chinese language has the blue-green distinction (蓝/ 藍 lán 
+for blue and 绿 / 緑 lǜ for green); however, another word which predates 
+the modern vernacular, qīng (Chinese: 青), is also used. It can refer to 
+either blue or green, or even (though much less frequently) to black, as 
+in xuánqīng (Chinese: 玄青 where Chinese: 玄 refers to black). For 
+example, the Flag of the Republic of China is today still referred to as 
+qīng tiān, bái rì, mǎn dì hóng ("Blue Sky, White Sun, Whole Ground Red" 
+— Chinese: 青天，白日，满地红); whereas qīng cài (Chinese: 青菜) is the 
+Chinese word for "green vegetable". Qīng 青 was the traditional 
+designation of both blue and green for much of the history of the 
+Chinese language, while 蓝 lán and 绿 lǜ were introduced relatively more 
+recently, as a part of the adoption of modern Vernacular Chinese as the 
+social norm, replacing Classical Chinese.
+
+The Chinese version is simply, 妈妈给我们的钱,我已经买了糖了. Māma gěi 
+wǒmen de qián, wǒ yǐjīng mǎile táng le. This is translated somewhat 
+directly as, "The money Mom gave us, I already bought candy," lacking a 
+preface as in English.
+
+Another major difference between the syntax of Chinese and languages 
+like English lies in the stacking order of modifying clauses. 昨天发脾气
+的外交警察取消了沒有交钱的那些人的入境证. Zuótiān fāpíqì de wàijiāo 
+jǐngchá qǔxiāole méiyǒu jiāoqián de nàxiē rén de rùjìngzhèng. Using the 
+Chinese order in English, that sentence would be [blah blah blah].
+
+Tones http://en.wikipedia.org/wiki/Cantonese_phonology#Tones
+
+Guangzhou Cantonese has seven tones, but Hong Kong Cantonese has six 
+with the high-falling tone merging with the high tone. Although it is 
+often said to have nine or eleven, the additional tones added in the 
+counts are entering tones. In Chinese, the number of possible tones 
+depends on the syllable type. There are six contour tones in syllables 
+that end in a vowel or nasal consonant. (Some of these have more than 
+one realization, but such differences are seldom used to distinguish 
+words.) In syllables that end in a stop consonant, the number of tones 
+is reduced to three; in Chinese descriptions, these "entering tones" are 
+treated separately, so that Cantonese is traditionally said to have nine 
+tones. However, phonetically these are a conflation of tone and syllable 
+type; the number of phonemic tones is six in Hong Kong and seven in 
+Guangzhou.
+
+Syllable type Open syllables Stopped syllables
+
+d.=dark, l.=light, U.=upper, L.=lower 	Tone name	d.level	 
+d.rising	 d.depart.	 l.level	l.rising l.depart.	 
+U. d.enter. L. d.enter. l.enter. 			(陰平)	 (陰上)	 
+(陰去)	 (陽平)		(陽上)	 (陽去)	 (上陰入) (下陰入)	 (陽入) 
+Description		high level medium	 medium	 low falling	
+low	 low	 high		medium	 low 			high 
+falling rising	 level	 v.l. level	rising	 level	 level	level	 
+level Yale or Jyutping 	 tone number	1	 2		 3		 
+4		5	 6		 7 (or 1)	8 (or 3) 9 (or 
+6) Example		詩	 史	 試		 時		
+市	 是	 識		錫	 食 Tone letter	siː˥, siː˥˧ 
+siː˧˥	 siː˧	 siː˨˩, siː˩	siː˩˧	 siː˨	 sɪk˥	sɛːk˧	 sɪk˨ 
+IPA diacritic	síː, sîː sǐː	 sīː		 si̖ː, sı̏ː	 si̗ː		 
+sìː	 sɪ́k	 sɛ̄ːk	 sɪ̀k Yale diacritic	sī, sì	 sí	 si		 
+sīh, sìh	síh	 sih	 sīk		sek	 sihk
+
+For purposes of meters in Chinese poetry, the first and fourth tones are 
+the "level tones" (平聲), while the rest are the "oblique tones" (仄聲).
+
+The first tone can be either high level or high falling usually without 
+affecting the meaning of the words being spoken. Most speakers are in 
+general not consciously aware of when they use and when to use high 
+level and high falling. In Hong Kong, most speakers have merged the high 
+and high falling tones. In Guangzhou, the high falling tone is 
+disappearing as well, but is still prevalent among certain words (saam-
+high falling means the number three, where saam-high means shirt).
+
+The numbers "394052786" when pronounced in Cantonese, will give the nine 
+tones in order (Romanisation (Yale) saam1, gau2, sei3, ling4, ng5, yi6, 
+chat7, baat8, luk9), thus giving a good mnemonic for remembering the 
+nine tones.
+
+CJK 春曉 is chūn xǐao in Mandarin.
+CJK 春曉 is ceon¹/ceon˥ hiu²/hiu˧˥ in Cantonese.
+CJK 春曉 is chūn xǐao in Pinyin.
+
+
+CJK 孟浩然 is mèng hào rán in Mandarin.
+CJK 孟浩然 is maang⁶/maang˨ hou⁵ jin⁴/jin˨˩ in Cantonese.
+CJK 孟浩然 is mèng hào rán in Pinyin.
+
+
+CJK 春眠不覺曉 is chūn mían bù júe xǐao in Mandarin.
+CJK 春眠不覺曉 is ceon¹/ceon˥ min⁴/min˨˩ bat¹ gaau³ hiu²/hiu˧˥ in 
+    Cantonese.
+CJK 春眠不覺曉 is chūn mían bú jìao xǐao in Pinyin.
+
+
+CJK 處處聞啼鳥 is chù chù wén tí nǐao in Mandarin.
+CJK 處處聞啼鳥 is cyu² cyu² man⁴ tai⁴/tai˨˩ niu⁵/niu˩˧ in Cantonese.
+CJK 處處聞啼鳥 is chǔ chǔ wén tí nǐao in Pinyin.
+
+
+CJK 夜來風雨聲 is yè lái fēng yǔ shēng in Mandarin.
+CJK 夜來風雨聲 is je⁶/je˨ lai⁴ fung¹ jyu⁵ seng¹ in Cantonese.
+CJK 夜來風雨聲 is yè lái fēng yǔ shēng in Pinyin.
+
+
+CJK 花落知多少 is hūa lùo zhī dūo shǎo in Mandarin.
+CJK 花落知多少 is faa¹/faa˥ laai⁶ zi¹ do¹/do˥ siu² in Cantonese.
+CJK 花落知多少 is hūa là zhī dūo shǎo in Pinyin.
+
+
+CJK 标准粤语 is bīao zhǔn yùe yǔ in Mandarin.
+CJK 标准粤语 is biu¹/biu˥ zeon²/zeon˧˥ jyut⁶/jyut˨ jyu⁵/jyu˩˧ in 
+    Cantonese.
+CJK 标准粤语 is biao zhǔn yue yu in Pinyin.
+
+
+CJK 標準粵語 is bīao zhǔn yùe yǔ in Mandarin.
+CJK 標準粵語 is biu¹/biu˥ zeon²/zeon˧˥ jyut⁶/jyut˨ jyu⁵ in Cantonese.
+CJK 標準粵語 is bīao zhǔn yùe yǔ in Pinyin.
+
+
+CJK 青 is qīng in Mandarin.
+CJK 青 is ceng¹ in Cantonese.
+CJK 青 is qīng in Pinyin.
+
+
+CJK 蓝 is lán in Mandarin.
+CJK 蓝 is laam⁴/laam˨˩ in Cantonese.
+CJK 蓝 is la in Pinyin.
+
+
+CJK 藍 is lán in Mandarin.
+CJK 藍 is laam⁴/laam˨˩ in Cantonese.
+CJK 藍 is lán in Pinyin.
+
+
+CJK 绿 is lǜ in Mandarin.
+CJK 绿 is luk⁶/luk˨ in Cantonese.
+CJK 绿 is lu in Pinyin.
+
+
+CJK 綠 is lǜ in Mandarin.
+CJK 綠 is luk⁶/luk˨ in Cantonese.
+CJK 綠 is lù: in Pinyin.
+
+
+CJK 蓝 is lán in Mandarin.
+CJK 蓝 is laam⁴/laam˨˩ in Cantonese.
+CJK 蓝 is la in Pinyin.
+
+
+CJK 藍 is lán in Mandarin.
+CJK 藍 is laam⁴/laam˨˩ in Cantonese.
+CJK 藍 is lán in Pinyin.
+
+
+CJK 绿 is lǜ in Mandarin.
+CJK 绿 is luk⁶/luk˨ in Cantonese.
+CJK 绿 is lu in Pinyin.
+
+
+CJK 緑 is lǜ in Mandarin.
+CJK 緑 is  in Cantonese.
+CJK 緑 is 緑 in Pinyin.
+
+
+CJK 青 is qīng in Mandarin.
+CJK 青 is ceng¹ in Cantonese.
+CJK 青 is qīng in Pinyin.
+
+
+CJK 玄青 is xúan qīng in Mandarin.
+CJK 玄青 is jyun⁴/jyun˨˩ ceng¹ in Cantonese.
+CJK 玄青 is xúan qīng in Pinyin.
+
+
+CJK 玄 is xúan in Mandarin.
+CJK 玄 is jyun⁴/jyun˨˩ in Cantonese.
+CJK 玄 is xúan in Pinyin.
+
+
+CJK 青天 is qīng tīan in Mandarin.
+CJK 青天 is ceng¹ tin¹/tin˥ in Cantonese.
+CJK 青天 is qīng tīan in Pinyin.
+
+
+CJK 白日 is bái rì in Mandarin.
+CJK 白日 is baak⁶/baak˨ jat⁶/jat˨ in Cantonese.
+CJK 白日 is bái rì in Pinyin.
+
+
+CJK 满地红 is mǎn dì hóng in Mandarin.
+CJK 满地红 is mun⁵/mun˩˧ dei⁶ hung⁴/hung˨˩ in Cantonese.
+CJK 满地红 is man de gong in Pinyin.
+
+
+CJK 青菜 is qīng cài in Mandarin.
+CJK 青菜 is ceng¹ coi³/coi˧ in Cantonese.
+CJK 青菜 is qīng cài in Pinyin.
+
+
+CJK 青 is qīng in Mandarin.
+CJK 青 is ceng¹ in Cantonese.
+CJK 青 is qīng in Pinyin.
+
+
+CJK 蓝 is lán in Mandarin.
+CJK 蓝 is laam⁴/laam˨˩ in Cantonese.
+CJK 蓝 is la in Pinyin.
+
+
+CJK 绿 is lǜ in Mandarin.
+CJK 绿 is luk⁶/luk˨ in Cantonese.
+CJK 绿 is lu in Pinyin.
+
+
+CJK 妈妈给我们的钱 is mā mā gěi wǒ men de qían in Mandarin.
+CJK 妈妈给我们的钱 is maa¹/maa˥ maa¹/maa˥ kap¹/kap˥ ngo⁵/ngo˩˧ mun⁴/
+    mun˨˩ di¹ cin² in Cantonese.
+CJK 妈妈给我们的钱 is ma ma gei wǒ men de qian in Pinyin.
+
+
+CJK 我已经买了糖了 is wǒ yǐ jīng mǎi le táng le in Mandarin.
+CJK 我已经买了糖了 is ngo⁵/ngo˩˧ ji⁵/ji˩˧ ging¹/ging˥ maai⁵/maai˩˧ liu⁵/
+    liu˩˧ tong² liu⁵/liu˩˧ in Cantonese.
+CJK 我已经买了糖了 is wǒ yǐ jing mai le táng le in Pinyin.
+
+
+CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zúo tīan fā pí 
+    qì de wài jīao jǐng chá qǔ xīao le méi yǒu jīao qían de nà xīe rén de rù 
+    jìng zhèng in Mandarin.
+CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zok³ tin¹/tin˥ 
+    faat³/faat˧ pei⁴/pei˨˩ hei³/hei˧ di¹ ngoi⁶ gaau¹/gaau˥ ging²/ging˧˥ 
+    caat³/caat˧ ceoi²/ceoi˧˥ siu¹/siu˥ liu⁵/liu˩˧ mut⁶/mut˨ jau⁵ gaau¹/gaau˥ 
+    cin² di¹ aa⁶ se¹/se˥ jan⁴/jan˨˩ di¹ jap⁶/jap˨ ging²/ging˧˥ zing³/zing˧ 
+    in Cantonese.
+CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zúo tīan fa pí 
+    qì de wài jīao jǐng chá qǔ xīao le méi yǒu jīao qian de nǎ xīe rén de rù 
+    jìng zheng in Pinyin.
+
+
+CJK 陰平 is yīn píng in Mandarin.
+CJK 陰平 is jam¹/jam˥ peng⁴ in Cantonese.
+CJK 陰平 is yīn píng in Pinyin.
+
+
+CJK 陰上 is yīn shàng in Mandarin.
+CJK 陰上 is jam¹/jam˥ soeng⁵ in Cantonese.
+CJK 陰上 is yīn shǎng in Pinyin.
+
+
+CJK 陰去 is yīn qù in Mandarin.
+CJK 陰去 is jam¹/jam˥ heoi² in Cantonese.
+CJK 陰去 is yīn qù in Pinyin.
+
+
+CJK 陽平 is yáng píng in Mandarin.
+CJK 陽平 is joeng⁴/joeng˨˩ peng⁴ in Cantonese.
+CJK 陽平 is yáng píng in Pinyin.
+
+
+CJK 陽上 is yáng shàng in Mandarin.
+CJK 陽上 is joeng⁴/joeng˨˩ soeng⁵ in Cantonese.
+CJK 陽上 is yáng shǎng in Pinyin.
+
+
+CJK 陽去 is yáng qù in Mandarin.
+CJK 陽去 is joeng⁴/joeng˨˩ heoi² in Cantonese.
+CJK 陽去 is yáng qù in Pinyin.
+
+
+CJK 上陰入 is shàng yīn rù in Mandarin.
+CJK 上陰入 is soeng⁵ jam¹/jam˥ jap⁶/jap˨ in Cantonese.
+CJK 上陰入 is shǎng yīn rù in Pinyin.
+
+
+CJK 下陰入 is xìa yīn rù in Mandarin.
+CJK 下陰入 is haa⁵ jam¹/jam˥ jap⁶/jap˨ in Cantonese.
+CJK 下陰入 is xìa yīn rù in Pinyin.
+
+
+CJK 陽入 is yáng rù in Mandarin.
+CJK 陽入 is joeng⁴/joeng˨˩ jap⁶/jap˨ in Cantonese.
+CJK 陽入 is yáng rù in Pinyin.
+
+
+CJK 詩 is shī in Mandarin.
+CJK 詩 is si¹/si˥ in Cantonese.
+CJK 詩 is shī in Pinyin.
+
+
+CJK 史 is shǐ in Mandarin.
+CJK 史 is si²/si˧˥ in Cantonese.
+CJK 史 is shǐ in Pinyin.
+
+
+CJK 試 is shì in Mandarin.
+CJK 試 is si³ in Cantonese.
+CJK 試 is shì in Pinyin.
+
+
+CJK 時 is shí in Mandarin.
+CJK 時 is si⁴/si˨˩ in Cantonese.
+CJK 時 is shí in Pinyin.
+
+
+CJK 市 is shì in Mandarin.
+CJK 市 is si⁵/si˩˧ in Cantonese.
+CJK 市 is shì in Pinyin.
+
+
+CJK 是 is shì in Mandarin.
+CJK 是 is si⁶/si˨ in Cantonese.
+CJK 是 is shì in Pinyin.
+
+
+CJK 識 is shi in Mandarin.
+CJK 識 is sik¹ in Cantonese.
+CJK 識 is shì in Pinyin.
+
+
+CJK 錫 is xí in Mandarin.
+CJK 錫 is sek³ in Cantonese.
+CJK 錫 is xí in Pinyin.
+
+
+CJK 食 is shí in Mandarin.
+CJK 食 is ji⁶ in Cantonese.
+CJK 食 is shí in Pinyin.
+
+
+CJK 平聲 is píng shēng in Mandarin.
+CJK 平聲 is peng⁴ seng¹ in Cantonese.
+CJK 平聲 is píng shēng in Pinyin.
+
+
+CJK 仄聲 is zè shēng in Mandarin.
+CJK 仄聲 is zak¹/zak˥ seng¹ in Cantonese.
+CJK 仄聲 is zè shēng in Pinyin.
+
+
+
+====KOREAN====
+
+The Korean word 푸르다 (pureuda) can mean either green or blue.
+
+The native Korean word 푸르다 (Revised Romanization: pureu-da adj.) may 
+mean either blue or green, or bluish green. This word 푸르다 is used as 
+in 푸른 하늘 (pureun haneul, blue sky) for blue or as in 푸른 숲 (pureun 
+sup, green forest) for green. Distinct words for blue and green are also 
+used; 파란 (paran adj.), 파란색/파랑 (paransaek/parang n.) for blue, 
+초록 (chorok adj./n.), 초록색 (choroksaek n. or for short, 녹색 noksaek 
+n.) for green. However, in the case of a traffic light, paran is used 
+for the green light meaning go, even though the word is typically used 
+to mean blue. Cheong 청 is also used for both blue and green. It is a 
+loan from Chinese (靑, pinyin: qing) and is used in the proper name 
+Cheong Wa Dae (청와대 or Hanja: 靑瓦臺), the Blue House, which is the 
+executive office and official residence of the President of the Republic 
+of Korea.
+
+CJK 靑 is cheng in Korean.
+CJK 靑瓦臺 is cheng wa tay in Korean.
+Korean 푸르다 is pu reu da.
+Korean 푸르다 is pu reu da.
+Korean 푸르다 is pu reu da.
+Korean 푸른 is pu reun.
+Korean 하늘 is ha neul.
+Korean 푸른 is pu reun.
+Korean 숲 is sup.
+Korean 파란 is pa ran.
+Korean 파란색 is pa ran saek.
+Korean 파랑 is pa rang.
+Korean 초록 is cho rok.
+Korean 초록색 is cho rok saek.
+Korean 녹색 is nok saek.
+Korean 청 is cheong.
+Korean 청와대 is cheong wa dae.
+
+====JAPANESE====
+
+
+
+The Japanese language is written with a combination of three scripts: 
+Chinese characters called kanji (漢字), and two syllabic scripts made up 
+of modified Chinese characters, hiragana (ひらがな or 平仮名) and 
+katakana (カタカナ or 片仮名). The Latin alphabet, rōmaji (ローマ字), is 
+also often used in modern Japanese, especially for company names and 
+logos, advertising, and when entering Japanese text into a computer.
+
+The main distinction in Japanese accents is between Tokyo-type 	(東京式 	
+Tōkyō-shiki?) and Kyoto-Osaka-type 	(京阪式 	Keihan-shiki?), 
+though Kyūshū-type dialects form a third, smaller group.
+
+In Japanese, the word for blue (青 ao) is often used for colors that 
+English speakers would refer to as green, such as the color of a traffic 
+signal meaning "go".
+
+The Japanese word ao (青, n., aoi (青い, adj.)), exactly the same kanji 
+character as the Chinese qīng above, can refer to either blue or green 
+depending on the situation. Modern Japanese has also adopted the Chinese 
+word for green (緑 midori), although this was not always so. Ancient 
+Japanese did not have this distinction: the word midori only came into 
+use in the Heian period, and at that time (and for a long time 
+thereafter) midori was still considered a shade of ao. Educational 
+materials distinguishing green and blue only came into use after World 
+War II, during the Occupation[citation needed]: thus, even though most 
+Japanese consider them to be green, the word ao is still used to 
+describe certain vegetables, apples and vegetation. Ao is also the name 
+for the color of a traffic light, which is bluer than in English-
+speaking countries. However, most other objects—a green car, a green 
+sweater, and so forth—will generally be called midori. Japanese people 
+also sometimes use the word guriin (グリーン), based on the English word 
+"green", for colors. The language also has several other words meaning 
+specific shades of green and blue.
+
+CJK 漢字 is kara aza in Japanese.
+CJK 平仮名 is taira kari na in Japanese.
+CJK 片仮名 is kata kari na in Japanese.
+CJK 字 is aza in Japanese.
+CJK 東京式 is higashi miyako nori in Japanese.
+CJK 京阪式 is miyako saka nori in Japanese.
+CJK 青 is ao in Japanese.
+CJK 青 is ao in Japanese.
+CJK 青 is ao in Japanese.
+CJK 緑 is midori in Japanese.
+
+Japanese 漢字 is kanji.
+Japanese ひらがな is hiragana.
+Japanese 平仮名 is hiragana/hirakana.
+Japanese カタカナ is katakana.
+Japanese 片仮名 is katakana.
+Japanese ローマ字 is roomaaza/azana/ji.
+Japanese 東京式 is toukyoushiki.
+Japanese 京阪式 is keihanshiki.
+Japanese 青 is ao/sei/shou.
+Japanese 青 is ao/sei/shou.
+Japanese 青い is aoi.
+Japanese 緑 is midori/roku/ryoku.
+Japanese グリーン is guriin.

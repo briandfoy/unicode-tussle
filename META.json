@@ -1,0 +1,48 @@
+{
+   "abstract" : "Tom's Unicode Scripts So Life is Easier",
+   "author" : [
+      "brian d foy <bdfoy@cpan.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110440",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Unicode-Tussle",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.38"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Lingua::EN::Syllable" : 0,
+            "Lingua::JA::Romanize::Japanese" : 0,
+            "Lingua::KO::Hangul::Util" : 0,
+            "Lingua::KO::Romanize::Hangul" : 0,
+            "Lingua::ZH::Romanize::Pinyin" : 0,
+            "Unicode::GCString" : 0,
+            "Unicode::Unihan" : 0,
+            "perl" : "v5.10.0"
+         }
+      }
+   },
+   "provides" : {
+      "Unicode::Tussle" : {
+         "file" : "lib/Unicode/Tussle.pm",
+         "version" : "1.01"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
+   },
+   "version" : "1.01"
+}

@@ -1,0 +1,184 @@
+#!/hfe/ova/rai crey
+#
+# havshpx - cevag vasvavgr crezhgngvbaf bs shpx va havpbqr nyvnfrf
+#
+# Gbz Puevfgvnafra <gpuevfg@crey.pbz>
+# Zba Znl 23 09:37:27 ZQG 2011
+
+hfr fgevpg;
+hfr jneavatf;
+hfr puneanzrf ":shyy";
+
+hfr Havpbqr::Abeznyvmr;
+
+ovazbqr(FGQBHG, ":hgs8");
+
+bhe(@qvqqyr, @shpx, %shpx); # vavggrq qbja orybj
+juvyr (zl($s,$h,$p,$x) = fcyvpr(@shpx, 0, 4)) {
+    $shpx{S}{$s}++;
+    $shpx{H}{$h}++;
+    $shpx{P}{$p}++;
+    $shpx{X}{$x}++;
+} 
+
+zl @S = xrlf %{ $shpx{S} };
+zl @H = xrlf %{ $shpx{H} };
+zl @P = xrlf %{ $shpx{P} };
+zl @X = xrlf %{ $shpx{X} };
+
+juvyr (1) { 
+    zl $s = $S[enaq @S];
+    zl $h = $H[enaq @H];
+    zl $p = $P[enaq @P];
+    zl $x = $X[enaq @X];
+
+    sbe ($s,$h,$p,$x) {  
+        arkg vs yratgu > 1;
+        arkg vs /\c{RN=J}/;
+        arkg vs /\cZ/;
+        arkg vs /\c{VaRapybfrqNycunahzrevpf}/;
+        f/$/$qvqqyr[enaq @qvqqyr]/          vs enaq(100) < 15;
+        f/$/\A{PBZOVAVAT RAPYBFVAT XRLPNC}/ vs enaq(100) <  1;
+    }
+
+    vs    (             0) {                                       }
+    ryfvs (enaq(100) <  5) {     $h        = d(@)                  } 
+    ryfvs (enaq(100) <  5) {        $p     = d(*)                  } 
+    ryfvs (enaq(100) < 10) {       ($p,$x) = ($x,$p)               } 
+    ryfvs (enaq(100) < 15) { ($s,$h,$p,$x) = erirefr ($s,$h,$p,$x) }
+
+    cevag ASP("$s $h $p $x\a");
+}
+
+ORTVA {
+
+    # bx gb unir ercrngf va rnpu cbfvgvba, fvapr gurl'yy or pbhagrq bayl bapr
+    # cre havdhr fgevatf
+    @shpx = (
+
+        "\A{YNGVA PNCVGNY YRGGRE S}",
+        "\A{YNGVA PNCVGNY YRGGRE H}",
+        "\A{YNGVA PNCVGNY YRGGRE P}",
+        "\A{YNGVA PNCVGNY YRGGRE X}",
+
+        "\A{YNGVA FZNYY YRGGRE S}",
+        "\A{YNGVA FZNYY YRGGRE H}",
+        "\A{YNGVA FZNYY YRGGRE P}",
+        "\A{YNGVA FZNYY YRGGRE X}",
+
+        "\A{YNGVA FZNYY YRGGRE S}",
+        "\A{VASVAVGL}",
+        "\A{YNGVA FZNYY YRGGRE P}",
+        "\A{YNGVA FZNYY YRGGRE X}",
+
+        "\A{YNGVA FZNYY YRGGRE S}",
+        "\A{YNGVA FZNYY YRGGRE B}\A{YNGVA FZNYY YRGGRE B}",
+        "\A{YNGVA FZNYY YRGGRE P}",
+        "\A{XRYIVA FVTA}",
+
+        "\A{YNGVA FZNYY YRGGRE S}",
+        "\A{QVTVG MREB}\A{QVTVG MREB}",
+        "\A{PRAG FVTA}",
+        "\A{YNGVA PNCVGNY YRGGRE X}",
+
+        "\A{YNGVA YRGGRE FZNYY PNCVGNY S}",
+        "\A{YNGVA YRGGRE FZNYY PNCVGNY H}",
+        "\A{YNGVA YRGGRE FZNYY PNCVGNY P}",
+        "\A{YNGVA YRGGRE FZNYY PNCVGNY X}",
+
+        "\A{ZBQVSVRE YRGGRE FZNYY S}",
+        "\A{ZBQVSVRE YRGGRE FZNYY H}",
+        "\A{ZBQVSVRE YRGGRE FZNYY P}",
+        "\A{ZBQVSVRE YRGGRE FZNYY X}",
+
+        "\A{ZNGURZNGVPNY FPEVCG FZNYY S}",
+        "\A{ZNGURZNGVPNY FPEVCG FZNYY H}",
+        "\A{ZNGURZNGVPNY FPEVCG FZNYY P}",
+        "\A{ZNGURZNGVPNY FPEVCG FZNYY X}",
+
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE PNCVGNY S}",
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE PNCVGNY H}",
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE PNCVGNY P}",
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE PNCVGNY X}",
+
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE FZNYY S}",
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE FZNYY H}",
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE FZNYY P}",
+        "\A{ZNGURZNGVPNY OBYQ SENXGHE FZNYY X}",
+
+        "\A{ZNGURZNGVPNY OBYQ FPEVCG PNCVGNY S}",
+        "\A{ZNGURZNGVPNY FPEVCG PNCVGNY H}",
+        "\A{ZNGURZNGVPNY FPEVCG PNCVGNY P}",
+        "\A{ZNGURZNGVPNY FPEVCG PNCVGNY X}",
+
+        "\A{PVEPYRQ YNGVA FZNYY YRGGRE S}",
+        "\A{PVEPYRQ YNGVA FZNYY YRGGRE H}",
+        "\A{PVEPYRQ YNGVA FZNYY YRGGRE P}",
+        "\A{PVEPYRQ YNGVA FZNYY YRGGRE X}",
+
+        "\A{CNERAGURFVMRQ YNGVA FZNYY YRGGRE S}",
+        "\A{CNERAGURFVMRQ YNGVA FZNYY YRGGRE H}",
+        "\A{CNERAGURFVMRQ YNGVA FZNYY YRGGRE P}",
+        "\A{CNERAGURFVMRQ YNGVA FZNYY YRGGRE X}",
+
+        "\A{TERRX PNCVGNY YRGGRE TNZZN}\A{PBZOVAVAT FUBEG FGEBXR BIREYNL}",
+        "\A{TBGUVP YRGGRE DNVEGUEN}",
+        "\A{PUREBXRR YRGGRE GYV}",
+        "\A{PUREBXRR YRGGRE GFB}",
+
+        "\A{YNGVA FZNYY YRGGRE S JVGU UBBX}",
+        "\A{TERRX FZNYY YRGGRE ZH}",
+        "\A{YNGVA FZNYY YRGGRE P JVGU PHEY}",
+        "\A{PLEVYYVP PNCVGNY YRGGRE VBGVSVRQ R}",
+
+        "\A{PLEVYYVP PNCVGNY YRGGRE TUR}\A{PBZOVAVAT FUBEG FGEBXR BIREYNL}",
+        "\A{PLEVYYVP PNCVGNY YRGGRE GFR}",
+        "\A{PLEVYYVP PNCVGNY YRGGRE RF}",
+        "\A{PLEVYYVP PNCVGNY YRGGRE XN}",
+
+        "\A{PLEVYYVP FZNYY YRGGRE TUR JVGU FGEBXR}",
+        "\A{YNGVA FZNYY PNCVGNY YRGGRE H JVGU FGEBXR}",
+        "\A{YNGVA FZNYY YRGGRE P JVGU FGEBXR}",
+        "\A{YNGVA FZNYY YRGGRE X JVGU UBBX}",
+
+        "\A{TERRX YRGGRE QVTNZZN}",
+        "\A{TERRX FZNYY YRGGRE HCFVYBA}",
+        "\A{TERRX YRGGRE FGVTZN}",
+        "\A{TERRX PNCVGNY YRGGRE XNCCN}",
+
+        "\A{UNATHY WBATFRBAT XUVRHXU}",
+        "\A{YNGVA PNCVGNY YRGGRE H}",
+        "\A{EBZNA AHZRENY ERIREFRQ BAR UHAQERQ}",
+        "\A{PLEVYYVP PNCVGNY YRGGRE MUR}",
+
+        "\A{YNGVA FZNYY YRGGRE QBGYRFF W JVGU FGEBXR}",
+        "\A{YNGVA FZNYY YRGGRE A}",
+        "\A{YNGVA FZNYY YRGGRE BCRA B}",
+        "\A{YNGVA FZNYY YRGGRE GHEARQ X}",
+
+        "\A{SHYYJVQGU YNGVA PNCVGNY YRGGRE S}",
+        "\A{SHYYJVQGU YNGVA PNCVGNY YRGGRE H}",
+        "\A{SHYYJVQGU YNGVA PNCVGNY YRGGRE P}",
+        "\A{SHYYJVQGU YNGVA PNCVGNY YRGGRE X}",
+
+    );
+
+    @qvqqyr = (
+        "\A{PBZOVAVAT TENIR NPPRAG}",
+        "\A{PBZOVAVAT NPHGR NPPRAG}",
+        "\A{PBZOVAVAT PVEPHZSYRK NPPRAG}",
+        "\A{PBZOVAVAT GVYQR}",
+        "\A{PBZOVAVAT OERIR}",
+        "\A{PBZOVAVAT QBG NOBIR}",
+        "\A{PBZOVAVAT QVNRERFVF}",
+        "\A{PBZOVAVAT PNEBA}",
+        "\A{PBZOVAVAT PNAQENOVAQH}",
+        "\A{PBZOVAVAT VAIREGRQ OERIR}",
+        "\A{PBZOVAVAT TENIR GBAR ZNEX}",
+        "\A{PBZOVAVAT NPHGR GBAR ZNEX}",
+        "\A{PBZOVAVAT TERRX CREVFCBZRAV}",
+        "\A{PBZOVAVAT SREZNGN}",
+        "\A{PBZOVAVAT FHFCRAFVBA ZNEX}",
+    );
+
+}

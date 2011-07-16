@@ -1,0 +1,1712 @@
+#!/usr/local/bin/perl5.10.0
+
+use 5.010_000;
+
+use Unicode::Collate;
+
+$es = Unicode::Collate->new( entry => <<'ENTRY', 
+       0063 0068 ; [.1000.0020.0002.0063] # ch
+       0043 0068 ; [.1000.0020.0007.0043] # Ch
+       0043 0048 ; [.1000.0020.0008.0043] # CH
+       006C 006C ; [.10F5.0020.0002.006C] # ll
+       004C 006C ; [.10F5.0020.0007.004C] # Ll
+       004C 004C ; [.10F5.0020.0008.004C] # LL
+       00E7      ; [.0FFC.0020.0002.0063] # c-cedilla
+       0063 0327 ; [.0FFC.0020.0002.0063] # c-cedilla
+       00C7      ; [.0FFC.0020.0002.0043] # C-cedilla
+       0043 0327 ; [.0FFC.0020.0002.0043] # C-cedilla
+       00F1      ; [.112B.0020.0002.00F1] # n-tilde
+       006E 0303 ; [.112B.0020.0002.00F1] # n-tilde
+       00D1      ; [.112B.0020.0008.00D1] # N-tilde
+       004E 0303 ; [.112B.0020.0008.00D1] # N-tilde
+ENTRY
+       UCA_Version => 14,
+       upper_before_lower => 1,
+       normalization => "NFKD",
+       preprocess => sub {    
+          my $_ = shift;
+       # 1st strip leading articles
+          s/^L'//;    # Catalan
+	  s{ ^
+	    (?:
+	# Castilian
+                El
+              | Los
+              | La
+              | Las
+
+	# Catalan 
+	      | Els
+              | Les         
+              | Sa
+              | Es
+
+	# Gallego
+              | O       
+              | Os
+              | A
+              | As      
+            ) 
+	    \s+ 
+          }{}x;
+	# 2nd strip interior particles
+          s/\b[dl]'//g;   # Catalan
+	  s{ 
+	    \b
+	    (?:
+                el  | los | la | las | de  | del | y          # ES
+	      | els | les | i  | sa | es | dels	              # CA 
+	      | o   | os  | a  | as  | do  | da | dos | das   # GAL
+	    )
+	    \b
+	}{}gx;
+        return $_;
+       }, 
+      ) || die;
+
+binmode(DATA,":encoding(latin1)")|| die;
+
+binmode(STDOUT, ":utf8") || die;
+
+chomp(@words = <DATA>);
+
+@swords = $es->sort(@words);
+
+for $word (@swords) {
+    say $word; 
+    next;
+    # printf "%-12s %s\n", $word, $es->viewSortKey($word);
+}
+
+__END__
+Sant Juli‡ de Cerdanyola
+Muros de NalÛn
+Montgat
+Melilla
+MalasaÒa
+Collado Villalba
+Macharaviaya
+Navalagamella
+Sant Antoni de Vilamajor
+Estellencs
+Selaya
+Calvi‡
+Manlleu
+Abusejo
+Salas
+R·gama
+Osona
+Abegondo
+Valdemorillo
+LeganÈs
+La Pobla de Claramunt
+Barcelona
+Montalb·n de CÛrdoba
+Aldeavieja de Tormes
+Montejo
+CariÒo
+Vallejera de RiofrÌo
+Avi‡
+Morata de TajuÒa
+Grau Roig
+Puigpunyent
+Villares de Yeltes
+Pozos de Hinojo
+La Encina
+Gelves
+Villaharta
+Camas
+Ventosa del RÌo Almar
+Terradillos
+Tamames
+CoaÒa
+Valderrodrigo
+Navacerrada
+Gerena
+Pontedeume
+Gallifa
+ValdepiÈlagos
+Cabranes
+Garcibuey
+Vallromanes
+Roda de Ter
+Cerceda
+Fuentes de BÈjar
+Gurb
+LamasÛn
+Buitrago del Lozoya
+Cuevas del Becerro
+Casabermeja
+Valverde de Alcal·
+Vilanova i la Geltr˙
+Corvera de Toranzo
+Villacarriedo
+Calella
+Santa Eul‡lia de RonÁana
+C·diz
+Alpedrete
+Valenzuela
+Sora
+Valdemanco
+Suances
+Puebla de la Sierra
+Ames
+Braojos
+Encinas de Abajo
+NarÛn
+Zuheros
+Juberri
+FÌgols
+Moralzarzal
+Fontaneda
+Sitges
+Sorihuela
+Mancera de Abajo
+VilobÌ del PenedËs
+Navas del Rey
+Castellnou de Bages
+Sant Cugat del VallËs
+Carrascal del Obispo
+Cangas del Narcea
+Las Veguillas
+Salamanca
+Castro Urdiales
+Ferreries
+Cilleros de la Bastida
+Argentona
+Vegadeo
+Gascones
+Campins
+CastellolÌ
+Lena
+Colmenar Viejo
+Ordina
+UdÌas
+Villaviciosa
+¡vila
+Santa Eul‡lia de Riuprimer
+Perales de TajuÒa
+Cabrera de Mar
+Prats
+Martorell
+B·rcena de Cicero
+Arcediano
+Parres
+Marbella
+Toledo
+Torresmenudas
+AvinyÛ
+Alameda
+Valdemierque
+Lloseta
+Vilassar de Mar
+Riells
+Muro
+Alt Camp
+Sant MartÌ Sarroca
+Carral
+Valdelacasa
+El Payo
+Puerto Seguro
+TorellÛ
+La Victoria
+Armenteros
+Campillos
+Colunga
+Posadas
+MontornËs del VallËs
+PeÒaparda
+Castellbell i el Vilar
+Villarejo de SalvanÈs
+Pujerra
+Ribeira
+Taradell
+Puente Genil
+Saldeana
+Escalante
+Fonollosa
+Estepa
+Valencia
+Bormujos
+Cebadag
+Ripollet
+Pallars Sobir‡
+Santa Eulalia de Oscos
+Vilafranca de Bonany
+Moriles
+Ribamont·n al Monte
+Sant Adri‡ de BesÚs
+Reinosa
+Banyalbufar
+Baix Llobregat
+El Serrat
+Alcaracejos
+Formentera
+San Felices de Buelna
+Ledesma
+Sant Esteve de Palautordera
+Monterrey, Mexico
+Las Salines
+Grado
+Liendo
+La Alamedilla
+Pezuela de las Torres
+Villares de la Reina
+L'Estany
+Alameda del Valle
+Iznate
+Granera
+Cantagallo
+Ribadedeva
+Cartajima
+Laxe
+Aldeanueva de Figueroa
+Zamarra
+El Real de la Jara
+Ferrol
+Villar de la Yegua
+Vilarmaior
+VÈlez-M·laga
+La CoruÒa
+Sierra de Yeguas
+Cuevas Bajas
+AlanÌs
+Mejorada del Campo
+Serranillos del Valle
+Alaraz
+Guadalcanal
+Santa MarÌa de CayÛn
+PiloÒa
+Valdemaqueda
+Sant Boi de Llobregat
+Castelldefels
+Cedeira
+Gironella
+Ceuta
+MontuÔri
+Sobrado
+¡lava
+Pajares de la Laguna
+El Pedroso
+Potes
+Marinaleda
+ValdÈs
+AlcaucÌn
+FuentidueÒa de Tajo
+Cubelles
+As Somozas
+Alaior
+La VÌdola
+Sant Quirze Safaja
+Gajates
+Tremedal de Tormes
+LiÈrganes
+PiÈlagos
+Santa Coloma de Gramenet
+CollbatÛ
+Encinas de Arriba
+Belmonte de Tajo
+Benamocarra
+San Vicente de la Barquera
+Pedroche
+Villanueva de Oscos
+Meruelo
+Algaida
+Ronda
+Arabayona de MÛgica
+Fuenteguinaldo
+Entrambasaguas
+Ampuero
+Sant MartÌ de Centelles
+Baix Ebre
+San Miguel del Robledo
+San Pedro del Romeral
+Cerdido
+Sant AgustÌ de LluÁanËs
+Hermandad de Campo de Suso
+Guip˙zcoa
+Teverga
+Bag‡
+Macotera
+BÈlmez
+Camarma de Esteruelas
+Collado Mediano
+O Pino
+San MartÌn del Rey Aurelio
+Dios le Guarde
+Santaella
+Valdeprado del RÌo
+SolÛrzano
+El Pedroso de la ArmuÒa
+Petra
+Aller
+Cubas de la Sagra
+El Berrueco
+Ortigueira
+El Cerro
+Santib·Òez de BÈjar
+CaÒada Rosal
+Tolox
+Guadarrama
+Molledo
+MachacÛn
+TarragonËs
+Parada de Arriba
+Alicante
+Palencia de Negrilla
+Aguadulce
+Pujalt
+Viladecans
+Molinillo
+Villaverde de GuareÒa
+Viver i Serrateix
+San Fernando de Henares
+Martiago
+Badalona
+Piera
+Sobremunt
+Oza dos RÌos
+Valderredible
+AznalcÛllar
+Meritxell
+Santa Maria de Besora
+Espino de la Orbada
+Manresa
+Baena
+Vila
+Tineo
+La Zarza de Pumareda
+Los Molares
+Titulcia
+Medio Cudeyo
+Mogarraz
+Villafufre
+Santa Cruz de Bezana
+El Paso, New Mexico
+Lozoyuela-Navas-Sieteiglesias
+Tordera
+Santillana del Mar
+Calvarrasa de Abajo
+Cee
+Baix PenedËs
+RubiÛ
+Es Mercadal
+EspadaÒa
+Llanes
+Copons
+Els Prats de Rei
+Porto do Son
+Zaragoza
+Villaseco de los Gamitos
+Belalc·zar
+Utrera
+El Sahugo
+CastaÒeda
+Castilleja de la Cuesta
+Villaconejos
+Aranga
+Malgrat de Mar
+Vilanova del VallËs
+Las Rozas de Madrid
+Vilasantar
+Corvera de Asturias
+Pruna
+PereÒa de la Ribera
+Mazcuerras
+ZamayÛn
+Cazalla de la Sierra
+Talamanca de Jarama
+Navamorales
+Sant VicenÁ de Castellet
+Aldehuela de la BÛveda
+Call˙s
+Palafrugell
+Navia
+Fresno Alh·ndiga
+Villar de Peralonso
+Ibias
+Poveda de las Cintas
+Valdetorres de Jarama
+Villoruela
+Fuenteliante
+Islas Baleares
+Parets del VallËs
+B·rcena de Pie de Concha
+Andratx
+MartÌn de la Jara
+Las Casas del Conde
+Rionansa
+Sant VicenÁ de TorellÛ
+ValËncia
+El MadroÒo
+Perafita
+Atajate
+Outes
+Seva
+Es Migjorn Gran
+Noguera
+Sanchotello
+Sant Boi de LluÁanËs
+Alt PenedËs
+Riotuerto
+Basauri
+La Lantejuela
+Alamosa, Colorado
+Villamayor
+Sant Mateu de Bages
+Santa Fe, New Mexico
+Villamanta
+Puebla de San Medel
+Sant Josep de sa Talaia
+A CoruÒa
+Gallegos de ArgaÒ·n
+Batres
+Monleras
+Collsuspina
+Torrelavega
+Cangas de OnÌs
+Cantaracillo
+Villar de ArgaÒ·n
+Coripe
+Arapiles
+Gisclareny
+El Campo de PeÒaranda
+El Masnou
+Inca
+San Pedro de Rozados
+Lora del RÌo
+Villagonzalo de Tormes
+Casarabonela
+Villar del Olmo
+Pastores
+Soto del Real
+Tarragona
+Llucmajor
+Villanueva del Duque
+Ir˙n
+QuirÛs
+Hornachuelos
+Pontons
+Campo Real
+Marganell
+Estremera
+Olmeda de las Fuentes
+Sant Antoni de Portmany
+Mollina
+San Miguel de Aguayo
+AÒora
+Begues
+Villanueva del RÌo y Minas
+Rupit i Pruit
+Puentes Viejas
+Campos
+Palenciana
+Bages
+Aranjuez
+Carmona
+Sant Quirze de Besora
+Esparreguera
+Galinduste
+Teba
+Capdepera
+La Granjuela
+ValdoviÒo
+San Tirso de Abres
+Sada
+Sant VicenÁ de Montalt
+Paderne
+MaÒÛn
+Cabeza del Caballo
+Lozoya
+Sant Esteve Sesrovires
+Esporles
+RascafrÌa
+Puente Viesgo
+Boal
+PeÒamellera Alta
+DoÒinos de Ledesma
+La Hiruela
+Villanueva del Pardillo
+MorÛn de la Frontera
+Mieres
+Colmenarejo
+LlubÌ
+Hazas de Cesto
+A Laracha
+El Arco
+Fresnedoso
+MÛstoles
+Alcal· de Henares
+Tres Cantos
+Torremocha de Jarama
+C˙tar
+Lagunilla
+NavasfrÌas
+La Cabrera
+Malpartida
+RenterÌa
+Villasrubias
+…cija
+Sant Andreu de la Barca
+Ajalvir
+Bellprat
+Fuente Obejuna
+Toques
+Berga
+Guillena
+BenacazÛn
+Barceo
+Barber‡ del VallËs
+Pedrera
+Torrelles de Llobregat
+Villa del RÌo
+Marina de Cudeyo
+La Fregeneda
+CastellvÌ de la Marca
+La Alberca
+Martorelles
+San Sebasti·n
+Sentmenat
+Pelayos
+La Rinconada
+Ardales
+Humanes de Madrid
+Pinedas
+DumbrÌa
+Ribatejada
+Fern·n-N˙Òez
+CoÌn
+Endrinal
+Salteras
+Manzanares el Real
+Sispony
+Villanueva del Ariscal
+Guaro
+TorrejÛn de Velasco
+Las Rozas de Valdearroyo
+Gelida
+Sa Pobla
+BoqueixÛn
+La Quar
+Berzosa del Lozoya
+Fuentes de AndalucÌa
+Jimera de LÌbar
+El Pino de Tormes
+Navarcles
+Santa MarÌa del CamÌ
+Ribadesella
+Langreo
+Santiurde de Toranzo
+Sant Pere Sallavinera
+Periana
+Binissalem
+Robregordo
+Neda
+Vizcaya
+“rrius
+Vilanova del CamÌ
+Ribera de Arriba
+OrpÌ
+OnÌs
+La Rioja
+La Llacuna
+Marchena
+Pueblo, Colorado
+Castellar del VallËs
+Siero
+Cambre
+Tapia de Casariego
+Membribe de la Sierra
+ValverdÛn
+Villarmayor
+Pedrezuela
+Alcal· de GuadaÌra
+La Hoya
+Cabrerizos
+Guadramiro
+Masella
+Sedella
+Casarrubuelos
+Estepona
+Fogars de Montcl˙s
+La Llagosta
+Bimenes
+Vald·liga
+Ejeme
+CristÛbal
+Sant Salvador de Guardiola
+Valle de AbdalajÌs
+Agallas
+Sepulcro-Hilario
+La Orbada
+Vega de Tirados
+Montcada i Reixac
+Trinidad, Colorado
+Santa Eul‡ria del Riu
+Los Santos de la Humosa
+Fuente de Piedra
+Laredo
+Dosrius
+Bogajo
+Topas
+Premi‡ de Dalt
+Santa Comba
+El Prat de Llobregat
+Gualba
+Alozaina
+AlgatocÌn
+Noja
+Cespedosa de Tormes
+CabezÛn de LiÈbana
+Soldeu
+Llafranc
+La Algaba
+Galapagar
+Canillas de Albaida
+Alacant
+Masquefa
+Navalafuente
+Gai‡
+Villaviciosa de OdÛn
+Encina de San Silvestre
+Candamo
+Daganzo de Arriba
+Zamora
+Badajoz
+Roll·n
+El Bruc
+Santiponce
+Villanueva del Rosario
+SantoÒa
+Miengo
+Ullastrell
+La Calzada de BÈjar
+AlmerÌa
+La PeÒa
+Moronta
+Mairena del Aljarafe
+El Garrobo
+Pelayos de la Presa
+C·ceres
+Carpio de Azaba
+Ciudad Real
+Pallej‡
+Vecinos
+Igualeja
+Fuenterroble de Salvatierra
+XixÛn
+Arinsal
+Sallent de Llobregat
+Calvarrasa de Arriba
+Sant LlorenÁ des Cardassar
+Monistrol de Montserrat
+Tielmes
+Caldes de Montbui
+LluÁ‡
+Dei‡
+Aldeacipreste
+Castellet i la Gornal
+Pas de la Casa
+Torrelodones
+Palafolls
+Ourense
+Ciutadella
+Sant LluÌs
+Villaflores
+Granada
+Castropol
+Sant MartÌ Sesgueioles
+Masueco
+Canovelles
+BenalaurÌa
+San Morales
+Taramundi
+Serradilla del Llano
+Guijuelo
+Villarmuerto
+Martinamor
+LeÛn
+Vallgorguina
+Guadalix de la Sierra
+BaÒob·rez
+Teruel
+Tordoia
+Villoria
+San AgustÌn del Guadalix
+Alfarnate
+Tarazona de GuareÒa
+Sant Juli‡ de Vilatorta
+Villalba de los Llanos
+Carballo
+Rasines
+La Maya
+Valdecarros
+ViÒuela
+Valdelageve
+Nav‡s
+Arenas de IguÒa
+OjÈn
+Villamanrique de la Condesa
+Boimorto
+Alcal· del RÌo
+Oroso
+Getafe
+PiÒuÈcar-Gandullas
+San Sebasti·n de los Ballesteros
+Salares
+Malpica de BergantiÒos
+Navacarros
+J˙zcar
+Sobradillo
+Alba de Yeltes
+Becerril de la Sierra
+Alt Urgell
+Morasverdes
+L'Espunyola
+Villanueva del Trabuco
+CastellÛn
+Escurial de la Sierra
+Sallent
+Florida de LiÈbana
+Mura
+Cudillero
+San Pelayo de GuareÒa
+CorcubiÛn
+La Carlota
+Cantillana
+Ramales de la Victoria
+Monforte de la Sierra
+Castellbisbal
+Aiguafreda
+VallËs Occidental
+CarabaÒa
+Saldes
+Morille
+Alt Empord‡
+El Burgo
+Cornell‡ de Llobregat
+Ses Salines
+Espeja
+Santa EugËnia
+La Sagrada
+La Ciudad de Nuestra SeÒora la Reina de Los ¡ngeles de Porci˙ncula, California
+Sant Cebri‡ de Vallalta
+AlcorcÛn
+NoreÒa
+BarcelonËs
+Rivas-Vaciamadrid
+Miranda del CastaÒar
+Gallegos de SolmirÛn
+La Torre de Claramunt
+Santa Cruz de Tenerife
+SanchÛn de la Sagrada
+Montsi‡
+Viladecavalls
+Sant LlorenÁ d'Hortons
+ChagarcÌa Medianero
+El Papiol
+Rois
+Bollullos de la MitaciÛn
+OlËrdola
+SanchÛn de la Ribera
+Vilaller
+Gejuelo del Barro
+Sant SadurnÌ d'Anoia
+Pr·dena del RincÛn
+Pravia
+Valdunciel
+CastellÛ
+Moi‡
+Zas
+Sant FruitÛs de Bages
+Coria del RÌo
+Sant Joan
+Ahigal de los Aceiteros
+Cabanillas de la Sierra
+El Tejado
+Nerja
+Mieza
+Segarra
+Oviedo
+Colmenar
+Torrelaguna
+Nava de Francia
+Porreres
+Ribera d'Ebre
+Mollet del VallËs
+San SadurniÒo
+Cabezabellosa de la Calzada
+Es Castell
+Barruecopardo
+Sant MartÌ d'Albars
+Algarrobo
+Durango, Colorado
+Santa Maria de Miralles
+Esplugues de Llobregat
+VallËs Oriental
+Sag‡s
+San Juan de Aznalfarache
+Alg·mitas
+Ruesga
+Los Corrales
+Casariche
+Olivella
+Vitigudino
+El Coronil
+Valle de Villaverde
+Alconada
+Priorat
+Valdeolea
+La Roda de AndalucÌa
+Pozuelo de AlarcÛn
+Arteixo
+Bustarviejo
+Castellar del Riu
+Iruelos
+Robledo de Chavela
+CipÈrez
+La Acebeda
+El Cubo de Don Sancho
+Balsareny
+Paradinas de San Juan
+Alfoz de Lloredo
+Fornalutx
+Baix Empord‡
+Guriezo
+Prats de LluÁanËs
+Canillo
+Les Franqueses del VallËs
+Valdefuentes de SangusÌn
+Villamantilla
+Huerta
+Valldemossa
+La Tala
+As Pontes de GarcÌa RodrÌguez
+Castell de l'Areny
+CaÒete la Real
+Santa Maria de Palautordera
+LogroÒo
+Soba
+Lousame
+DoÒa MencÌa
+El Boalo
+La Garriga
+El Milano
+Coslada
+MadroÒal
+Val de San Vicente
+Puebla de Azaba
+El Brull
+Cuevas de San Marcos
+Moriscos
+Cabanas
+Castraz
+Tresviso
+Comillas
+Torremolinos
+Pedro Abad
+Dos Hermanas
+Vilafranca del PenedËs
+La Cortinada
+Rellinars
+Lleida
+Aldea del Fresno
+Peratallada
+Alcolea del RÌo
+San MartÌn de la Vega
+Villaralto
+Santa Margarida i els Monjos
+Los Santos
+PeÒarrubia
+Sant Bartomeu del Grau
+Los Corrales de Buelna
+Matilla de los CaÒos del RÌo
+RubÌ
+Pizarral
+Arahal
+CarriÛn de los CÈspedes
+Santa Margarida de Montbui
+Illas
+Montoro
+GriÒÛn
+Ituero de Azaba
+MontmelÛ
+Garcirrey
+Juzbado
+Caldes d'Estrac
+Montmaneu
+Soto del Barco
+Tard·guila
+Meco
+Vega de Pas
+Venturada
+Bergondo
+La Campana
+Constantina
+Dodro
+Obejo
+CÛmpeta
+La Bastida
+Las Navas de la ConcepciÛn
+Aldeanueva de la Sierra
+Bilbao
+MesÌa
+Calzada de Valdunciel
+Somosierra
+Fresno de Torote
+Robledillo de la Jara
+Buenamadre
+Ledrada
+Arenys de Mar
+Palma del RÌo
+Salvatierra de Tormes
+RatÛn, New Mexico
+Villaseco de los Reyes
+Cardona
+Manilva
+Bergued‡
+Rajadell
+Amieva
+San Lorenzo de El Escorial
+Calldetenes
+Tavertet
+Arans
+Torrelavit
+El Escorial
+Cabrera d'Igualada
+Villasdardo
+Villar de Gallimazo
+Babilafuente
+Vega de LiÈbana
+DegaÒa
+Costitx
+Adamuz
+Villanueva del Rey
+Casserres
+Sant Andreu de Llavaneres
+Castillejo de MartÌn Viejo
+TorrejÛn de Ardoz
+Benaoj·n
+Gines
+Santpedor
+Ciudad Rodrigo
+VillayÛn
+AlhaurÌn el Grande
+El Manzano
+San Esteban de la Sierra
+Valladolid
+Castilblanco de los Arroyos
+Pinto
+Villaescusa
+Pozuelo del Rey
+PeÒaranda de Bracamonte
+El Saucejo
+Orist‡
+Muros
+Aldeaseca de la Frontera
+Jorba
+Mancor de la Vall
+Pozoblanco
+Pilas
+Colmenar del Arroyo
+CervellÛ
+Noia
+TenebrÛn
+Trabanca
+Masies de Roda
+DoÒinos de Salamanca
+Monsagro
+Pesoz
+Santa Coloma de CervellÛ
+Madrid
+ChapinerÌa
+Peralejos de Arriba
+Tabera de Abajo
+CastrillÛn
+Herguijuela del Campo
+Allande
+Penagos
+Montmajor
+CoirÛs
+Zorilla
+Linares de RiofrÌo
+Santiso
+Sanl˙car la Mayor
+El Franco
+Canillas de Aceituno
+Carnota
+Negreira
+Alfarnatejo
+Villavieja de Yeltes
+Vilada
+La Nou de Bergued‡
+La Alameda de GardÛn
+GijÛn
+Moclinejo
+Saelices el Chico
+Betanzos
+Subirats
+¡rchez
+Tiana
+Boiro
+Boadilla del Monte
+Canyelles
+Fuentes de OÒoro
+Seville
+Vilalba Sasserra
+San Pedro del Valle
+La Rinconada de la Sierra
+Vic
+Consell
+Sant MartÌ de Tous
+Vilvestre
+Golpejas
+Maresme
+Polanco
+Villanueva de Algaidas
+Montilla
+Sevilla
+Robleda
+PelarrodrÌguez
+Calaf
+Zorita de la Frontera
+Colmenar de Oreja
+Urgell
+Tagamanent
+Ruente
+Ciempozuelos
+Sa Riera
+Vallirana
+Carratraca
+Hinojosa de Duero
+Val do Dubra
+Borred‡
+Gargantilla del Lozoya y Pinilla de Buitrago
+Les Masies de Voltreg‡
+Canencia
+Rute
+Monterey, California
+Frades de la Sierra
+Villanueva del Conde
+Villanueva de San Juan
+CobeÒa
+Mazaricos
+Aguilar de Segarra
+Rozas de Puerto Real
+El Borge
+Herguijuela de la Sierra
+Huelva
+Sant Pere de Ribes
+Sant SadurnÌ d'Osormort
+Ponteceso
+Belmonte de Miranda
+Val d'Aran
+Castellanos de Moriscos
+Algete
+Carme
+GozÛn
+Cadalso de los Vidrios
+Velilla de San Antonio
+Montseny
+ArtÈs
+Navalcarnero
+Comares
+AlmodÛvar del RÌo
+Orusco de TajuÒa
+Sariego
+El Cabaco
+Santa Maria de Martorelles
+Villanueva de Perales
+Ist·n
+Brea de Tajo
+Alcobendas
+El Atazar
+Valdilecha
+Coca de Alba
+AlhaurÌn de la Torre
+Sant Pol de Mar
+Tomares
+Aznalc·zar
+Nava
+C·rtama
+Moraleja de Enmedio
+Getxo
+Olvan
+MartÌn de Yeltes
+Somiedo
+Fuengirola
+Montemayor del RÌo
+Segovia
+Son Servera
+El Molar
+AlmogÌa
+Aldeatejada
+Sant Joan de Vilatorrada
+TorrejÛn de la Calzada
+Valdeolmos-Alalpardo
+Fene
+El Rubio
+Coristanco
+La Roca del VallËs
+Anoia
+Llanera
+Sequeros
+Barakaldo
+Villaverde del RÌo
+Puigd‡lber
+CarreÒo
+Santa Susanna
+Escorca
+Baix Camp
+Abrera
+Cepeda
+Sant Just Desvern
+Hinojosa del Duque
+Gilena
+Salmoral
+Limpias
+San Nicol·s del Puerto
+Robliza de Cojos
+Sabadell
+Sencelles
+Canillas de Abajo
+Gav‡
+Proaza
+Cerdanyola del VallËs
+Castilleja de Guzm·n
+Font-rubÌ
+Barbadillo
+Berrocal de Huebra
+Aguilar de la Frontera
+Villavieja del Lozoya
+Guadalc·zar
+El Cuervo
+Parauta
+Garraf
+Fuenlabrada
+Pedraza de Alba
+Moeche
+Priego de CÛrdoba
+Villa del Prado
+Bujalance
+Terrassa
+Ribamont·n al Mar
+SÛller
+Alella
+Nuevo Bazt·n
+CaÒon City, Colorado
+Art‡
+Lumbrales
+Pelabravo
+Sineu
+El Castillo de las Guardas
+Saro
+La Redonda
+Vitoria
+Valdelaguna
+BriÛn
+L'Ametlla del VallËs
+Riogordo
+SardÛn de los Frailes
+FigarÛ-Montmany
+Arredondo
+Encinasola de los Comendadores
+Cerdanya
+Eivissa Vila
+Paradas
+El VellÛn
+Hoyo de Manzanares
+La Pobla de Lillet
+Cervera de Buitrago
+Horcajo de Montemayor
+Nava de Sotrobal
+Tona
+Valdelosa
+Zarzalejo
+Pesaguero
+CastellterÁol
+Espiel
+GaucÌn
+Cortez, Colorado
+Montejaque
+Olesa de Bonesvalls
+Cabrillas
+Ambite
+Benalm·dena
+MorcÌn
+CÛrdoba
+Cenicientos
+Capellades
+BÛveda del RÌo Almar
+Arenys de Munt
+Palencia
+Humilladero
+AÒover de Tormes
+Trazo
+Caso
+Santa MarÌa de Sando
+Corpa
+Cercs
+Santorcaz
+Riosa
+Santa Maria de CorcÛ
+La Vansa i FÛrnols
+B˙ger
+Santa CecÌlia de Voltreg‡
+HuÈvar del Aljarafe
+Veciana
+Sando
+CabuÈrniga
+AvilÈs
+Tordillos
+Casafranca
+Puertas
+Peromingo
+Bermellar
+MorÌÒigo
+Calzada de Don Diego
+Peralejos de Abajo
+Ariany
+Sant Climent de Llobregat
+Burgos
+Cieza
+La Palma de CervellÛ
+Zarapicos
+A BaÒa
+ReocÌn
+MonleÛn
+Oleiros
+Pedrosillo el Ralo
+Santiago de la Puebla
+Sant HipÚlit de Voltreg‡
+La Bouza
+“dena
+Poliny‡
+Herrera
+Montemayor
+San MuÒoz
+Bixessari
+CardeÒa
+Moz·rbez
+Santa Margalida
+Puebla de Yeltes
+Larrodrigo
+Llorts
+Fuente Palmera
+ArgenÁola
+Sayalonga
+Aldead·vila de la Ribera
+Escaldes-Engordany
+Yecla de Yeltes
+M·laga
+Els Hostalets de Pierola
+Horcajo Medianero
+Frigiliana
+Llumeneres
+Pontevedra
+Colmenar de Montemayor
+CastellgalÌ
+Polaciones
+Albacete
+Horcajo de la Sierra
+CabezÛn de la Sal
+Anaya de Alba
+Cartes
+Sant LlorenÁ Savall
+Aldealengua
+Sant Pere de Riudebitlles
+Sant Jaume de Frontany‡
+La Massana
+Calders
+MiÒo
+Santa Coloma
+Ordes
+El Ronquillo
+Badia del VallËs
+Valverde de Valdelacasa
+Monterrubio de la Sierra
+San Miguel de Valero
+Guardiola de Bergued‡
+Santander
+Santa Fe del PenedËs
+El Pla del PenedËs
+Randsol
+Montesquiu
+Paracuellos de Jarama
+MarratxÌ
+C‡noves i Samal˙s
+Fresnedillas de la Oliva
+Alm·char
+RipollËs
+Espejo
+Villanueva de la CaÒada
+Villar de Samaniego
+Caravia
+Calella de Palafrugell
+A Pobra do CaramiÒal
+Guijo de ¡vila
+Torrelles de Foix
+Laviana
+Les Bons
+Puente del Congosto
+Cerralbo
+Herguijuela de Ciudad Rodrigo
+Fuente la Lancha
+Sant Fost de Campsentelles
+PiÒon, Colorado
+Yernes y Tameza
+Sant Celoni
+Campoo de Enmedio
+El ¡lamo
+Portugalete
+Bareyo
+Fuente-TÛjar
+La Mata de Ledesma
+Umbrete
+Colindres
+L'Hospitalet de Llobregat
+Les Cabanyes
+Encinas Reales
+Miraflores de la Sierra
+Espartinas
+Pacs del PenedËs
+PadrÛn
+Monda
+Villanueva de Tapia
+San Roque de Riomiera
+Cerezal de PeÒahorcada
+Castellcir
+Conca de Barber‡
+Cordovilla
+Santa EugËnia de Berga
+Quijorna
+Montclar
+Tudanca
+Illano
+Arroyomolinos
+Sobrescobio
+Lugo
+Selva
+Retortillo
+Grandas de Salime
+Loeches
+Izn·jar
+Fogars de la Selva
+Aldearrubia
+La Atalaya
+Molins de Rei
+Torres de la Alameda
+LliÁ‡ de Vall
+SolsonËs
+Berrocal de Salvatierra
+Cereceda de la Sierra
+AlarÛ
+Pedrosillo de Alba
+Arganda del Rey
+Santa Maria de MerlËs
+Murcia
+BenamejÌ
+Lora de Estepa
+Cantalapiedra
+Andorra la Vella
+Navarredonda y San MamÈs
+Almedinilla
+Alba de Tormes
+Vimianzo
+Presidio, Texas
+San Sebasti·n de los Reyes
+Puig-reig
+BenahavÌs
+OrÌs
+Galisancho
+Pizarra
+Luena
+Sant Feliu de Llobregat
+El Carpio
+Voto
+Genalguacil
+Mairena del Alcor
+Sant Julia de Loria
+Irixoa
+Maria de la Salut
+Pinilla del Valle
+Pineda de Mar
+La Cabeza de BÈjar
+El Astillero
+El Viso
+Sant QuintÌ de Mediona
+SantanyÌ
+Anyos
+Torrox
+Campillo de Azaba
+Vilanova de Sau
+La Fuente de San Esteban
+PeÒa Blvd, Denver
+Valsalabroso
+Navales
+Torrecampo
+Vilassar de Dalt
+Benarrab·
+Castellanos de Villiquera
+Huesca
+Aldehuela de Yeltes
+Lucena
+Isla Mayor
+Sant Joan de Labritja
+Capolat
+Sotoserrano
+Arnuero
+Vallbona d'Anoia
+Anchuelo
+Badolatosa
+Almendra
+Llinars del VallËs
+Arz˙a
+Las Cabezas de San Juan
+Valencina de la ConcepciÛn
+Cortes de la Frontera
+Castellfollit del Boix
+Baleny‡
+AlmadÈn de la Plata
+Sant Feliu Sasserra
+Calonge de Segarra
+Valdehijaderos
+¡lora
+Brunete
+Monfero
+Santo Adriano
+Corbera de Llobregat
+Nava de BÈjar
+Cabra
+La VellÈs
+Aldeaseca de Alba
+JaÈn
+Sant Cugat Sesgarrigues
+Garrotxa
+El Tornadizo
+Valdeavero
+Folgueroles
+Bunyola
+Castellfollit de RiubregÛs
+Cabana de BergantiÒos
+La AlberguerÌa de ArgaÒ·n
+Puerto de BÈjar
+Total·n
+Encamp
+Anievas
+Pallars Juss‡
+Tei‡
+Madarcos
+Segri‡
+Ruiloba
+Santa Eufemia
+Carcabuey
+Horcajuelo de la Sierra
+MaÛ
+Mediona
+Olost
+Lebrija
+Santurce
+Olmedo de Camaces
+PeÒaflor
+Villasbuenas
+Montejo de la Sierra
+Malla
+Almensilla
+Saucelle
+BeleÒa
+Brenes
+Buenavista
+Parada de Rubiales
+Arriate
+Miranda de Az·n
+Santiz
+La Puebla del RÌo
+Archidona
+CamariÒas
+Centelles
+Avinyonet del PenedËs
+Carrascal de Barregas
+Melide
+Villar de Ciervo
+Villalbilla
+Benamargosa
+S˙ria
+El Guijo
+El BodÛn
+Ahigal de Villarino
+Valdaracete
+Girona
+Castro del RÌo
+GironËs
+Majadahonda
+Nueva Carteya
+Cuenca
+Galindo y Perahuy
+Los Gatos, California
+San CristÛbal de la Cuesta
+Villanueva de CÛrdoba
+Tejeda y Segoyuela
+La Serna del Monte
+Monistrol de Calders
+Las Regueras
+Negrilla de Palencia
+Palma
+Valsequillo
+Osuna
+Sancti-SpÌritus
+Sant Pere de Vilamajor
+Cardedeu
+Sant Feliu de Codines
+Vacarisses
+Canet de Mar
+Soria
+Campoo de Yuso
+Garcihern·ndez
+Vallcebre
+CastellvÌ de Rosanes
+Garganta de los Montes
+Palomares del RÌo
+Sant Quirze del VallËs
+Cillorigo de LiÈbana
+Fisterra
+Monterrubio de ArmuÒa
+Aldea del Obispo
+Gomecello
+Cantalpino
+Muntanyola
+Palau-solit‡ i Plegamans
+Las Palmas
+Santa Marta de Tormes
+Cesuras
+Serradilla del Arroyo
+Santa MarÌa de la Alameda
+Faraj·n
+Santa PerpËtua de Mogoda
+La Puebla de los Infantes
+Los Tojos
+Pitiegua
+Monturque
+Tamariu
+PeÒarroya-Pueblonuevo
+Olesa de Montserrat
+ArgoÒos
+Los Palacios y Villafranca
+El Pont de Vilomara i Rocafort
+Burguillos
+Casas de MonleÛn
+Igualada
+Matadepera
+Olivares
+Ares
+PollenÁa
+Pedrosillo de los Aires
+A Capela
+Castilleja del Campo
+Navarra
+Almargen
+PeÒarandilla
+Cabrales
+Cercedilla
+El Viso del Alcor
+Teo
+Guadalajara
+Tocina
+Casillas de Flores
+PeÒamellera Baja
+Granollers
+PeÒacaballera
+Patones
+Palaciosrubios
+Barbalos
+Cabrils
+Montellano
+Miera
+Manacor
+Talamanca
+Santa Maria d'OlÛ
+Conquista
+Culleredo
+Valero
+RincÛn de la Victoria
+Felanitx
+Brincones
+Benadalid
+Frades
+Villaviciosa de CÛrdoba
+Curtis
+La Rambla
+Palacios del Arzobispo
+ChinchÛn
+Dos Torres
+Los Molinos
+Sant Joan DespÌ
+Alc˙dia
+Boada
+Bigues i Riells
+Villafranca de CÛrdoba
+Yunquera
+Alpens
+San Felices de los Gallegos
+Mijas
+Les Masies de Roda
+Navarredonda de la Rinconada
+Candelario
+Almenara de Tormes
+San MartÌn de Oscos
+Sant Pere de TorellÛ
+Ponga
+Castellar de n'Hug
+Santiago de Compostela
+CaÒete de las Torres
+Sevilla la Nueva
+Aldearrodrigo
+BÈjar
+Cantabria
+MatarÛ
+Premi‡ de Mar
+La Luisiana
+Los Bl·zquez
+Villamanrique de Tajo
+Forfoleda
+Sant VicenÁ dels Horts
+HerrerÌas
+La Sierpe
+Santib·Òez de la Sierra
+Antequera
+Campanet
+Villarino de los Aires
+Pesquera
+Rianxo
+El MaÌllo
+Narros de Matalayegua
+Touro
+Albaida del Aljarafe
+Parla
+RedueÒa
+Lloret de Vistalegre
+Luque
+La Granada
+Sieteiglesias de Tormes
+Jubrique
+TavËrnoles
+MuxÌa
+Casares
+L'Estartit
+Sant Iscle de Vallalta
+Mugardos
+Santiurde de Reinosa
+Camargo
+Carbajosa de la Sagrada
+LliÁ‡ d'Amunt
+Fuente el Saz de Jarama
+CamaleÒo
+Alpandeire
+Vedra
+Valdemoro
+Navalmoral de BÈjar
+Arenas
+La Puebla de Cazalla
+Asturias
+San MartÌn de Valdeiglesias
+San MartÌn del CastaÒar

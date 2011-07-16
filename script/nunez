@@ -1,0 +1,255 @@
+#!/usr/bin/env perl
+#
+# búsqueda-libre:
+# 
+#    Cómo se debiera ordenar y buscar palabras en Unicode
+#    que pueden llevarse marcas diacríticas (o no) sin que 
+#    éstas afecten la búsqueda.  También cómo cambiar el 
+#    orden para que no cuente con artículos al principio
+#    del los nombres, como se hace con los títulos de libros &c.
+#
+# Tom Christiansen <tchrist@perl.com>
+# Fri Mar  4 21:06:35 MST 2011
+#
+#############################################
+
+use utf8;
+use 5.10.1;   
+use strict;
+use warnings; # FATAL => "all";
+use autodie;
+use charnames qw< :full >;
+
+use List::Util qw< max first >;
+use Unicode::Collate;
+
+# Por desgracia, la próxima linea no funciona,
+# gracias al imperialismo lingüística. L)
+#### use Castelano;  
+
+my $INCLUÍR_NINGUNOS               = 0;
+my $SI_IMPORTAN_MARCAS_DIACRÍTICAS = 0;
+
+sub sí_ó_no(_) { $_[0] ? "sí" : "no" }
+
+sub encomillar(_) {
+    return join $_[0] =>
+        "\N{LEFT-POINTING DOUBLE ANGLE QUOTATION MARK}",
+        "\N{RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK}",
+    ;
+}
+
+binmode(STDOUT, ":utf8");
+
+# Ésta próxima pueblacita está demasiada larga para la pantalla. :(
+#
+#    La Ciudad de Nuestra Señora la Reina de Los Ángeles de Porciúncula, California Alta
+# 
+# Pues, o sea que su nombre lo es. :)
+
+my @ciudades_españolas = ordenar_a_la_española(<<'LA_ÚLTIMA' =~ /\S.*\S/g);
+        Santa Eulàlia de Ronçana
+        Mañón
+        A Pobra do Caramiñal
+        La Alberguería de Argañán
+        Logroño
+        La Puebla del Río
+        Villar de Argañán
+        Piñuécar–Gandullas
+        Mantilla
+        Gallegos de Argañán
+        Madroñal
+        Griñón
+        Lliçà d’Amunt
+        Valverde de Alcalá
+        Montalbán de Córdoba
+        San Martín del Castañar
+        La Peña
+        Cabezón de Liébana
+        Doña Mencía
+        Santa María de Cayón
+        Bóveda del Río Almar
+        La Roca del Vallès
+        Matilla de los Caños del Río
+        Prats de Lluçanès
+        Ribamontán al Monte
+LA_ÚLTIMA
+
+my $cmáx = -(2 + max map { length } @ciudades_españolas);
+
+my @búsquedas = < {A,E,I,O,U}N AL >;
+my $bmáx = -(2 + max map { length } @búsquedas);
+
+my $ordenador = new Unicode::Collate::
+                    level           => $SI_IMPORTAN_MARCAS_DIACRÍTICAS ? 2 : 1,
+                 ## variable        => "non-ignorable",  # elige uno de: blanked, non-ignorable, shifted, shift-trimmed
+                    normalization   => undef,
+                ;
+
+for my $aldea (@ciudades_españolas) {
+    my $déjà_imprimée;  # Mais oui!  C’est en français celle‐ci!
+    for my $búsqueda (@búsquedas) {
+        my @resultados = $ordenador->gmatch($aldea, $búsqueda);
+        next unless @resultados || $INCLUÍR_NINGUNOS;
+        printf qq(%*s %s tiene %*s en %17s %s\n),
+                $cmáx => !$déjà_imprimée++ && encomillar($aldea),
+                sí_ó_no(@resultados),
+                $bmáx => "/$búsqueda/",
+                cuántos_sitios(@resultados),
+                enfilar(@resultados);
+    }
+}
+
+sub cuántos_sitios {
+    my @lista = @_;
+    my $cantidad = @_;
+    given ($cantidad) {
+        when (0)  { return    "ningún sitio"    }
+        when (1)  { return   "un solo sitio"    }
+        when (2)  { return "un par de sitios"   }
+        default   { return "$cantidad sitios"   }
+    }
+}
+
+sub enfilar {
+    my @lista = map { encomillar } @_;
+
+    my $separador  = "\N{COMMA}";
+       $separador  = "\N{SEMICOLON}"   if first { /$separador/ } @lista;
+       $separador .= "\N{SPACE}";
+
+    given (scalar @lista) {
+        when (0)  { return ""                       }
+        when (1)  { return "@lista"                 }
+        when (2)  { return join " y " => @lista     }
+        default   { return
+            join($separador  => @lista[ 0 .. ($#lista-1) ])
+                     . " y $lista[$#lista]";
+        }
+    }
+}
+
+###################################################
+# Para ordenar los elementos de la lista
+# en el estilo tradicional del castellano.
+#
+# Tenemos en cuenta que sí pueden aparecerse nombres
+# de ciudades que no son nombres sólo castellanos
+# sino tambíen catalanes y gallegos — y tal vez más,
+# como en asturianu o aranés, pero no he pensado
+# mucho es estos.
+###################################################
+
+sub ordenar_a_la_española {
+    my @lista = @_;
+
+    state $ordenador_a_la_española = new Unicode::Collate::
+
+        # Si se tuviese Unicode::Collate::Locale con "es__traditional",
+        # no haría falta este primer lío con su entrada especial,
+        # con la excepción de la c-cedilla, la cual aquí se ordena
+        # como si fuese catalán, no castellano.
+
+        # Vamos a meter las nuevas entradas después de éstas,
+        # que son copiadas del DUCET v6.0.0.  Tuve que cambiar unos
+        # valores que tenía este código desde otra versión anterior
+        # por no haber puesto la versión del ACU con que funciona.
+        #
+        # 0043  ; [.123D.0020.0008.0043] # LATIN CAPITAL LETTER C
+        # 00C7  ; [.123D.0020.0008.0043][.0000.0056.0002.0327] # LATIN CAPITAL LETTER C WITH CEDILLA; QQCM
+        # 004C  ; [.1330.0020.0008.004C] # LATIN CAPITAL LETTER L
+        # 004E  ; [.136D.0020.0008.004E] # LATIN CAPITAL LETTER N
+        # 00D1  ; [.136D.0020.0008.004E][.0000.004E.0002.0303] # LATIN CAPITAL LETTER N WITH TILDE; QQCM
+        #
+        # De ahí que nombro la versión del ACU aquí,
+        # para no equivocarme en ello de nuevo.
+
+       UCA_Version => 16,   # DUCET 5.0.0 or better
+
+        entry => <<'SALIDA',   # :)
+
+               00E7      ; [.123E.0020.0002.0327] # c-cedilla
+               0063 0327 ; [.123E.0020.0002.0327] # c-cedilla
+               00C7      ; [.123E.0020.0002.0327] # C-cedilla
+               0043 0327 ; [.123E.0020.0002.0327] # C-cedilla
+
+               0063 0068 ; [.123F.0020.0002.0043] # ch
+               0043 0068 ; [.123F.0020.0007.0043] # Ch
+               0043 0048 ; [.123F.0020.0008.0043] # CH
+
+               006C 006C ; [.1331.0020.0002.004C] # ll
+               004C 006C ; [.1331.0020.0007.004C] # Ll
+               004C 004C ; [.1331.0020.0008.004C] # LL
+
+               00F1      ; [.136E.0020.0002.0303] # n-tilde
+               006E 0303 ; [.136E.0020.0002.0303] # n-tilde
+               00D1      ; [.136E.0020.0008.0303] # N-tilde
+               004E 0303 ; [.136E.0020.0008.0303] # N-tilde
+
+SALIDA
+
+       upper_before_lower => 1,
+
+       normalization => "NFKD",  # ¿Y porqué no?
+
+       preprocess => sub {
+           my $_ = shift;
+
+       ###
+       # no incluye los artículos definitivos ni indefinitivos
+       ###
+
+           s/^L\p{QMARK}//;    # puede encontrarse en el catalán
+
+           s{ ^
+
+             (?:         # del castellano
+                 El
+               | Los
+               | La
+               | Las
+                         # del catalán
+               | Els
+               | Les
+               | Sa
+               | Es
+                         # del gallego
+               | O
+               | Os
+               | A
+               | As
+             )
+
+             \h
+
+          }{}x;
+
+        # Luego quita las palabras no-importantes interiores.
+
+           s/\b[dl]\p{QMARK}//g;   # del catalán
+
+           s{
+               \b
+               (?:
+                   el  | los | la | las | de  | del | y          # ES
+                 | els | les | i  | sa  | es  | dels             # CA
+                 | o   | os  | a  | as  | do  | da | dos | das   # GAL
+               )
+               \b
+           }{}gx;
+
+          return $_;
+
+       },   # fin de rutina preprocesadora
+
+  ## ¡Fijaos que no borréis esta marca!
+  ##     Este punto y coma marca el fin
+  ##     de los argumentos del constructor
+  ##     empezado ya muchas lineas arriba.
+  ##   ˅
+       ;  # ←←← Sí, ése — dejadlo en paz o muy tristes os quedaréis.
+  ##   ˄
+
+    return $ordenador_a_la_española->sort(@lista);
+
+}

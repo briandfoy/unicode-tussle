@@ -1,0 +1,252 @@
+#!/usr/bin/env perl
+
+use v5.12;
+
+sub maxlen   (@    );
+sub seqcount ( $ _ );
+sub cvmap    ( _   );
+sub cvlen  ( _   );
+sub as_CV  ( _   );
+sub nsyl  ( _   );
+
+use constant MANY => 8;
+
+our $RX_Subs;
+our ($V, $C, $VC, $CV);
+
+UNITCHECK { 
+    init_subs(); 
+}
+
+$| = 1;
+
+use Lingua::EN::Syllable;
+
+@ARGV = "/usr/share/dict/words" if !@ARGV && -t;
+
+main();
+exit;
+
+sub main {
+    while (<>) {
+	#next unless /y/i;
+	chomp;
+	my $my_count  = nsyl;
+	my $his_count = syllable($_);
+	next if $my_count == $his_count;
+	printf "%d %d %s %s\n", $my_count, $his_count, $_, as_CV;
+    } 
+}
+
+sub nsyl(_) {
+    my $cv = as_CV(shift);
+    # $cv =~ s/VV/V/g;
+    return $cv =~ y/V//;
+} 
+
+sub as_CV(_) {
+    local $_ = lc shift;
+    s/[gq]ue(?=$|$C)/k/g;
+    s/qu/qw/g;
+    s/(\p{IsConsonant})\1\Kle$/el/;
+    s/[ai]\Kble/bel/;
+    s/ble$/bel/;
+    s/ive(?=ly|ness)$/iv/;
+    s/$C\Kre$/er/;
+    # s/$C\Ked$/d/;
+    s/ism$/isum/;
+    s/$V$C+\Ke$//;
+    s/[xtcs]i\K[ao]([ln])/$1/g;
+    s/eye/ee/g;
+    s/$C\Kle(?:ness)?$/el/;
+    s/$V\Ky(?=$V)/C/g;
+    s/(?=$C)y(?=[ao])/V/g;
+    s/$C\Ky(?=$C)/V/g;
+    s/$C\Ky$/V/g;
+    s/$C\Ky/C/g;
+    s/$V\Ky/V/g;
+    s/$C/C/g;
+    s/$V/V/g;
+    return $_;
+} 
+
+sub main2 {
+
+    while (<>) { 
+	chomp;
+
+	next if MANY * 2 > length;
+
+	# next unless /y/i;
+
+	# whole strings only
+	# next unless cvmap =~ /^(?:CV)+$/ || cvmap =~ /^(?:VC)+$/;
+
+	my @just_VC = seqcount qr/ \p{IsVowel}       \p{IsConsonant}   /x;
+	my @just_CV = seqcount qr/ \p{IsConsonant}   \p{IsVowel}       /x;
+	my @many_VC = seqcount qr/ \p{IsVowel}     + \p{IsConsonant} + /x;
+	my @many_CV = seqcount qr/ \p{IsConsonant} + \p{IsVowel}     + /x;
+
+	my $just_VC = maxlen @just_VC;
+	my $just_CV = maxlen @just_CV;
+	my $many_VC = maxlen @many_VC;
+	my $many_CV = maxlen @many_CV;
+
+	next unless grep { $_ > MANY } $just_VC, $just_CV, $many_VC, $many_CV; 
+
+
+	say;
+	say cvmap;
+	say "  VC   = " => fmt(@just_VC) if $just_VC > MANY;
+	say "  CV   = " => fmt(@just_CV) if $just_CV > MANY;
+	say " (VC)+ = " => fmt(@many_VC) if $many_VC > MANY;
+	say " (CV)+ = " => fmt(@many_CV) if $many_CV > MANY;
+    }
+
+}
+
+sub maxlen(@) {
+    my $max = 0;
+    for (@_) {
+	$max = cvlen if $max < cvlen;
+    } 
+    return $max;
+} 
+
+sub fmt {
+    return sprintf " %s", comma(grep { cvlen > MANY } @_);
+} 
+
+sub comma {
+    return join(", " => map { $_ . "/" . cvmap . "/" . cvlen } @_);
+} 
+
+sub seqcount($_) {
+    die "expected two args" unless @_ == 2;
+    my ($pat, $str) = @_;
+    die "expected pattern in arg1" unless ref($pat) eq ref(qr/./);
+    die "expected str in arg2"     if     ref($str);
+
+    $str = wiser($str);
+
+    state $rx_cache = { };
+    $rx_cache->{$pat} ||= qr/ (?= ( (?: $pat )+ ) ) /x;
+
+    my @matches = $str =~ /$rx_cache->{$pat}/g;
+    return @matches;
+
+} 
+
+sub init_subs {
+    our $RX_Subs = qr{
+	(?(DEFINE)
+	    (?<vowel>
+                (?&diphthong) 
+	      | \p{IsVowel}
+	      | 
+		(?<=  \p{IsConsonant} ) 
+		(?<!  V               )
+		[yY]                 
+	    )
+	    (?<consonant>
+		(?&digraph)
+	      | (?= \pL ) ( [^aeiou] ) \g{-1}
+	      | \p{IsConsonant} 
+	      | (?<= [V\p{IsVowel}] ) [yY] (?= [V\p{IsVowel}] ) 
+              | [yY] (?= [V\p{IsVowel}] ) 
+	    )
+
+	    (?<digraph>
+		rrh
+	      | sch
+	      | sci (?= ous )
+	      |	[cgkprstw] h
+	      | ng (?= \p{IsConsonant} | $ )
+	      | ^ [gk] n
+	      | mb (?!= \p{IsVowel} )
+	      | ^ ps
+	    )
+
+	    (?<diphthong>
+		  eau | oue
+		| aa | ae | ai | au | a[yV]
+		| ea | ee | ei | e[yV]
+		| eo | eu 
+		| ie 
+		| oa | oe | oi | o[yV]
+		| oo | ou | ow 
+		| ue
+		| ui | u[yV]
+	    )
+	)
+    }x;
+
+    our $V = qr{ $RX_Subs (?&vowel)     }x;
+    our $C = qr{ $RX_Subs (?&consonant) }x;
+
+    our $VC = qr{$V$C};
+    our $CV = qr{$C$V};
+} 
+
+sub wiser {
+    local $_ = shift();
+
+    #s/[cgpst]h/h/gi;
+
+    s/ (?<= \p{IsVowel} )     [yY] (?= \p{IsVowel} ) /j/gx;
+    s/ (?<= \p{IsConsonant} ) [yY]                   /i/gx;
+    s/                        [yY] (?= \p{IsVowel} ) /j/gx;
+
+    return $_;
+} 
+
+
+sub cvmap(_) {
+    die "expected one arg" unless @_ == 1;
+    my $str = shift();
+    die "expected string arg" if ref $str;
+
+    $str = wiser($str);
+
+    $str =~ s{  
+                ( \p{IsConsonant} )
+              | ( \p{IsVowel}     )
+            }{
+                length($1) ? "C" : "V";
+            }gxe; 
+    return $str;
+} 
+
+sub cvlen(_) {
+    my $map = &cvmap;
+
+    for ($map) {
+	s/C{2,}/C/g;
+	s/V{2,}/C/g;
+    }
+
+    return length($map) / 2;
+
+} 
+
+sub IsVowel {
+    return <<'END';
+0061
+0065
+0069
+006F
+0075
+END
+
+} 
+sub IsConsonant {
+    return <<'END';
+0062	0064
+0066	0068
+006A	006E
+0070	0074
+0076	0078
+007A
+END
+}
+
