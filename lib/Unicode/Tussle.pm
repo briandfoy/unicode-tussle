@@ -113,7 +113,7 @@ a little harder than B<tc>, and is slightly smarter about prepositions.
 =item uc
 
 Uppercases the data in the files you specify on the command line, or
-standard input. This program first converts to NFD, then lowercases,
+standard input. This program first converts to NFD, then uppercases,
 converts to NFC, and prints the result to standard output.
 
 =item ucsort
