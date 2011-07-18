@@ -3,6 +3,8 @@ use vars qw( $VERSION );
 
 $VERSION = '1.01';
 
+=encoding utf8
+
 =head1 NAME
 
 Unicode::Tussle - Tom's Unicode Scripts So Life is Easier
