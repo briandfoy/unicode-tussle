@@ -1,0 +1,14 @@
+oscon-whatis.pod contains the descriptions of (some of) these scripts
+
+   * OSCON scripts 
+       + OSCON scripts description #1/2
+       + OSCON scripts description #2/2
+   * Uses of Unicode in Perl identifiers in OSCON scripts
+   * Uses of Unicode modules in OSCON scripts
+   * OSCON script demos
+       +  Demo of uniprops
+       +  Demo of uninames
+       +  Demo of unichars
+       +  Demo of ucsort
+       +  Demo of unilook
+
