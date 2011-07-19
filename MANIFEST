@@ -17,12 +17,15 @@ script/hypertest
 script/lc
 script/leo
 script/macroman
+script/mismaps
 script/nfc
 script/nfcheck
 script/nfd
 script/nfkc
 script/nfkd
 script/nunez
+script/oscon-whatis.pod
+script/README
 script/rename
 script/tc
 script/tcgrep
