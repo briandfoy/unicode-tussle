@@ -1,0 +1,145 @@
+#!/usr/bin/env perl
+
+# mismaps -- find 8-bit codepoints w/o Unicode mapping
+
+# Tom Christiansen <tchrist@perl.com>
+
+use v5.14;
+use utf8;
+use strict;
+use autodie;
+use warnings;
+use warnings "FATAL" => "utf8";
+use open qw< :utf8 :std >;
+
+use charnames qw<:full :alias> => {
+    Apple_Mac   => 0xF8FF,
+    unchanged   => "LEFT RIGHT DOUBLE ARROW",
+};
+
+use Unicode::Normalize;
+
+#######################################################
+
+sub ratsort;
+
+#######################################################
+
+our $SHOW_BADMAPS_ONLY  = 0;
+our $SHOW_CHANGED_ONLY  = 1;   # if previous is 1, this is immaterial
+
+our $VERSION = v0.0.1311040647; # 19:57:27 MDT Mon Jul 18 2011
+
+$| = 1;
+
+my @ɪsᴏ = map { "iso-$_" } ratsort qw{
+    8859-1   8859-4   8859-7   8859-10  8859-14               
+    8859-2   8859-5   8859-8   8859-11  8859-15               
+    8859-3   8859-6   8859-9   8859-13  8859-16               
+}; 
+
+my @μsoft = map { "cp$_"} ratsort qw{
+     37   855   864    949  1253
+    424   856   865    950  1254
+    437   857   866   1006  1255
+    500   858   869   1026  1256
+    737   860   874   1047  1257
+    775   861   875   1250  1258
+    850   862   932   1251  
+    852   863   936   1252  
+};
+
+my @apple = map { "Mac$_" } ratsort qw{
+    Arabic             Thai
+    CentralEurRoman    Icelandic
+    Croatian           Roman
+    Cyrillic           Rumanian
+    Dingbats           Sami
+    Farsi              Symbol
+    Greek              Turkish
+    Hebrew             Ukrainian
+};
+
+# kanji for "koi", of course :)
+my @鯉 = ratsort <koi8-{f,u,r}>;
+
+my $cmd = "byte2uni";
+
+my @etc = ratsort qw( nextstep hp-roman8 dingbats viscii symbol posix-bc );
+
+
+my @all_tests =  (@μsoft, @ɪsᴏ, @apple, @鯉, @etc);
+
+my @tests = ();
+unless (@ARGV) {
+    @tests =  @all_tests;
+} else { 
+    state $testmap = {
+
+        all         => \@all_tests,
+        everything  => \@all_tests,
+
+	dos         => \@μsoft,
+	microsoft   => \@μsoft,
+	ms          => \@μsoft,
+	windows     => \@μsoft,
+	win         => \@μsoft,
+
+        posix       => \@ɪsᴏ,
+        iso         => \@ɪsᴏ,
+        standard    => \@ɪsᴏ,
+        std         => \@ɪsᴏ,
+
+        apple       => \@apple,
+        mac         => \@apple,
+        macintosh   => \@apple,
+
+        koi         => \@鯉,
+
+        etc         => \@etc,
+        ali         => \@etc,
+        alia        => \@etc,
+        alios       => \@etc,
+        others      => \@etc,
+
+    };
+
+    my %seen;
+
+    for my $arg (map {lc} @ARGV) {
+        my $resolve = @{ $$testmap{$arg} || [lc $arg] };
+        next if $seen{$resolve}++;
+        push @tests, $resolve;
+    } 
+
+}
+
+
+for my $enc (@tests) { 
+    say "\n$0: testing $enc";
+    my @args =( $cmd, "--all", "--encoding=$enc" );
+    open(my $b2u, "-| :utf8", @args) || die "can't open pipe: $!";
+    local $_;
+    while (<$b2u>) {
+        next if $SHOW_CHANGED_ONLY &&  m< \N{unchanged} >x;
+        next if $SHOW_BADMAPS_ONLY &&! m< 
+               Block= 
+            |  REPLACEMENT 
+            |  \Q \\N { U + \E
+        >x;
+
+        print;
+    } 
+
+    eval { close($b2u) };
+    exit if $? & 255;
+} 
+
+sub ratsort { return 
+    map  { $_->[0]                                       } 
+    sort { $a->[1] cmp $b->[1]                           }
+    map  { [ $_ => lc s/(\d+)/sprintf("%012s", $1)/reg ] }
+    @_
+    ;
+} 
+

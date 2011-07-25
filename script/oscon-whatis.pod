@@ -1,29 +1,8 @@
-package Unicode::Tussle;
-use vars qw( $VERSION );
-
-$VERSION = '1.03';
-
 =encoding utf8
 
-=head1 NAME
-
-Unicode::Tussle - Tom's Unicode Scripts So Life is Easier
-
-=head1 SYNOPSIS
-
-This is a collection of separate program. See the documentation for each
-program.
-
-=head1 DESCRIPTION
-
-These programs are installed wherever you told the build system to
-install programs. These are part of Tom's I<Perl Unicode Essentials>
-talk from OSCON 2011. You might have to adjust your fonts to see some
-of the characters in these examples. George Douros’s Symbola font,
-which handles Unicode 6.0, is a good one:
-http://users.teilar.gr/~g1951d/
-
 =head1 OSCON scripts 
+
+Because I misplaced the first of these I wrote, I ended up writing them twice.
 
 =head2 OSCON scripts description #1/2
 
@@ -174,216 +153,54 @@ http://users.teilar.gr/~g1951d/
 
 A few use Unicode not just in literals, but in identifiers, too:
 
-    % tcgrep '^\h*(use|require)\h+(charnames|re|Unicode|Encode|DBM_Filter|feature|open|Lingua|utf8|v?5|encoding|bytes|locale)\b' * 
-
-    hypertest:  my @ὑπέρμεγας = ( 
-
+    % tcgrep '((^\h*sub\h+)|[\$\@%&])\p{ASCII}*\P{ASCII}' *
+    byte2uni:           $display_char = "\N{SYMBOL FOR SUBSTITUTE FORM TWO}",        # ␦
+    hantest:$path = "婴儿服饰";
+    hypertest:my @ὑπέρμεγας = ( 
+    hypertest:    ὑπέρμεγας           => \@ὑπέρμεγας,
     leo:        my    $ʇndʇno = uʍopəpᴉƨdn($input);
     leo:        say   $ʇndʇno;
-    leo:        sub uʍopəpᴉƨdn($) {
+    leo:sub uʍopəpᴉƨdn($) {
+    leo:    tr [-¯_#&'"“”‘’!¡?¿,.] 
+    mismaps:my @ɪsᴏ = map { "iso-$_" } ratsort qw{
+    mismaps:my @μsoft = map { "cp$_"} ratsort qw{
+    mismaps:my @鯉 = ratsort <koi8-{f,u,r}>;
+    mismaps:my @all_tests =  (@μsoft, @ɪsᴏ, @apple, @鯉, @etc);
+    mismaps:        dos         => \@μsoft,
+    mismaps:        microsoft   => \@μsoft,
+    mismaps:        ms          => \@μsoft,
+    mismaps:        windows     => \@μsoft,
+    mismaps:        win         => \@μsoft,
+    mismaps:        posix       => \@ɪsᴏ,
+    mismaps:        iso         => \@ɪsᴏ,
+    mismaps:        standard    => \@ɪsᴏ,
+    mismaps:        std         => \@ɪsᴏ,
+    mismaps:        koi         => \@鯉,
+    nunez:my $INCLUÍR_NINGUNOS               = 0;
+    nunez:my $SI_IMPORTAN_MARCAS_DIACRÍTICAS = 0;
+    nunez:sub sí_ó_no(_) { $_[0] ? "sí" : "no" }
+    nunez:my @ciudades_españolas = ordenar_a_la_española(<<'LA_ÚLTIMA' =~ /\S.*\S/g);
+    nunez:my $cmáx = -(2 + max map { length } @ciudades_españolas);
+    nunez:my @búsquedas = < {A,E,I,O,U}N AL >;
+    nunez:my $bmáx = -(2 + max map { length } @búsquedas);
+    nunez:for my $aldea (@ciudades_españolas) {
+    nunez:    my $déjà_imprimée;  # Mais oui!  C’est en français celle‐ci!
+    nunez:    for my $búsqueda (@búsquedas) {
+    nunez:        my @resultados = $ordenador->gmatch($aldea, $búsqueda);
+    nunez:        next unless @resultados || $INCLUÍR_NINGUNOS;
+    nunez:                $cmáx => !$déjà_imprimée++ && encomillar($aldea),
+    nunez:                $bmáx => "/$búsqueda/",
+    nunez:sub cuántos_sitios {
+    nunez:sub ordenar_a_la_española {
+    nunez:    state $ordenador_a_la_española = new Unicode::Collate::
+    nunez:    return $ordenador_a_la_española->sort(@lista);
+    ucsort:    ($OFS, $IFS)  if /\x{FFFF}/;  # déjà vu
+    uniquote:        my $fh = $file;   # is *so* a lexical filehandle! ☺
+    uniquote:sub commaʼd_list {
 
-    nunez:      my $INCLUÍR_NINGUNOS               = 0;
-    nunez:      my $SI_IMPORTAN_MARCAS_DIACRÍTICAS = 0;
-    nunez:      sub sí_ó_no(_) { $_[0] ? "sí" : "no" }
-    nunez:      my @ciudades_españolas = ordenar_a_la_española(<<'LA_ÚLTIMA' =~ /\S.*\S/g);
-    nunez:      my $cmáx = -(2 + max map { length } @ciudades_españolas);
-    nunez:      my @búsquedas = < {A,E,I,O,U}N AL >;
-    nunez:      my $bmáx = -(2 + max map { length } @búsquedas);
-    nunez:      for my $aldea (@ciudades_españolas) {
-    nunez:      my $déjà_imprimée;  # Mais oui!  C’est en français celle‐ci!
-    nunez:      for my $búsqueda (@búsquedas) {
-    nunez:      my @resultados = $ordenador->gmatch($aldea, $búsqueda);
-    nunez:      next unless @resultados || $INCLUÍR_NINGUNOS;
-    nunez:      $cmáx => !$déjà_imprimée++ && encomillar($aldea),
-    nunez:      $bmáx => "/$búsqueda/",
-    nunez:      sub cuántos_sitios {
-    nunez:      sub ordenar_a_la_española {
-    nunez:      state $ordenador_a_la_española = new Unicode::Collate::
-    nunez:      return $ordenador_a_la_española->sort(@lista);
+=head1 Demos of OSCON Unicode scripts
 
-    ucsort:     ($OFS, $IFS)  if /\x{FFFF}/;  # déjà vu
-
-    uniquote:   my $fh = $file;   # is *so* a lexical filehandle! ☺
-    uniquote:   sub commaʼd_list {
-
-    uniwc:      my $fh = $file;   # is *so* a lexical filehandle! ☺
-
-=head1 Uses of Unicode modules in OSCON scripts
-
-  % tcgrep '^\h*(use|require)\h+(charnames|re|Unicode|Encode|DBM_Filter|feature|open|Lingua|utf8|v5|encoding|bytes|locale)\b' *
-
-    FixString.pm:  use v5.12;
-    FixString.pm:  use utf8;
-    FixString.pm:  use charnames qw< :full greek >;
-    FixString.pm:  use Unicode::Collate;
-    FixString.pm:  use open < :std :utf8 >;
-    FixString.pm:  require Unicode::Normalize;
-
-    byte2uni:      use v5.10;
-    byte2uni:      use charnames qw[ :full ];
-    byte2uni:      use Encode (
-    byte2uni:      require Encode;
-
-    es-sort:       use Unicode::Collate;
-
-    hantest:       use 5.10.1;
-    hantest:       use utf8;
-    hantest:       use open        qw[ :utf8 :std  ];
-    hantest:       use charnames   qw[ :full       ];
-    hantest:       use Encode      qw[ decode      ];
-    hantest:       use Unicode::UCD qw{
-    hantest:       use Unicode::Normalize qw[ NFC NFD ];   # UAX#15
-    hantest:       use Unicode::Unihan;                    # UAX#38
-    hantest:       use Unicode::GCString;                  # UAX#29
-    hantest:       use Unicode::LineBreak qw(:all);        # UAX#14-C2
-    hantest:       use Lingua::KO::Hangul::Util    qw[ :all ];
-    hantest:       use Lingua::JA::Romanize::Japanese;
-    hantest:       use Lingua::ZH::Romanize::Pinyin;
-    hantest:       use Lingua::KO::Romanize::Hangul;
-
-    havshpx:       hfr puneanzrf ":shyy";
-    havshpx:       hfr Havpbqr::Abeznyvmr;
-
-    hypertest:     use 5.10.0;
-    hypertest:     use utf8;
-
-    lc:            use v5.12;
-    lc:            use utf8;
-    lc:            use feature qw< unicode_strings >;
-    lc:            use open        qw< :std  :utf8   >;
-    lc:            use Unicode::Normalize  qw< NFD NFC >;
-
-    leo:           use 5.010_000;
-    leo:           use utf8;
-    leo:           use open     qw[ :std  :utf8 ];
-
-    macroman:      use charnames qw[ :full ];
-    macroman:      use Encode (
-
-    nfc:           use 5.10.1;
-    nfc:           use open     qw[ :std IO :utf8 ];
-    nfc:           use Unicode::Normalize;
-
-    nfcheck:       use open   qw< :std IN :utf8 >;
-    nfcheck:       use Unicode::Normalize @NF_NAMES;
-
-    nfd:           use 5.10.1;
-    nfd:           use open     qw[ :std IO :utf8 ];
-    nfd:           use Unicode::Normalize;
-
-    nfkc:          use 5.10.1;
-    nfkc:          use open     qw[ :std IO :utf8 ];
-    nfkc:          use Unicode::Normalize;
-
-    nfkd:          use 5.10.1;
-    nfkd:          use open     qw[ :std IO :utf8 ];
-    nfkd:          use Unicode::Normalize;
-
-    nunez:         use 5.10.1;   
-    nunez:         use utf8;
-    nunez:         use charnames qw< :full >;
-    nunez:         use Unicode::Collate;
-
-    tc:            use v5.12;
-    tc:            use utf8;
-    tc:            use feature qw< unicode_strings >;
-    tc:            use open        qw< :std  :utf8   >;
-    tc:            use charnames   qw< :full >;
-    tc:            use Unicode::Normalize  qw< NFD NFC >;
-
-    tcgrep:        use re "eval";
-    tcgrep:        use charnames qw[ :full 
-
-    uc:            use v5.12;
-    uc:            use utf8;
-    uc:            use feature qw< unicode_strings >;
-    uc:            use open        qw< :std  :utf8   >;
-    uc:            use Unicode::Normalize  qw< NFD NFC >;
-
-    ucsort:        use 5.10.1;
-    ucsort:        use utf8;
-    ucsort:        use open qw[ :std IO :utf8 ];
-    ucsort:        use Unicode::Collate;
-    ucsort:        require Unicode::Collate::Locale;
-
-    unicaps:       use 5.10.1;
-    unicaps:       use utf8;
-
-    unichars:      use 5.10.1;
-    unichars:      use charnames qw[ :full :short latin greek ];
-    unichars:      use Encode          qw[ decode      ];
-    unichars:      use Unicode::UCD qw(charinfo casefold);
-    unichars:      require Unicode::Normalize;
-    unichars:      require Unicode::Collate;
-    unichars:      require Unicode::Collate::Locale;
-    unichars:      require Unicode::UCD;
-
-    unifmt:        use 5.10.1;
-    unifmt:        use utf8;
-    unifmt:        use open        qw[ :utf8 :std  ];
-    unifmt:        use charnames   qw[ :full       ];
-    unifmt:        use Unicode::GCString;                  # UAX#29
-    unifmt:        use Unicode::LineBreak qw(:all);        # UAX#14-C2
-
-    unifont:       use v5.12;
-    unifont:       use utf8;
-    unifont:       use open qw< :std :encoding(UTF-8) >;
-    unifont:       use charnames qw< :full >;
-    unifont:       use Unicode::Normalize;
-
-    unilook:       use 5.010_000;
-    unilook:       use charnames (
-    unilook:       use Unicode::Normalize;
-    unilook:       use Encode qw( encode decode );
-    unilook:       require Unicode::Collate;
-
-    uninames:      use 5.10.1;
-    uninames:      use re "eval";
-    uninames:      use Unicode::UCD;  # not exported: qw[ UnicodeVersion ];
-
-    uninarrow:     use utf8;
-    uninarrow:     use open qw(:std :utf8);
-
-    uniprops:      use 5.10.0;     # but prefer 5.12.0
-    uniprops:      use charnames qw[ 
-    uniprops:      use Encode              qw[ decode              ];
-
-    uniquote:      use 5.10.1;
-    uniquote:      use utf8;
-    uniquote:      use charnames qw[:full];
-    uniquote:      require Encode;
-
-    unisubs:       use 5.014;
-    unisubs:       use utf8;
-    unisubs:       use open        qw< :std  :utf8     >;
-    unisubs:       use charnames   qw< :full >;
-    unisubs:       use feature     qw< unicode_strings >;
-    unisubs:       use re          "/msux";
-    unisubs:       use Encode              qw< encode decode >;
-    unisubs:       use Unicode::Normalize  qw< NFD NFC NFKD NFKC >;
-
-    unisupers:     use 5.014;
-    unisupers:     use utf8;
-    unisupers:     use open        qw< :std  :utf8     >;
-    unisupers:     use charnames   qw< :full >;
-    unisupers:     use feature     qw< unicode_strings >;
-    unisupers:     use re          "/msux";
-    unisupers:     use Encode              qw< encode decode >;
-    unisupers:     use Unicode::Normalize  qw< NFD NFC NFKD NFKC >;
-
-    unititle:      use 5.010;
-
-    uniwc:         require Encode;
-
-    uniwide:       use utf8;
-    uniwide:       use open qw(:std :utf8);
-
-    vowel-sigs:    use v5.12;
-    vowel-sigs:    use Lingua::EN::Syllable;
-
-=head1 OSCON script demos
-
-There's absolutely nothing like examples. 
+There's absolutely nothing like examples, so here are five sets.
 
 =head2  Demo of uniprops
 
@@ -1739,7 +1556,7 @@ and useful program, so here are 861 of them, ucsorted, of course.
 
     tcgrep '^0' ../../new-output/results-go-gene-stemwords-GOOD | ucsort --reverse-input | less
 
-=h3ad2 Demos of unilook
+=head2  Demo of unilook
 
     unilook activation
     unilook adi
@@ -1854,22 +1671,3 @@ and useful program, so here are 861 of them, ucsorted, of course.
     unilook -zv anterolateral
     unilook -zv holter
     unilook -zv metformin
-
-=head1 AUTHOR
-
-Tom Christiansen C<< <tchrist@perl.org> >> wrote all the code.
-
-brian d foy C<< <brian.d.foy@gmail.com> >> wrapped the distribution around
-it.
-
-=head1 COPYRIGHT
-
-Copyright 2011, Tom Christiansen.
-
-=head1 LICENSE
-
-You can use this distribution under the same terms as Perl itself.
-
-=cut
-
-1;

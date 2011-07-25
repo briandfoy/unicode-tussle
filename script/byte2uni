@@ -8,6 +8,7 @@ use v5.10;
 use strict;
 use warnings;
 use charnames qw[ :full ];
+use open qw< :utf8 :std >;
 
 use File::Basename;
 use Scalar::Util qw[ looks_like_number ];
@@ -17,6 +18,8 @@ use Encode (
     "encode",	# $bytes   = encode("scheme", $unicode);
 );
 
+use Unicode::UCD qw[ charblock charblocks ];
+
 
 use Getopt::Long    qw[ GetOptions  ];
 use Pod::Usage      qw[ pod2usage   ];
@@ -25,9 +28,24 @@ use Carp;
 
 #######################################################################
 
+sub main;
+sub check_options;
+sub cp2name($);
+sub hex_arg;
+sub m2u;
+sub show_encodings;
+sub show_mappings;
+sub showpairs;
+sub string_arg;
+sub tty_width;
+sub u2m;
+sub visichar($);
+
+#######################################################################
+
 our $Enc_Name;
 our %Opt;
-our $VERSION = "1.0 (2011-06-12)";
+our $VERSION = "1.2 (2011-07-18)";
 
 $| = 1;             # command buffering quick-feeds piped stdout
 $0 = basename($0);  # shorten up warnings/errors
@@ -40,8 +58,8 @@ die "NOT REACHED";
 
 sub main {
     check_options();
-    usage()    if @ARGV == 0;
-    usage("No encoding specified") unless $Enc_Name;
+    pod2usage("no arguments")    if @ARGV == 0;
+    pod2usage("No encoding specified") unless $Enc_Name;
     show_mappings(@ARGV);
     exit(0);
 }
@@ -59,23 +77,31 @@ sub check_options {
         debug|d
 	encoding|e=s
 	all|a
-	list-encoding|l
+	list|l
 
-    ]) ||
+    ]) || pod2usage("unknown option");
+
+    pod2usage(0) 				 if $Opt{help};
+    pod2usage(-exitstatus => 0, -verbose => 2)   if $Opt{man};
+
+    if ($Opt{list}) {
+	show_encodings();
+	exit 0;
+    }
 
     my $enc;
 
     if ($Opt{encoding}) {
 	$enc = $Opt{encoding};
-    } 
-    else { 
+    }
+    else {
 	if (@ARGV && $ARGV[0] =~ s/^-(?=[^-])//) {
 	    $enc = shift @ARGV;
-	} 
+	}
 	else {
 	    $enc = "MacRoman";
-	} 
-    } 
+	}
+    }
 
     require Encode;
     if (my $enc_obj = Encode::find_encoding($enc)) {
@@ -83,29 +109,67 @@ sub check_options {
 	# print "Offical name of $enc is $name\n";
 	$Enc_Name = $name;
     } else {
-	usage("Couldn't find encoding for $enc");
+	pod2usage("Couldn't find encoding for $enc");
     }
 
-    if ($Opt{"all"}) {
+    if ($Opt{"all"} || @ARGV == 0) {
 	@ARGV = map { sprintf "0x%02X", $_ }  0 .. 255;
-    } 
+    }
 
-} 
-
+}
 
 ############################################################
 
-sub usage {
+sub show_encodings {
 
-    die <<END_OF_USAGE_MESSAGE;
-usage: $0 [ 0x## | U+#### | utf8_string ] ...
-    Where: 0x means an encoded byte
-	   U+ means a Unicode codepoint
-	   string args must be in UTF-8
-    Output is in UTF-8.
-END_OF_USAGE_MESSAGE
+    my @names = Encode->encodings(":all");
+    require Unicode::Collate;
+    my $collator = new Unicode::Collate::
+		     preprocess => sub($) {
+			 my $str = shift();
+			 $str =~ s/(\d+)/sprintf("%012d",$1)/ge;
+			 return $str;
+		     },
+		     upper_before_lower => 1,
+		 ;
 
+    my $fmtstr = join(", ", $collator->sort(@names));
+
+    my $width = tty_width() - 2;
+
+    my $code  = "format STDOUT =\n";
+       $code .= "^" . ("<" x $width) . " ~~\n";
+       $code .= "\$fmtstr\n";
+       $code .= ".\n";
+       $code .= "1;\n";
+
+    print "CODE is:\n$code\n" if $Opt{debug};
+    eval($code) || die "eval failed: $@ on $code";
+
+    local $: = " \n";  # don't break on HYPHEN-MINUS
+    write;
 }
+
+############################################################
+
+# XXX: Yes, I *do* know and have the "right" way to do this,
+#       but it requires XS gunk.
+#
+sub tty_width {
+
+    my ($rows, $cols) = (24, 80);
+    if ($ENV{COLUMNS} && $ENV{COLUMNS}  =~ /^(?!0)(\d+)$/) {
+	$cols = $1;
+    }
+    else {
+	my ($trows, $tcols) = split " ", `stty size < /dev/tty 2>/dev/null`;
+	$cols = $tcols unless $?;
+    }
+
+    return $cols;
+}
+
+############################################################
 
 BEGIN  {
     my $enc = ":utf8";
@@ -117,18 +181,22 @@ END {
     close(STDOUT) || die "can't close STDOUT: $!";
 }
 
-{   # initialization block 
+{   # initialization block
 
     my ($LQ, $RQ); INIT {
 	    # MacRoman DC: Left Guillement
-	$LQ = "\N{SINGLE LEFT-POINTING ANGLE QUOTATION MARK}";
+	$LQ =
+        # "\N{SINGLE LEFT-POINTING ANGLE QUOTATION MARK}";
+        "\N{FULLWIDTH LESS-THAN SIGN}";
 	    # MacRoman DD: Right Guillement
-	$RQ = "\N{SINGLE RIGHT-POINTING ANGLE QUOTATION MARK}";
+	$RQ =
+        # "\N{SINGLE RIGHT-POINTING ANGLE QUOTATION MARK}";
+        "\N{FULLWIDTH GREATER-THAN SIGN}";
     }
 
     # return arg(s) surrounded with guillemets
     sub quote {
-	my @retlist = map { $LQ . $_ . $RQ } @_;
+	my @retlist = map { $LQ . " " .  $_ . " " . $RQ } @_;
 	return wantarray
 	       ? @retlist
 	       : join(" " => @retlist);
@@ -138,11 +206,11 @@ END {
 
 sub cp2name($) {
     my $cp = shift();
-    if (! looks_like_number($cp)) { 
+    if (! looks_like_number($cp)) {
 	die "bad number: " . quote($cp);
     }
     return $cp == 0   # missing mapping in older versions
-	   ? "NULL"   
+	   ? "NULL"
 	   :     charnames::viacode($cp)
 	     ||  sprintf("U+%04X",  $cp);
 }
@@ -150,21 +218,28 @@ sub cp2name($) {
 my($INVALID_CHR, $INVALID_CP); INIT {
     $INVALID_CHR = "\N{REPLACEMENT CHARACTER}";
     $INVALID_CP  = ord $INVALID_CHR;
-} 
+}
 
 sub showpairs {
     my ($sep, $had, $want) = @_;
     if ($had == $INVALID_CP) {
 	print "$Enc_Name ", $INVALID_CHR x 2;
 	$sep = " \N{LEFTWARDS DOUBLE ARROW WITH STROKE}";
-    }  else { 
+    }  else {
 	printf "%-12s %02X ", $Enc_Name, $had;
 	$sep = "\N{LEFT RIGHT DOUBLE ARROW}" if $had == $want;
     }
     print  " $sep ";
     printf " U+%04X  ", $want;
-    print  quote(chr($want)); 
-    printf "  \\N{ %s }\n", cp2name($want);
+    print  quote(visichar(chr($want)));
+    printf "  \\N{%s}", cp2name($want);
+
+    if (chr($want) =~ /\p{Private_Use}/) {
+	my $blockname = charblock($want) =~ s/ /_/rg;
+	print " \\p{Block=$blockname}";
+    }
+
+    print "\n";
 }
 
 sub m2u {
@@ -198,12 +273,12 @@ sub string_arg {
 	if ($mac_chr eq "?" && $uni_chr ne "?") {
 	    ## warn sprintf "$0: character %s U+%04X has no $Enc_Name representation\n", quote($uni_chr), ord($uni_chr);
 	    $mac_chr = $INVALID_CHR;
-	} 
+	}
 	u2m(ord($mac_chr), ord($uni_chr));
     }
 }
 
-sub show_mappings { 
+sub show_mappings {
     for (@_) {
 	if (/ ^ 0x [a-f0-9]{2,}  $ /xi) {
 	    hex_arg($_);
@@ -214,6 +289,76 @@ sub show_mappings {
 	}
     }
 }
+
+
+sub visichar($) {
+
+    my $orig_char = shift();
+
+    state $glyph_map = {
+        "\N{NULL}"                         => "\N{SYMBOL FOR NULL}",                       # ␀
+        "\N{START OF HEADING}"             => "\N{SYMBOL FOR START OF HEADING}",           # ␁
+        "\N{START OF TEXT}"                => "\N{SYMBOL FOR START OF TEXT}",              # ␂
+        "\N{END OF TEXT}"                  => "\N{SYMBOL FOR END OF TEXT}",                # ␃
+        "\N{END OF TRANSMISSION}"          => "\N{SYMBOL FOR END OF TRANSMISSION}",        # ␄
+        "\N{ENQUIRY}"                      => "\N{SYMBOL FOR ENQUIRY}",                    # ␅
+        "\N{ACKNOWLEDGE}"                  => "\N{SYMBOL FOR ACKNOWLEDGE}",                # ␆
+        "\N{ALERT}"                        => "\N{SYMBOL FOR BELL}",                       # ␇
+        "\N{BACKSPACE}"                    => "\N{SYMBOL FOR BACKSPACE}",                  # ␈
+        "\N{CHARACTER TABULATION}"         => "\N{SYMBOL FOR HORIZONTAL TABULATION}",      # ␉
+        "\N{LINE FEED}"                    => "\N{SYMBOL FOR LINE FEED}",                  # ␊
+        "\N{LINE TABULATION}"              => "\N{SYMBOL FOR VERTICAL TABULATION}",        # ␋
+        "\N{FORM FEED}"                    => "\N{SYMBOL FOR FORM FEED}",                  # ␌
+        "\N{CARRIAGE RETURN}"              => "\N{SYMBOL FOR CARRIAGE RETURN}",            # ␍
+        "\N{SHIFT OUT}"                    => "\N{SYMBOL FOR SHIFT OUT}",                  # ␎
+        "\N{SHIFT IN}"                     => "\N{SYMBOL FOR SHIFT IN}",                   # ␏
+        "\N{DATA LINK ESCAPE}"             => "\N{SYMBOL FOR DATA LINK ESCAPE}",           # ␐
+        "\N{DEVICE CONTROL ONE}"           => "\N{SYMBOL FOR DEVICE CONTROL ONE}",         # ␑
+        "\N{DEVICE CONTROL TWO}"           => "\N{SYMBOL FOR DEVICE CONTROL TWO}",         # ␒
+        "\N{DEVICE CONTROL THREE}"         => "\N{SYMBOL FOR DEVICE CONTROL THREE}",       # ␓
+        "\N{DEVICE CONTROL FOUR}"          => "\N{SYMBOL FOR DEVICE CONTROL FOUR}",        # ␔
+        "\N{NEGATIVE ACKNOWLEDGE}"         => "\N{SYMBOL FOR NEGATIVE ACKNOWLEDGE}",       # ␕
+        "\N{SYNCHRONOUS IDLE}"             => "\N{SYMBOL FOR SYNCHRONOUS IDLE}",           # ␖
+        "\N{END OF TRANSMISSION BLOCK}"    => "\N{SYMBOL FOR END OF TRANSMISSION BLOCK}",  # ␗
+        "\N{CANCEL}"                       => "\N{SYMBOL FOR CANCEL}",                     # ␘
+        "\N{END OF MEDIUM}"                => "\N{SYMBOL FOR END OF MEDIUM}",              # ␙
+        "\N{SUBSTITUTE}"                   => "\N{SYMBOL FOR SUBSTITUTE}",                 # ␚
+        "\N{ESCAPE}"                       => "\N{SYMBOL FOR ESCAPE}",                     # ␛
+        "\N{INFORMATION SEPARATOR FOUR}"   => "\N{SYMBOL FOR FILE SEPARATOR}",             # ␜
+        "\N{INFORMATION SEPARATOR THREE}"  => "\N{SYMBOL FOR GROUP SEPARATOR}",            # ␝
+        "\N{INFORMATION SEPARATOR TWO}"    => "\N{SYMBOL FOR RECORD SEPARATOR}",           # ␞
+        "\N{INFORMATION SEPARATOR ONE}"    => "\N{SYMBOL FOR UNIT SEPARATOR}",             # ␟
+        "\N{SPACE}"                        => "\N{SYMBOL FOR SPACE}",                      # ␠
+        "\N{DELETE}"                       => "\N{SYMBOL FOR DELETE}",                     # ␡
+        "\N{NEXT LINE}"                    => "\N{SYMBOL FOR NEWLINE}",                    # ␤
+    };
+
+    my $display_char;
+
+    if ($display_char = $glyph_map->{$orig_char}) {
+        # cool
+    }
+    ### don't do this
+    elsif ($orig_char =~ /[\pC\p{White_Space}]/) {
+	if ($orig_char =~ /\p{Private_Use}/) {
+	    $display_char = $orig_char;
+	}
+	elsif ($orig_char =~ /\p{Unknown}/) {
+	    $display_char = "\N{SYMBOL FOR SUBSTITUTE FORM TWO}",        # ␦
+                        # or should I use this?
+                        #"\N{REPLACEMENT CHARACTER}";
+	}
+	else {
+	    $display_char = "-";
+	}
+    }
+    else {
+        $display_char = $orig_char;
+    }
+
+    return $display_char;
+}
+
 
 
 __END__
@@ -227,7 +372,13 @@ byte2uni - shows what some encoding's byte should be in Unicode
 
 =head1 SYNOPSIS
 
-B<byte2uni> [[-[e]I<encoding>] [ --all | I<criterion> ... ]
+B<byte2uni> [--encoding I<encoding>] [ --all | I<criterion> ... ]
+
+    usage: byte2uni [ 0x## | U+#### | utf8_string ] ...
+	Where: 0x means an encoded byte
+	       U+ means a Unicode codepoint
+	       string args must be in UTF-8
+	Output is in UTF-8.
 
 =head1 DESCRIPTION
 
@@ -254,3 +405,4 @@ Copyright 2011 Tom Christiansen.
 
 This program is free software; you may redistribute it and/or modify it
 under the same terms as Perl itself.
+

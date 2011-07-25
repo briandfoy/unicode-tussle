@@ -1,9 +1,14 @@
 
+1.03 - Mon Jul 18 23:42:02 2011
+	* Add mismaps, to discover which 8-bit chars don't map to UCS
+	* Add README and oscon-whatis.pod to explain what each script
+	is
+	* Update byte2uni for better programming practice
+	* All of these updates come from Tom
+
 1.02 - Mon Jul 18 14:27:53 2011
 	* Add examples of most programs, from Tom
 
 1.01 - Sat Jul 16 00:32:08 2011
 	* Tom Christiansen's Unicode Scripts So Life is Easier
 	* I just made the distribution
-
-
