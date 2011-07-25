@@ -1,4 +1,7 @@
 
+1.03 - Mon Jul 25 01:12:00 2011
+	* A minor adjustment to the compile.t test
+
 1.03 - Mon Jul 18 23:42:02 2011
 	* Add mismaps, to discover which 8-bit chars don't map to UCS
 	* Add README and oscon-whatis.pod to explain what each script
