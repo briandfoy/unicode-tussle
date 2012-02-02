@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+use strict;
+use 5.10.1;
+use autodie;
+use warnings qw[ FATAL all ];
+use open     qw[ :std IO :utf8 ];
+use Getopt::Long;
+END { close STDOUT }
+
+my @forms = qw(nfc nfd nfkc nfkd quiet);
+my $result = GetOptions(\ my %options, @forms );
+
+use Unicode::Normalize;
+
+if( defined $options{guess} ) {
+	exit 0;
+	}
+
+my %forms = do {
+	no strict 'refs';
+	my %hash = map { $_ => \&{"Unicode::Normalize::check\U$_"} } 
+		@forms;
+	};
+
+my( $form ) = grep { defined $options{$_} } @forms;
+$form //= 'nfc'; #/
+
+say "Checking form \U$form" unless defined $options{quiet};
+
+my $not = 0;
+my $lines = 0;
+my $file = $ARGV[0];
+
+while( <> ) {
+	$lines++;
+	$not++ unless $forms{$form}->($_);
+	}
+say "Not is $not";
+say "Lines are $lines";
+
+unless( $options{quiet} ) {
+	say "$file is ",
+		$not ? 'not ' : '',
+		"\U$form";
+	}	
+
+exit( !! $not );

@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+
+use strict;
+use 5.10.1;
+use autodie;
+use warnings qw[ FATAL all ];
+use open     qw[ :std IO :utf8 ];
+
+END { close STDOUT }
+
+use Unicode::Normalize;
+
+my %forms =
+	map { no strict 'refs'; $_ => \&{"Unicode::Normalize::check\U$_"} } 
+		qw(nfc nfd nfkc nfkd);
+
+my $not = 0;
+while( <> ) {
+	$not++ unless $form->($_);
+	}
+
+if( -t STDOUT ) {
+	say "$ARGV[0] is ",
+		$not ? 'not ' : '',
+		"\U$form";
+	
+exit( !! $not );
