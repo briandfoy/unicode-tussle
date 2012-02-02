@@ -1,7 +1,7 @@
 package Unicode::Tussle;
 use vars qw( $VERSION );
 
-$VERSION = '1.03';
+$VERSION = '1.03_01';
 
 =encoding utf8
 

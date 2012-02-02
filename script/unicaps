@@ -1,4 +1,6 @@
 #!/usr/bin/env perl
+#
+# unicaps, mark 2
 
 use 5.10.1;
 
@@ -6,24 +8,199 @@ use utf8;
 use strict;
 use autodie;
 use warnings;
+use warnings FATAL => "utf8";
+use charnames qw(:full);
+
 binmode(STDOUT, ":utf8");
 
-sub smcap(_);
+# generates the following code:
+#
+#    tr[aæbcdðeǝfgɠhiɨjklłmnoœɔȣprɹꝵstuʉɯvwyzʒγλπρψл]
+#      [ᴀᴁʙᴄᴅᴆᴇⱻꜰɢʛʜɪᵻᴊᴋʟᴌᴍɴᴏɶᴐᴕᴘʀᴚꝶꜱᴛᴜᵾꟺᴠᴡʏᴢᴣᴦᴧᴨᴩᴪᴫ];
+#
+my $to_smcap = generate_smcap_tr();
 
 if (@ARGV == 0) {
-    if (-t STDIN) {
-        warn "$0: reading from stdin, type ^C to kill, ^D to end.\n";
-    } 
-    print smcap while <>;
+   if (-t STDIN) {
+       warn "$0: reading from stdin, type ^C to kill, ^D to end.\n";
+   }
+   while (<>) {
+       &$to_smcap;
+       print;
+   }
 } else {
-    say smcap "@ARGV";
-} 
+   if (!-t STDIN) {
+       warn "$0: ignoring filenames in ARGV and treating ARGV as strings";
+   }
+   for ("@ARGV") {
+       &$to_smcap;
+       say;
+   }
+}
 
-sub smcap(_) {
-    my $_ = shift();
-    # tr[A-Z][ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡXʏᴢ];
-      tr[a-z][ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀsᴛᴜᴠᴡxʏᴢ];
-      #tr[A-Z][ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀsᴛᴜᴠᴡxʏᴢ];
-    return $_;
-} 
+exit;
 
+######3
+
+sub generate_smcap_tr {
+
+   # This table is generated (kinda) by the next function following.  However,
+   # one can munge the flubbed entries it comments out to get better results,
+   # as I have done here below.
+   #
+   my @small2smcap = (
+       "\N{LATIN SMALL LETTER A}"               => "\N{LATIN LETTER SMALL CAPITAL A}",
+       "\N{LATIN SMALL LETTER AE}"              => "\N{LATIN LETTER SMALL CAPITAL AE}",
+       "\N{LATIN SMALL LETTER B}"               => "\N{LATIN LETTER SMALL CAPITAL B}",
+       "\N{LATIN SMALL LETTER C}"               => "\N{LATIN LETTER SMALL CAPITAL C}",
+       "\N{LATIN SMALL LETTER D}"               => "\N{LATIN LETTER SMALL CAPITAL D}",
+       "\N{LATIN SMALL LETTER ETH}"             => "\N{LATIN LETTER SMALL CAPITAL ETH}",
+       "\N{LATIN SMALL LETTER E}"               => "\N{LATIN LETTER SMALL CAPITAL E}",
+       "\N{LATIN SMALL LETTER TURNED E}"        => "\N{LATIN LETTER SMALL CAPITAL TURNED E}",
+       "\N{LATIN SMALL LETTER F}"               => "\N{LATIN LETTER SMALL CAPITAL F}",
+       "\N{LATIN SMALL LETTER G}"               => "\N{LATIN LETTER SMALL CAPITAL G}",
+       "\N{LATIN SMALL LETTER G WITH HOOK}"     => "\N{LATIN LETTER SMALL CAPITAL G WITH HOOK}",
+       "\N{LATIN SMALL LETTER H}"               => "\N{LATIN LETTER SMALL CAPITAL H}",
+       "\N{LATIN SMALL LETTER I}"               => "\N{LATIN LETTER SMALL CAPITAL I}",
+       "\N{LATIN SMALL LETTER I WITH STROKE}"   => "\N{LATIN SMALL CAPITAL LETTER I WITH STROKE}",
+       "\N{LATIN SMALL LETTER J}"               => "\N{LATIN LETTER SMALL CAPITAL J}",
+       "\N{LATIN SMALL LETTER K}"               => "\N{LATIN LETTER SMALL CAPITAL K}",
+       "\N{LATIN SMALL LETTER L}"               => "\N{LATIN LETTER SMALL CAPITAL L}",
+       "\N{LATIN SMALL LETTER L WITH STROKE}"   => "\N{LATIN LETTER SMALL CAPITAL L WITH STROKE}",
+       "\N{LATIN SMALL LETTER M}"               => "\N{LATIN LETTER SMALL CAPITAL M}",
+       "\N{LATIN SMALL LETTER N}"               => "\N{LATIN LETTER SMALL CAPITAL N}",
+       "\N{LATIN SMALL LETTER O}"               => "\N{LATIN LETTER SMALL CAPITAL O}",
+       "\N{LATIN SMALL LIGATURE OE}"            => "\N{LATIN LETTER SMALL CAPITAL OE}",
+       "\N{LATIN SMALL LETTER OPEN O}"          => "\N{LATIN LETTER SMALL CAPITAL OPEN O}",
+       "\N{LATIN SMALL LETTER OU}"              => "\N{LATIN LETTER SMALL CAPITAL OU}",
+       "\N{LATIN SMALL LETTER P}"               => "\N{LATIN LETTER SMALL CAPITAL P}",
+       "\N{LATIN SMALL LETTER R}"               => "\N{LATIN LETTER SMALL CAPITAL R}",
+       "\N{LATIN SMALL LETTER TURNED R}"        => "\N{LATIN LETTER SMALL CAPITAL TURNED R}",
+       "\N{LATIN SMALL LETTER RUM}"             => "\N{LATIN LETTER SMALL CAPITAL RUM}",
+       "\N{LATIN SMALL LETTER S}"               => "\N{LATIN LETTER SMALL CAPITAL S}",
+       "\N{LATIN SMALL LETTER T}"               => "\N{LATIN LETTER SMALL CAPITAL T}",
+       "\N{LATIN SMALL LETTER U}"               => "\N{LATIN LETTER SMALL CAPITAL U}",
+       "\N{LATIN SMALL LETTER U BAR}"           => "\N{LATIN SMALL CAPITAL LETTER U WITH STROKE}",
+       "\N{LATIN SMALL LETTER TURNED M}"        => "\N{LATIN LETTER SMALL CAPITAL TURNED M}",
+       "\N{LATIN SMALL LETTER V}"               => "\N{LATIN LETTER SMALL CAPITAL V}",
+       "\N{LATIN SMALL LETTER W}"               => "\N{LATIN LETTER SMALL CAPITAL W}",
+       "\N{LATIN SMALL LETTER Y}"               => "\N{LATIN LETTER SMALL CAPITAL Y}",
+       "\N{LATIN SMALL LETTER Z}"               => "\N{LATIN LETTER SMALL CAPITAL Z}",
+       "\N{LATIN SMALL LETTER EZH}"             => "\N{LATIN LETTER SMALL CAPITAL EZH}",
+       "\N{GREEK SMALL LETTER GAMMA}"           => "\N{GREEK LETTER SMALL CAPITAL GAMMA}",
+       "\N{GREEK SMALL LETTER LAMDA}"           => "\N{GREEK LETTER SMALL CAPITAL LAMDA}",
+       "\N{GREEK SMALL LETTER PI}"              => "\N{GREEK LETTER SMALL CAPITAL PI}",
+       "\N{GREEK SMALL LETTER RHO}"             => "\N{GREEK LETTER SMALL CAPITAL RHO}",
+       "\N{GREEK SMALL LETTER PSI}"             => "\N{GREEK LETTER SMALL CAPITAL PSI}",
+       "\N{CYRILLIC SMALL LETTER EL}"           => "\N{CYRILLIC LETTER SMALL CAPITAL EL}",
+   );
+
+   my @even = grep { $_ % 2 == 0 } 0 .. $#small2smcap;
+   my @odd  = grep { $_ % 2 == 1 } 0 .. $#small2smcap;
+
+   sub J { join q() => @_ }
+
+   my $tr = "tr[" . J( @small2smcap[@even] ) . "]\n"
+          . "  [" . J( @small2smcap[@odd]  ) . "];\n";
+
+   say $tr if 0;
+   my $code = eval "sub { $tr }" || die;
+   return $code;
+}
+
+#######################################################################
+
+sub gen_smcap_table {
+
+   my $fist = 0x00_0000;
+   my $last = 0x00_FFFF;  # nothing interesting any further
+
+   for (my $smcap_cp = $fist; $smcap_cp <= $last; $smcap_cp++) {
+
+       # gaggy UTF-16 surrogates are invalid UTF-8 code points, avoid fatal in 5.12
+       next if $smcap_cp >= 0xD800 && $smcap_cp <= 0xDFFF;
+
+       # from utf8.c in perl src; must avoid fatals in 5.10
+       next if $smcap_cp >= 0xFDD0 && $smcap_cp <= 0xFDEF;
+
+       next if 0xFFFE == ($smcap_cp & 0xFFFE); # both FFFE and FFFF, in all planes
+
+       next unless chr($smcap_cp) =~ /\p{GC=Ll}/;  # skip modifier and combining letters
+
+       my $smcap_name = charnames::viacode($smcap_cp);
+       next unless $smcap_name;
+       next unless  $smcap_name =~ /SMALL CAPITAL/;
+
+       my $small_name = $smcap_name;
+
+       for ($small_name) {
+              s/LETTER SMALL CAPITAL/CAPITAL LETTER/
+           || s/SMALL CAPITAL LETTER/CAPITAL LETTER/
+           || die;
+
+           s/CAPITAL/SMALL/;
+       }
+
+       my $small_cp = charnames::vianame($small_name);
+
+       if (!defined $small_cp) {
+           $small_name =~ s/^/missing /;
+           print "## ";
+   }
+
+       printf "%-40s => %s,\n", map { qq("\\N{$_}") } $small_name, $smcap_name;
+   }
+
+}
+
+# Example of what it generates under Unicode 6.0 follows
+
+__END__
+"\N{LATIN SMALL LETTER G}"               => "\N{LATIN LETTER SMALL CAPITAL G}",
+"\N{LATIN SMALL LETTER I}"               => "\N{LATIN LETTER SMALL CAPITAL I}",
+"\N{LATIN SMALL LETTER N}"               => "\N{LATIN LETTER SMALL CAPITAL N}",
+## "\N{missing LATIN SMALL LETTER OE}"      => "\N{LATIN LETTER SMALL CAPITAL OE}",
+"\N{LATIN SMALL LETTER R}"               => "\N{LATIN LETTER SMALL CAPITAL R}",
+## "\N{missing LATIN SMALL LETTER INVERTED R}" => "\N{LATIN LETTER SMALL CAPITAL INVERTED R}",
+"\N{LATIN SMALL LETTER Y}"               => "\N{LATIN LETTER SMALL CAPITAL Y}",
+"\N{LATIN SMALL LETTER B}"               => "\N{LATIN LETTER SMALL CAPITAL B}",
+"\N{LATIN SMALL LETTER G WITH HOOK}"     => "\N{LATIN LETTER SMALL CAPITAL G WITH HOOK}",
+"\N{LATIN SMALL LETTER H}"               => "\N{LATIN LETTER SMALL CAPITAL H}",
+"\N{LATIN SMALL LETTER L}"               => "\N{LATIN LETTER SMALL CAPITAL L}",
+"\N{LATIN SMALL LETTER A}"               => "\N{LATIN LETTER SMALL CAPITAL A}",
+"\N{LATIN SMALL LETTER AE}"              => "\N{LATIN LETTER SMALL CAPITAL AE}",
+## "\N{missing LATIN SMALL LETTER BARRED B}" => "\N{LATIN LETTER SMALL CAPITAL BARRED B}",
+"\N{LATIN SMALL LETTER C}"               => "\N{LATIN LETTER SMALL CAPITAL C}",
+"\N{LATIN SMALL LETTER D}"               => "\N{LATIN LETTER SMALL CAPITAL D}",
+"\N{LATIN SMALL LETTER ETH}"             => "\N{LATIN LETTER SMALL CAPITAL ETH}",
+"\N{LATIN SMALL LETTER E}"               => "\N{LATIN LETTER SMALL CAPITAL E}",
+"\N{LATIN SMALL LETTER J}"               => "\N{LATIN LETTER SMALL CAPITAL J}",
+"\N{LATIN SMALL LETTER K}"               => "\N{LATIN LETTER SMALL CAPITAL K}",
+"\N{LATIN SMALL LETTER L WITH STROKE}"   => "\N{LATIN LETTER SMALL CAPITAL L WITH STROKE}",
+"\N{LATIN SMALL LETTER M}"               => "\N{LATIN LETTER SMALL CAPITAL M}",
+## "\N{missing LATIN SMALL LETTER REVERSED N}" => "\N{LATIN LETTER SMALL CAPITAL REVERSED N}",
+"\N{LATIN SMALL LETTER O}"               => "\N{LATIN LETTER SMALL CAPITAL O}",
+"\N{LATIN SMALL LETTER OPEN O}"          => "\N{LATIN LETTER SMALL CAPITAL OPEN O}",
+"\N{LATIN SMALL LETTER OU}"              => "\N{LATIN LETTER SMALL CAPITAL OU}",
+"\N{LATIN SMALL LETTER P}"               => "\N{LATIN LETTER SMALL CAPITAL P}",
+## "\N{missing LATIN SMALL LETTER REVERSED R}" => "\N{LATIN LETTER SMALL CAPITAL REVERSED R}",
+"\N{LATIN SMALL LETTER TURNED R}"        => "\N{LATIN LETTER SMALL CAPITAL TURNED R}",
+"\N{LATIN SMALL LETTER T}"               => "\N{LATIN LETTER SMALL CAPITAL T}",
+"\N{LATIN SMALL LETTER U}"               => "\N{LATIN LETTER SMALL CAPITAL U}",
+"\N{LATIN SMALL LETTER V}"               => "\N{LATIN LETTER SMALL CAPITAL V}",
+"\N{LATIN SMALL LETTER W}"               => "\N{LATIN LETTER SMALL CAPITAL W}",
+"\N{LATIN SMALL LETTER Z}"               => "\N{LATIN LETTER SMALL CAPITAL Z}",
+"\N{LATIN SMALL LETTER EZH}"             => "\N{LATIN LETTER SMALL CAPITAL EZH}",
+"\N{GREEK SMALL LETTER GAMMA}"           => "\N{GREEK LETTER SMALL CAPITAL GAMMA}",
+"\N{GREEK SMALL LETTER LAMDA}"           => "\N{GREEK LETTER SMALL CAPITAL LAMDA}",
+"\N{GREEK SMALL LETTER PI}"              => "\N{GREEK LETTER SMALL CAPITAL PI}",
+"\N{GREEK SMALL LETTER RHO}"             => "\N{GREEK LETTER SMALL CAPITAL RHO}",
+"\N{GREEK SMALL LETTER PSI}"             => "\N{GREEK LETTER SMALL CAPITAL PSI}",
+"\N{CYRILLIC SMALL LETTER EL}"           => "\N{CYRILLIC LETTER SMALL CAPITAL EL}",
+"\N{LATIN SMALL LETTER I WITH STROKE}"   => "\N{LATIN SMALL CAPITAL LETTER I WITH STROKE}",
+## "\N{missing LATIN SMALL LETTER U WITH STROKE}" => "\N{LATIN SMALL CAPITAL LETTER U WITH STROKE}",
+"\N{LATIN SMALL LETTER TURNED E}"        => "\N{LATIN LETTER SMALL CAPITAL TURNED E}",
+"\N{LATIN SMALL LETTER F}"               => "\N{LATIN LETTER SMALL CAPITAL F}",
+"\N{LATIN SMALL LETTER S}"               => "\N{LATIN LETTER SMALL CAPITAL S}",
+"\N{LATIN SMALL LETTER RUM}"             => "\N{LATIN LETTER SMALL CAPITAL RUM}",
+"\N{LATIN SMALL LETTER TURNED M}"        => "\N{LATIN LETTER SMALL CAPITAL TURNED M}",

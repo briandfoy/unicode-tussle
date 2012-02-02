@@ -10,7 +10,7 @@ my @files = (
 	glob( catfile( qw(blib script unicore *) ) )
 	);
 
-my @skip = qw(README havshpx oscon-whatis.pod);
+my @skip = qw(README havshpx oscon-whatis.pod unicore);
 my %skip = map { 
 	catfile( qw(blib script), $_ ), 
 	1 
