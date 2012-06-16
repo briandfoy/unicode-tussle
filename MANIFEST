@@ -14,7 +14,6 @@ script/FixString.pm
 script/hantest
 script/havshpx
 script/hypertest
-script/is_nfkd
 script/lc
 script/leo
 script/macroman
