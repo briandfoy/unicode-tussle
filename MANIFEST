@@ -14,6 +14,7 @@ script/FixString.pm
 script/hantest
 script/havshpx
 script/hypertest
+script/is_nfkd
 script/lc
 script/leo
 script/macroman
@@ -40,9 +41,11 @@ script/unicore/html_alias.pl
 script/unicore/uwords_alias.pl
 script/unifmt
 script/unifont
+script/unifrac
 script/unilook
 script/uninames
 script/uninarrow
+script/uninf
 script/uniprops
 script/uniquote
 script/unisubs

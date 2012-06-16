@@ -1,7 +1,7 @@
 package Unicode::Tussle;
 use vars qw( $VERSION );
 
-$VERSION = '1.03_02';
+$VERSION = '1.03_03';
 
 =encoding utf8
 
@@ -161,6 +161,7 @@ http://users.teilar.gr/~g1951d/
         uniwide                     - convert regular text to full-width if possible
         uninarrow                   - convert full-wdith to regular width if possible
         unititle                    - prototype to use combining underlines
+        unifrac                     - create a fraction with super and subscripts
 
     Demos and Test Programs
         es-sort                 - demo how to use a custom UCA on Spanish cities

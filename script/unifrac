@@ -1,0 +1,39 @@
+#!/usr/bin/env perl
+#
+# unifrac
+
+use v5.14;
+use strict;
+use warnings;
+use warnings FATAL => "utf8";
+use open qw(:utf8 :std);
+use charnames qw(:full);
+
+sub backchomp($);
+
+for (@ARGV) {
+   unless (m!/!) {
+       say $_;
+       next;
+   }
+   my($top, $bottom) = m! ( [^/]* ) / ( [^/]* ) !x;
+
+   my $superscript = backchomp("echo '$top'    | unisupers");
+   my $subscript   = backchomp("echo '$bottom' | unisubs");
+
+   say $superscript, "\N{FRACTION SLASH}", $subscript;
+
+}
+
+sub backchomp($) {
+   die unless @_ == 1;
+   my($cmdstring) = @_;
+
+   my $result = `$cmdstring`;
+   if ($?) {
+       die "can't run $cmdstring, status=", ($? >> 8);
+   }
+   chomp $result;
+
+   return $result;
+}
