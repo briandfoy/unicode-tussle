@@ -689,11 +689,11 @@ sub load_properties() {
 
     0 and s/ ^ \s+ [DSX] \s+ .* \n//gmx;
 
-    my $prop_rx = qr{
+    my $prop_rx = qr<
         \\ p \{
             (?<PROPNAME> [\w\s\-.:=] + )
         \}
-    }x;
+    >x;
 
     while (/$prop_rx/g) {
         my $propname = beautify($+{PROPNAME});
