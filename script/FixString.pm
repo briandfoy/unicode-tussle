@@ -63,7 +63,7 @@ sub strsort_logiconumerically(@) {
 #############################################
 
 sub fixstring(_) {
-    my $_ = shift();
+    local $_ = shift();
 
     # these must be done in order, or else you'll 
     #   -- miss zero-padding numbers 

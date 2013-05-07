@@ -295,7 +295,7 @@ sub convert_to_names(_) {
 
 sub convert_to_backslashes(_) {
 
-    my $_ = shift();
+    local $_ = shift();
 
     s,\\,\\\\,g if $Opt{backslashes};
     s,\0,\\0,g;
@@ -2773,7 +2773,7 @@ sub convert_to_html4(_) {
         debug("entity count: " . keys %$entity); 
     }
     no warnings "utf8";
-    my $_ = $_[0];
+    local $_ = $_[0];
     ##s/&/&amp;/g;
     ##s/</&lt;/g;
     ##s/>/&gt;/g;
@@ -2799,7 +2799,7 @@ sub convert_to_html5(_) {
         debug("entity count: " . keys %$entity); 
     }
     no warnings "utf8";
-    my $_ = $_[0];
+    local $_ = $_[0];
 
     s/&/&amp;/g;
     s/</&lt;/g;
@@ -2818,7 +2818,7 @@ sub convert_to_html5(_) {
 } # end UNITCHECK private scope for hash
 
 sub convert_to_xml(_) {
-    my $_ = shift();
+    local $_ = shift();
     no warnings "utf8";
 
     s/&/&amp;/g;
@@ -2880,7 +2880,7 @@ sub commaʼd_list {
 }
 
 sub usage($) {
-    my $_ = $_[0];
+    local $_ = $_[0];
     s/^(\p{Ll})/\u$1/;
     s/$/./ if /^\pL/ && !/\.$/;
     pod2usage("$0: [USAGE] $_");

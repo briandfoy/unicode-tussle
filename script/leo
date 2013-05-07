@@ -52,7 +52,7 @@ sub main() {                                       sub
 #################################################################
 
 sub uʍopəpᴉƨdn($) {
-    my $_ = shift();
+    local $_ = shift();
 
     $_ = /[^\x00-\x7F]/   # Unicode?
        ? reverse_mark_flip($_)
@@ -135,7 +135,7 @@ sub flip_diacriticals($) {
 
     binmode(DATA, ":utf8");
     local $/ = q[];
-    my $_;
+    local $_;
     my($lhs, $rhs) = ( q[], q[] );
     while (<DATA>) {
 

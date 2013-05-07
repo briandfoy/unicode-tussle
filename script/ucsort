@@ -307,7 +307,7 @@ sub reorder(@) {
 } 
 
 sub flip_fields(_) {
-    my $_ = $_[0];
+    local $_ = $_[0];
 
     my $crlf       = s/(\R+)\z// ? $1 : q();
     my $leading_ws = s/\A(\h+)// ? $1 : q();
@@ -327,7 +327,7 @@ sub flip_fields(_) {
 }
 
 sub flip_line(_) {
-    my $_ = $_[0];
+    local $_ = $_[0];
     s/(\R+)\z//;
     my $crlf = $1 || q();
     $_ = join( "" => reverse /(\X)/g ) . $crlf;

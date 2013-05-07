@@ -874,7 +874,7 @@ sub run_look {
 
     my $found = 0;
 
-    my $_;
+    local $_;
 
     while (<$look_fh>) {
 	idem_print($_);
@@ -913,7 +913,7 @@ sub run_grep {
 
     my $found = 0;
 
-    my $_;
+    local $_;
 
     while (<$raw_db>) {
 	next unless /$pattern/ || NFC($_) =~ /$pattern/;
@@ -953,7 +953,7 @@ sub run_agrep {
 
     my $found = 0;
 
-    my $_;
+    local $_;
     while (<$agrep_fh>) {
 	idem_print($_);
 	$found++;
@@ -977,7 +977,7 @@ sub idem_print {
 
     my $entry = NFC shift();
 
-    my $_ = $entry;
+    local $_ = $entry;
     s/.*\t// || panic("malformed input");
 
     if (/\N{LEFTWARDS ARROW}/) {
@@ -1251,7 +1251,7 @@ END_OF_OVERRIDE
 sub reduce_for_sorting {
     ARGCOUNT() unless @_ == 1;
 
-    my $_ = $_[0];
+    local $_ = $_[0];
 
     s/[\N{LEFTWARDS ARROW}\N{RIGHTWARDS ARROW}].*//;
 
