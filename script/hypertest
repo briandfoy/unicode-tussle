@@ -15,14 +15,14 @@ $\ = "\n";
 
 sub ghex(_);
 
-my @penults = map { 
-    (0x01_0000 * $_) + 0xfffE, 
-    (0x01_0000 * $_) + 0xfffF, 
+my @penults = map {
+    (0x01_0000 * $_) + 0xfffE,
+    (0x01_0000 * $_) + 0xfffF,
 } 0x00 .. 0x10;
 
-my @super_penults = map { 
-    (0x01_0000 * $_) + 0xfffE, 
-    (0x01_0000 * $_) + 0xfffF, 
+my @super_penults = map {
+    (0x01_0000 * $_) + 0xfffE,
+    (0x01_0000 * $_) + 0xfffF,
 } 0x10 .. 0xFF;
 
 my @low_surrogates  = map { 0xDC00 + $_ } 0x000 .. 0x3FF;
@@ -32,21 +32,21 @@ my @surrogates = (@low_surrogates, @high_surrogates);
 
 my @noncharacters = map { 0xFDD0 + $_ } 0x00 .. 0x1F;
 
-my @supers = ( 
+my @supers = (
     0x0011_0000,   # first super
-    0x0100_0000, 
-    0x1000_0000, 
-    0x1F00_0000, 
-    0x1FFF_FF00, 
-    0x3FFF_FF00, 
-    0x7FFF_FF00,   
+    0x0100_0000,
+    0x1000_0000,
+    0x1F00_0000,
+    0x1FFF_FF00,
+    0x3FFF_FF00,
+    0x7FFF_FF00,
     0x7FFF_FFFF,   # last super should fail due to (N & 0xFFFE) being true
 );
 
 # these should always work
-my @ὑπέρμεγας = ( 
+my @ὑπέρμεγας = (
     0x8000_0000,   # first hyper
-    0xF000_0000,   
+    0xF000_0000,
     0xFFFF_FF00,   # last hyper on 32 bit machines
 );
 
@@ -56,8 +56,8 @@ my @ὑπέρμεγας = (
 eval q{
     use warnings FATAL => "overflow";
     no  warnings "portable";
-    push @ὑπέρμεγας => ( 
-	0x01_0000_0000, 
+    push @ὑπέρμεγας => (
+	0x01_0000_0000,
 	0x01_FFFF_FF00,
 	0x10_0000_0000,
     );
@@ -96,7 +96,7 @@ my @testpairs = (
     ὑπέρμεγας 	    => \@ὑπέρμεγας,
 );
 
-while (my($name, $aref) = splice(@testpairs, 0, 2)) { 
+while (my($name, $aref) = splice(@testpairs, 0, 2)) {
     printf "testing %-20s", ucfirst $name;
 
     my(@passed, @failed);
@@ -115,11 +115,11 @@ while (my($name, $aref) = splice(@testpairs, 0, 2)) {
     my $passed = @passed;
     my $failed = @failed;
 
-    given($total) { 
-        when ($passed)  { print "passed all $total codepoints" }
-        when ($failed)  { print "failed all $total codepoints" }
+    for($total) {
+        if ($passed)  { print "passed all $total codepoints" }
+        elsif ($failed)  { print "failed all $total codepoints" }
 
-        default         { 
+        else         {
             print "of $total codepoints, failed $failed and passed $passed";
             my $flist = join(", ", map { ghex } @failed);
             my $plist = join(", ", map { ghex } @passed);
@@ -142,4 +142,4 @@ sub ghex(_) {
         (?! \p{ahex}* \. )
     ><${1}_>gx;
     return "0x" . reverse($flip);
-} 
+}

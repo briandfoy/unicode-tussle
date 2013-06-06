@@ -34,8 +34,9 @@ sub yuck($) {
 
 process_input(\&countem);
 
-sub countem { 
-    my ($_, $file) = @_;
+sub countem {
+	local $_ = shift;
+    my ($file) = @_;
 
     my (
 	@paras, @lines, @words,

@@ -14,7 +14,7 @@
 
 use 5.10.1;
 use strict;
-use autodie; 
+use autodie;
 
 use warnings qw[ FATAL all ];
 
@@ -46,7 +46,7 @@ sub usage(;$);
 
 ##
 ## ** THIS IS AN UNSUPPORTED, PRE-RELEASE VERSION ONLY **
-## 
+##
 our $VERSION = "0.3";
 
 our %Opt;
@@ -70,9 +70,9 @@ sub main() {
 	print for reverse @output;
     } else {
 	print for         @output;
-    } 
+    }
 
-} 
+}
 
 #################################################################
 
@@ -81,16 +81,16 @@ sub get_input() {
 
     if (!@ARGV && -t STDIN) {
 	warn "$0: reading from stdin, type ^D to end, ^C to kill...\n";
-    } 
+    }
 
     if (my $incoding = $Opt{"input-encoding"}) {
 	# need postfix :: to insist is classname not builtin function
 	open::->import(IN => $incoding);
-    } 
+    }
 
     local $/ = "" if $Opt{paragraph};
     return <>;
-} 
+}
 
 #################################################################
 
@@ -141,42 +141,50 @@ sub load_options() {
     if ($Opt{"case-insensitive"}) {
 	if ($Opt{"level"}) {
 	    usage "you already specified a level of --level=$Opt{level}";
-	} 
+	}
 	$Opt{"level"} = 1;
-    } 
+    }
+
+	state $nf_types = {
+		map { $_, 1 } qw[NFD NFC NFKD NFKC undef prenormalized]
+		};
 
     if (my $nf = $Opt{"normalization"}) {
-	unless ($nf ~~ [ qw[NFD NFC NFKD NFKC undef prenormalized] ]) {
+	unless (exists $nf_types->{$nf}) {
 	    usage "unrecognized normalization of --normalization=$Opt{normalization}";
-	} 
+	}
     }
+
+	state $var_types = {
+		map { $_, 1 } qw[ blanked non-ignorable shifted shift-trimmed ]
+		};
 
     if (my $var = $Opt{"variable"}) {
-	unless (lc $var ~~ [ qw[ blanked non-ignorable shifted shift-trimmed ] ]) {
+	unless ( exists $var_types->{lc $var}) {
 	    usage "bogus value --variable=$var";
-	} 
+	}
     }
 
-    if (my $levels = $Opt{"backwards-levels"} ) { 
+    if (my $levels = $Opt{"backwards-levels"} ) {
 	unless ($levels =~ /^[1-5]+$/) {
 	    usage "bogus value backwards-levels=$levels";
-	} 
+	}
     }
 
     if (my $code = $Opt{"preprocess"}) {
 	$Opt{"preprocess"} = compile($code)
 	    || usage("error in preprocess code $code: $@");
-    } 
+    }
 
     if (my $code = $Opt{"ignore-CJK"}) {
 	$Opt{"ignore-CJK"} = compile($code)
 	    || usage("error in ignore-CJK code $code: $@");
-    } 
+    }
 
     if (my $code = $Opt{"ignore-Hangul"}) {
 	$Opt{"ignore-Hangul"} = compile($code)
 	    || usage("error in ignore-Hangul code $code: $@");
-    } 
+    }
 
 }
 
@@ -191,12 +199,12 @@ sub dequeue($$) {
 sub deQ($) {
     my $text = $_[0];
     return dequeue q<|Q|>,  $text;
-} 
+}
 
 sub deQQ($) {
     my $text = $_[0];
     return dequeue qq<|QQ|>, $text;
-} 
+}
 
 #################################################################
 
@@ -207,9 +215,9 @@ sub compile($) {
                 |QQ|    use warnings qw[FATAL all];
                 |QQ|    no  warnings "utf8";
                 |QQ|
-                |QQ|    sub { 
-                |QQ|           my \$_ = shift; 
-                |QQ|           $CODE; 
+                |QQ|    sub {
+                |QQ|           my \$_ = shift;
+                |QQ|           $CODE;
                 |QQ|           return \$_;
                 |QQ|    }
                 |QQ|
@@ -217,7 +225,7 @@ END_OF_COMPILATION
 
     return eval $wrap;
 
-} 
+}
 
 #################################################################
 
@@ -226,11 +234,11 @@ sub usage(;$) {
     print STDERR "$0: USAGE ERROR!", $msg, "\n";
     pod2usage(1);
     confess "NOT REACHED";
-} 
+}
 
 #################################################################
 
-# this all done the expensive way with lots of copying 
+# this all done the expensive way with lots of copying
 #
 sub reorder(@) {
     @_		|| confess "usage error: need arguments";
@@ -238,14 +246,14 @@ sub reorder(@) {
     my @inputs = @_;
 
     my $lines_flipped = $Opt{"right-to-left"};
-    if ($lines_flipped) { 
+    if ($lines_flipped) {
 	@inputs = map { flip_line } @inputs;
-    } 
+    }
 
     my $fields_flipped = $Opt{"reverse-fields"};
     if ($fields_flipped) {
 	@inputs = map { flip_fields } @inputs;
-    } 
+    }
 
     my $collation_class = Unicode::Collate::;
     my @tailoring = ();
@@ -254,19 +262,19 @@ sub reorder(@) {
 	require Unicode::Collate::Locale;
 	$collation_class = Unicode::Collate::Locale::;
 	push @tailoring, locale => $Opt{locale};
-    } 
+    }
 
-    ## if ($Opt{"case-insensitive"}) { push @tailoring, level => 1; } 
+    ## if ($Opt{"case-insensitive"}) { push @tailoring, level => 1; }
 
     if ($Opt{"upper-before-lower"}) {
 	push @tailoring, upper_before_lower => 1;
-    } 
+    }
 
     if ($Opt{"collation-level"}) {
 	push @tailoring, collation_level => 1;
-    } 
+    }
 
-    if ($Opt{"override-CJK"}) { 
+    if ($Opt{"override-CJK"}) {
 	push @tailoring, override_CJK => $Opt{"override-CJK"};
     }
 
@@ -282,44 +290,44 @@ sub reorder(@) {
 	push @tailoring, katakana_before_hiragana => 1;
     }
 
-    if ($Opt{"backwards-levels"} ) { 
+    if ($Opt{"backwards-levels"} ) {
 	my @backwards_levels = $Opt{"backwards-levels"} =~ /(\d)/g;
 	push @tailoring, backwards => \@backwards_levels;
     }
 
     if ($Opt{"variable"}) {
 	push @tailoring, variable => $Opt{"variable"};
-    } 
+    }
 
     my $collator = $collation_class->new(@tailoring);
     my @output   = $collator->sort(@inputs);
 
-    if ($fields_flipped) { 
+    if ($fields_flipped) {
 	@output = map { flip_fields } @output;
-    } 
+    }
 
-    if ($lines_flipped) { 
+    if ($lines_flipped) {
 	@output = map { flip_line } @output;
-    } 
+    }
 
     return @output;
 
-} 
+}
 
 sub flip_fields(_) {
-    my $_ = $_[0];
+    local $_ = $_[0];
 
     my $crlf       = s/(\R+)\z// ? $1 : q();
     my $leading_ws = s/\A(\h+)// ? $1 : q();
 
     no warnings "utf8";
 
-    my ($IFS,  $OFS) 
-	    = 
+    my ($IFS,  $OFS)
+	    =
        (" ", "\x{FFFF}");
 
-    ($IFS, $OFS) 
-	 = 
+    ($IFS, $OFS)
+	 =
     ($OFS, $IFS)  if /\x{FFFF}/;  # déjà vu
 
     my @fields = reverse split $IFS;
@@ -327,12 +335,12 @@ sub flip_fields(_) {
 }
 
 sub flip_line(_) {
-    my $_ = $_[0];
+    local $_ = $_[0];
     s/(\R+)\z//;
     my $crlf = $1 || q();
     $_ = join( "" => reverse /(\X)/g ) . $crlf;
     return $_;
-} 
+}
 
 
 #################################################################
@@ -404,7 +412,7 @@ TO BE WRITTEN: BUGS
 
 =head1 SEE ALSO
 
-The L<Unicode::Collate> and 
+The L<Unicode::Collate> and
 L<Unicode::Collate::Locale> Perl modules.
 
 =head1 AUTHOR
