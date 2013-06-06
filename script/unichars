@@ -302,6 +302,7 @@ sub compile_filter() {
 
         my $test_compile  = deQ <<'START_TEST';
             |Q|    use warnings qw[FATAL all];
+            |Q|    no if $] >= 5.018, 'warnings', 'experimental::smartmatch';
             |Q|    my $ignore  =
 START_TEST
            $test_compile .= deQQ(<<"END_TEST");
@@ -317,7 +318,7 @@ END_TEST
         eval($test_compile) ||
             die "$0: invalid criterion in '$snippet': $@\n";
 
-        $criteria[$i] = "do { $snippet }";
+        $criteria[$i] = "do { no if \$] >= 5.018, 'warnings', 'experimental::smartmatch'; $snippet }";
     }
 
     my $real_code  = deQ(<<'START_CODE') . "\t";
