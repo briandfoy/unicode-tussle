@@ -540,7 +540,7 @@ sub is_runnable {
 }
 
 sub stupid_evil_and_wrong {
-    return lc $^O ~~ [ qw<dos os2 netware symbian mswin32> ];
+    return !! grep { lc $^O eq $_ } qw<dos os2 netware symbian mswin32>;
 }
 
 sub panic {
