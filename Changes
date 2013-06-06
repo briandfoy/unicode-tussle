@@ -1,4 +1,8 @@
 
+1.03_04 - Thu Jun  6 15:19:10 2013
+	* Remove 5.10 features which Perl 5.18 now makes experimental
+	compilation errors.
+
 1.03_01 - Mon Jul 25 01:12:00 2011
 	* A minor adjustment to the compile.t test
 
