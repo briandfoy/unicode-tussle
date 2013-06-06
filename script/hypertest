@@ -115,18 +115,14 @@ while (my($name, $aref) = splice(@testpairs, 0, 2)) {
     my $passed = @passed;
     my $failed = @failed;
 
-    given($total) { 
-        when ($passed)  { print "passed all $total codepoints" }
-        when ($failed)  { print "failed all $total codepoints" }
-
-        default         { 
+    if	  ($total == $passed) { print "passed all $total codepoints" }
+    elsif ($total == $failed) { print "failed all $total codepoints" }
+    else {
             print "of $total codepoints, failed $failed and passed $passed";
             my $flist = join(", ", map { ghex } @failed);
             my $plist = join(", ", map { ghex } @passed);
             print "\tpassed: $plist";
             print "\tfailed: $flist";
-        }
-
     }
 
 }

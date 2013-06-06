@@ -146,14 +146,14 @@ sub load_options() {
     } 
 
     if (my $nf = $Opt{"normalization"}) {
-	unless ($nf ~~ [ qw[NFD NFC NFKD NFKC undef prenormalized] ]) {
+	unless (grep { $nf eq $_ } qw[NFD NFC NFKD NFKC undef prenormalized]) {
 	    usage "unrecognized normalization of --normalization=$Opt{normalization}";
 	} 
     }
 
-    if (my $var = $Opt{"variable"}) {
-	unless (lc $var ~~ [ qw[ blanked non-ignorable shifted shift-trimmed ] ]) {
-	    usage "bogus value --variable=$var";
+    if (my $var = lc $Opt{"variable"}) {
+	unless (grep { $var eq $_ } qw[ blanked non-ignorable shifted shift-trimmed ]) {
+	    usage "bogus value --variable=$Opt{variable}";
 	} 
     }
 

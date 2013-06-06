@@ -144,15 +144,16 @@ sub process_input {
 
     sub stringify(_);
 
-    given (%Opt) {
-	when (["octal"])    { *stringify = \&convert_to_octal	  }
-	when (["bytes"])    { *stringify = \&convert_to_bytes	  }
-	when (["hex"]) 	    { *stringify = \&convert_to_hex  	  }
-	when (["html4"])     { *stringify = \&convert_to_html4	  }
-	when (["html5"])     { *stringify = \&convert_to_html5	  }
-	when (["xml"])      { *stringify = \&convert_to_xml	  }
-	when (["names"])    { *stringify = \&convert_to_names	  }
-	default		    { *stringify = \&convert_to_U_numbers }
+    for (\%Opt) {
+	if ($_->{"octal"})    { *stringify = \&convert_to_octal; last	  }
+	if ($_->{"bytes"})    { *stringify = \&convert_to_bytes; last	  }
+	if ($_->{"hex"}) 	    { *stringify = \&convert_to_hex; last  	  }
+	if ($_->{"html4"})     { *stringify = \&convert_to_html4; last	  }
+	if ($_->{"html5"})     { *stringify = \&convert_to_html5; last	  }
+	if ($_->{"xml"})      { *stringify = \&convert_to_xml; last	  }
+	if ($_->{"names"})    { *stringify = \&convert_to_names; last	  }
+
+	*stringify = \&convert_to_U_numbers;
     }
 
 
@@ -230,12 +231,12 @@ sub set_encoding(*$) {
 
     my $enc_name;
 
-    if (%Opt ~~ ["bytes", "octal"]) {
+    if (exists $Opt{bytes} or exists $Opt{octal}) {
         $enc_name = "bytes";
     }
     elsif (my $enc = $Opt{encoding}) {
         $enc =~ s/^://;
-        if ($enc ~~ [qw(bytes crlf utf8)]) {
+        if (grep { $enc eq $_ } qw(bytes crlf utf8)) {
             $enc_name = $enc;
         } else {
             $enc_name = "encoding($enc)";
@@ -2866,11 +2867,13 @@ sub commaʼd_list {
         when (0)  { return q() }
         when (1)  { return $arg[0] }
         when (2)  {
-            panic("list @arg already has an and in it") if @arg ~~ /\band\b/;
+            panic("list @arg already has an and in it")
+                if grep { /\band\b/ } @arg;
             return "$arg[0] and $arg[1]";
         }
         default   {
-            panic("list @arg already has an and in it") if @arg ~~ /\band\b/;
+            panic("list @arg already has an and in it")
+                if grep { /\band\b/ } @arg;
             return join "$sepchar " => (
                 @arg[ 0 .. ($#arg-1) ],
                 "and $arg[-1]",
