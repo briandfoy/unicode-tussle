@@ -4,6 +4,7 @@ data/words.utf8
 java/tchrist-unicode-charclasses__alpha.java
 lib/Unicode/Tussle.pm
 LICENSE
+Makefile.PL
 MANIFEST			This list of files
 META.json
 META.yml
@@ -11,6 +12,7 @@ README
 script/byte2uni
 script/es-sort
 script/FixString.pm
+script/ForbidUnderscore.pm
 script/hantest
 script/havshpx
 script/hypertest
@@ -32,7 +34,6 @@ script/tcgrep
 script/titulate
 script/uc
 script/ucsort
-script/ForbidUnderscore.pm
 script/unicaps
 script/unichars
 script/unicore/all_alias.pl
