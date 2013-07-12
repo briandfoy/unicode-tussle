@@ -32,7 +32,7 @@ script/tcgrep
 script/titulate
 script/uc
 script/ucsort
-script/Underscore.pm
+script/ForbidUnderscore.pm
 script/unicaps
 script/unichars
 script/unicore/all_alias.pl
