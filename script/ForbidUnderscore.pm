@@ -1,4 +1,4 @@
-package Underscore;
+package ForbidUnderscore;
 use Carp;
 sub TIESCALAR { bless \my $dummy => shift }
 sub FETCH { croak 'Read access to $_ forbidden'  }
