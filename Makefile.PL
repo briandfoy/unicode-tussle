@@ -11,7 +11,7 @@ WriteMakefile(
 	NAME           => 'Unicode::Tussle',
 	VERSION_FROM   => 'lib/Unicode/Tussle.pm',
 	ABSTRACT       => "Tom's Unicode Scripts So Life is Easier",
-	AUTHOR         => 'brian d foy <bdfoy@cpan.org>',
+	AUTHOR         => 'Tom Christiansen <tom@perl.com>',
 	LICENSE        => 'perl',
 
 	PREREQ_PM       => {
@@ -30,11 +30,12 @@ WriteMakefile(
 
 	META_MERGE => {
 		"meta-spec" => { version => 2 },
-
-		repository => {
-			type => 'git',
-			url  => 'https://github.com/briandfoy/Unicode-Tussle.git',
-			web  => 'https://github.com/briandfoy/Unicode-Tussle',
+		resources => {
+			repository => {
+				type => 'git',
+				url  => 'https://github.com/briandfoy/Unicode-Tussle.git',
+				web  => 'https://github.com/briandfoy/Unicode-Tussle',
+				},
 			},
 		},
 	
