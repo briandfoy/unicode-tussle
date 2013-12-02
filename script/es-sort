@@ -24,7 +24,7 @@ ENTRY
        upper_before_lower => 1,
        normalization => "NFKD",
        preprocess => sub {    
-          my $_ = shift;
+          local $_ = shift;
        # 1st strip leading articles
           s/^L'//;    # Catalan
 	  s{ ^

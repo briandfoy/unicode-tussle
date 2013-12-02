@@ -193,7 +193,7 @@ SALIDA
        normalization => "NFKD",  # ¿Y porqué no?
 
        preprocess => sub {
-           my $_ = shift;
+           local $_ = shift;
 
        ###
        # no incluye los artículos definitivos ni indefinitivos

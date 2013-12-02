@@ -11,7 +11,7 @@ s/^/\n\xA0/;
 s/$/\xA0\n/;
 
 sub ul {
-    my $_ = @_ ? shift() : $_;
+    local $_ = @_ ? shift() : $_;
     s/(?=.)(\X)/$1\x{305}/g;
     return $_;
 } 

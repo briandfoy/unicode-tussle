@@ -183,7 +183,7 @@ sub main() {
 
     }xi;
 
-ARG: for my $_ (@ARGV) {
+ARG: for (@ARGV) {
 
         if (length == 1) {
             uprops_chr($_);
@@ -237,7 +237,7 @@ sub debug($) {
 } 
 
 sub quote($) {
-    my $_ = shift();
+    local $_ = shift();
     my($LQ, $RQ) = ${^UTF8LOCALE}
                      ? ("\N{SINGLE LEFT-POINTING ANGLE QUOTATION MARK}",
                         "\N{SINGLE RIGHT-POINTING ANGLE QUOTATION MARK}")
@@ -446,7 +446,7 @@ sub attractively {
 }
 
 sub perlprops($) {
-    my $_ = shift();
+    local $_ = shift();
     my @retlist = ();
 
     no warnings "utf8";
@@ -541,7 +541,7 @@ sub uniprops($) {
             |Q| no warnings "redefine";
             |Q|
             |Q| sub uniprops($) {
-            |Q|     my $_ = shift();
+            |Q|     local $_ = shift();
             |Q|     my @retlist = ();
             |Q|
 
@@ -584,7 +584,7 @@ sub dequeue($$) {
 }
 
 sub beautify(_) {
-    my $_ = shift();
+    local $_ = shift();
     s/\s//g;
     s/:/=/g;
     s/-/_/g;
@@ -643,7 +643,7 @@ sub load_properties() {
     } else {
         debug("reading properties from DATA");
         # can't find it, reading static list from <DATA>
-        my $_;
+        local $_;
         while (<DATA>) {
             chomp;
             next if /^\s*$/;
@@ -670,7 +670,7 @@ sub load_properties() {
         || die "can't open $unipod: $!";
 
     local $/ = undef;
-    my $_ = <$pod_fh>;
+    local $_ = <$pod_fh>;
     close($pod_fh)      || die "$0: can't close $unipod: $!";
 
     s/ .*? ^ \s+ NAME \s+ INFO \s* \n //msx

@@ -69,7 +69,7 @@ sub tabbed_sizing {
 
 
 sub usage($) {
-    my $_ = $_[0];
+    local $_ = $_[0];
     s/^(\p{Ll})/\u$1/;
     s/$/./ if /^\pL/ && !/\.$/;
     pod2usage("$0: [USAGE] $_");
