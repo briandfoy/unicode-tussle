@@ -10,7 +10,7 @@ my @unicore = glob 'script/unicore/*';
 WriteMakefile(
 	NAME           => 'Unicode::Tussle',
 	VERSION_FROM   => 'lib/Unicode/Tussle.pm',
-	ABSTRACT       => "Tom's Unicode Scripts So Life is Easier",
+	ABSTRACT_FROM  => 'lib/Unicode/Tussle.pm',
 	AUTHOR         => 'Tom Christiansen <tom@perl.com>',
 	LICENSE        => 'perl',
 
