@@ -2,7 +2,7 @@ use v5.10.1;
 use strict;
 use warnings;
 
-use ExtUtils::MakeMaker 6.48;
+use ExtUtils::MakeMaker 6.64;
 
 my @scripts = grep { -f and ! -d } glob 'script/*';
 my @unicore = glob 'script/unicore/*';
@@ -24,8 +24,8 @@ WriteMakefile(
 		'Lingua::KO::Romanize::Hangul'   => '0',
 		},
 	
-	BUILD_REQUIRES => {
-		'ExtUtils::MakeMaker' => '6.48',
+	CONFIGURE_REQUIRES => {
+		'ExtUtils::MakeMaker' => '6.64',
 		},
 
 	META_MERGE => {
