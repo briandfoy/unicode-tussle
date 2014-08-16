@@ -1,4 +1,7 @@
 
+1.06 - Sat Aug 16 17:27:22 2014
+	* Fix some docs
+
 1.05 - Mon Dec  2 09:47:12 2013
 	* Remove uses of my $_, which is now an experimental and warning 
 	feature.
