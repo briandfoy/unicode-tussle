@@ -4,14 +4,17 @@ use warnings;
 
 use ExtUtils::MakeMaker 6.64;
 
-my @scripts = grep { -f and ! -d } glob 'script/*';
+
+my @scripts = grep { -f and ! -d and ! /\.pm$|\.pod$|README/ }
+	glob 'script/*';
+
 my @unicore = glob 'script/unicore/*';
 
 WriteMakefile(
 	NAME           => 'Unicode::Tussle',
 	VERSION_FROM   => 'lib/Unicode/Tussle.pm',
 	ABSTRACT_FROM  => 'lib/Unicode/Tussle.pm',
-	AUTHOR         => 'Tom Christiansen <tom@perl.com>',
+	AUTHOR         => 'Tom Christiansen <tchrist@perl.com>',
 	LICENSE        => 'perl',
 
 	PREREQ_PM       => {
