@@ -1,4 +1,7 @@
 
+1.08 - Tue Aug 26 19:02:12 2014
+	* Remove Build.PL. Let's stick with one build system.
+
 1.07 - Tue Aug 26 17:07:01 2014
 	* Don't install everything in script/ RT #98126 (Non-programs installed to bindir)
 
