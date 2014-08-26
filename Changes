@@ -1,4 +1,8 @@
 
+1.07 - Tue Aug 26 17:07:01 2014
+	* Don't install everything in script/ RT #98126 (Non-programs installed to bindir)
+
+
 1.05 - Mon Dec  2 09:47:12 2013
 	* Remove uses of my $_, which is now an experimental and warning 
 	feature.
