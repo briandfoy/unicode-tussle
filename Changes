@@ -7,7 +7,7 @@
 
 
 1.05 - Mon Dec  2 09:47:12 2013
-	* Remove uses of my $_, which is now an experimental and warning 
+	* Remove uses of my $_, which is now an experimental and warning
 	feature.
 
 1.04 - Thu Jul 18 02:56:29 2013
@@ -15,7 +15,7 @@
 	* Change the author to Tom C., which it should have always been
 
 1.03_05 - Thu Jul 11 21:11:54 2013
-	* Change Underscore.pm to ForbidUnderscore.pm. VTI owns the 
+	* Change Underscore.pm to ForbidUnderscore.pm. VTI owns the
 	other namespace for a different reason.
 	* Switch to Makefile.PL
 
