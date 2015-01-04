@@ -1,4 +1,4 @@
-# Changes for Unicode::Tussle
+Revision history for Perl module Unicode::Tussle
 
 1.08 - Tue Aug 26 19:02:12 2014
 	* Remove Build.PL. Let's stick with one build system.
