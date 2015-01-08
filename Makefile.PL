@@ -2,23 +2,37 @@ use v5.10.1;
 use strict;
 use warnings;
 
-
 my @scripts = grep { -f and ! -d and ! /\.pm$|\.pod$|README/ }
 	glob 'script/*';
-
 my @unicore = glob 'script/unicore/*';
 
-my $github    = 'https://github.com/briandfoy/';
-my $main_file = 'lib/';
+use File::Spec::Functions qw(catfile);
+
+my $module    = 'Unicode::Tussle';
+my $github    = 'https://github.com/briandfoy/Unicode-Tussle';
+my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
 my %WriteMakefile = (
-	NAME           => 'Unicode::Tussle',
-	VERSION_FROM   => 'lib/Unicode/Tussle.pm',
-	ABSTRACT_FROM  => 'lib/Unicode/Tussle.pm',
+	NAME           => $module,
+	VERSION_FROM   => $main_file,
+	ABSTRACT_FROM  => $main_file,
 	AUTHOR         => 'Tom Christiansen <tchrist@perl.com>',
 	LICENSE        => 'perl',
 
-	PREREQ_PM       => {
+	EXE_FILES   => [ @scripts ],
+
+	'CONFIGURE_REQUIRES' => {
+		'ExtUtils::MakeMaker' => '6.64',
+		},
+
+	'BUILD_REQUIRES' => {
+		},
+
+	'TEST_REQUIRES' => {
+		'Test::More' => '0.94',
+		},
+
+	'PREREQ_PM'     => {
 		'Lingua::EN::Syllable'           => '0',
 		'Unicode::GCString'              => '0',
 		'Unicode::Unihan'                => '0',
@@ -27,23 +41,21 @@ my %WriteMakefile = (
 		'Lingua::ZH::Romanize::Pinyin'   => '0',
 		'Lingua::KO::Romanize::Hangul'   => '0',
 		},
-	
-	CONFIGURE_REQUIRES => {
-		'ExtUtils::MakeMaker' => '6.64',
-		},
 
-	META_MERGE => {
-		"meta-spec" => { version => 2 },
+	'META_MERGE' => {
+		'meta-spec' => { version => 2 },
 		resources => {
 			repository => {
 				type => 'git',
-				url  => 'https://github.com/briandfoy/Unicode-Tussle.git',
-				web  => 'https://github.com/briandfoy/Unicode-Tussle',
+				url  => "$github.git",
+				web  => $github,
 				},
+			bugtraker => {
+				web    => "$github/issues",
+				},
+			homepage => $github,
 			},
 		},
-	
-	EXE_FILES   => [ @scripts ],
 		
 	clean => { FILES => 'Unicode-* *.bak *.old' },
 	);
