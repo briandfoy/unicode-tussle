@@ -1,6 +1,4 @@
 use v5.10.1;
-
-package Unicode::Tussle;
 use strict;
 use warnings;
 
@@ -10,7 +8,7 @@ my @unicore = glob 'script/unicore/*';
 
 use File::Spec::Functions qw(catfile);
 
-my $module    = __PACKAGE__;
+my $module    = 'Unicode::Tussle';
 my $github    = 'https://github.com/briandfoy/Unicode-Tussle';
 my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
@@ -73,7 +71,7 @@ sub do_it {
 		eval{ "$MM " . $WriteMakefile{'CONFIGURE_REQUIRES'}{'ExtUtils::MakeMaker'} }
 			//
 		"$MM 6.64";
-	eval "use $MM_version" || die "Could not load $MM_version: $@";
+	eval "use $MM_version; 1" or die "Could not load $MM_version: $@";
 	eval "use Test::Manifest 1.21" 
 		if -e File::Spec->catfile( qw(t test_manifest) );
 	WriteMakefile( %WriteMakefile );
