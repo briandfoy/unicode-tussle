@@ -9,6 +9,8 @@ my @unicore = glob 'script/unicore/*';
 use File::Spec::Functions qw(catfile);
 
 my $module    = 'Unicode::Tussle';
+( my $dist = $module ) =~ s/::/-/g;
+
 my $github    = 'https://github.com/briandfoy/Unicode-Tussle';
 my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
