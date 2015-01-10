@@ -60,7 +60,7 @@ my %WriteMakefile = (
 			},
 		},
 		
-	clean => { FILES => 'Unicode-* *.bak *.old' },
+	clean => { FILES => "$dist-*" },
 	);
 
 sub arguments { \%WriteMakefile }
