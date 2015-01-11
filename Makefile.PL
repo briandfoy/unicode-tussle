@@ -1,5 +1,3 @@
-use v5.10.1;
-
 package Unicode::Tussle;
 use strict;
 use warnings;
@@ -25,7 +23,7 @@ my %WriteMakefile = (
 	'AUTHOR'         => 'Tom Christiansen <tchrist@perl.com>',
 	'LICENSE'        => 'perl',
 
-	'EXE_FILES   => [ @scripts ],
+	'EXE_FILES'   => [ @scripts ],
 
 	'CONFIGURE_REQUIRES' => {
 		'ExtUtils::MakeMaker'   => '6.64',
@@ -75,12 +73,17 @@ sub do_it {
 	my $MM ='ExtUtils::MakeMaker';
 	my $MM_version =
 		eval{ "$MM " . $WriteMakefile{'CONFIGURE_REQUIRES'}{'ExtUtils::MakeMaker'} }
-			//
+			||
 		"$MM 6.64";
 	eval "use $MM_version; 1" or die "Could not load $MM_version: $@";
 	eval "use Test::Manifest 1.21" 
 		if -e File::Spec->catfile( qw(t test_manifest) );
-	WriteMakefile( %WriteMakefile );
+	
+	my $arguments = arguments();
+	my $minimum_perl = $arguments->{MIN_PERL_VERSION} || '5.008';
+	eval "require $minimum_perl;" or die $@;
+
+	WriteMakefile( %$arguments );
 	}
 
 
