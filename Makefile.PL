@@ -17,13 +17,15 @@ my $github    = 'https://github.com/briandfoy/Unicode-Tussle';
 my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
 my %WriteMakefile = (
-	NAME           => $module,
-	VERSION_FROM   => $main_file,
-	ABSTRACT_FROM  => $main_file,
-	AUTHOR         => 'Tom Christiansen <tchrist@perl.com>',
-	LICENSE        => 'perl',
+	'MIN_PERL_VERSION' => '5.010001',
 
-	EXE_FILES   => [ @scripts ],
+	'NAME'           => $module,
+	'VERSION_FROM'   => $main_file,
+	'ABSTRACT_FROM'  => $main_file,
+	'AUTHOR'         => 'Tom Christiansen <tchrist@perl.com>',
+	'LICENSE'        => 'perl',
+
+	'EXE_FILES   => [ @scripts ],
 
 	'CONFIGURE_REQUIRES' => {
 		'ExtUtils::MakeMaker'   => '6.64',
