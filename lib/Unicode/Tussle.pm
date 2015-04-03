@@ -1740,7 +1740,7 @@ and useful program, so here are 861 of them, ucsorted, of course.
 
     tcgrep '^0' ../../new-output/results-go-gene-stemwords-GOOD | ucsort --reverse-input | less
 
-=h3ad2 Demos of unilook
+=head2 Demos of unilook
 
     unilook activation
     unilook adi
