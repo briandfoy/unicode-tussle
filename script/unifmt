@@ -259,6 +259,8 @@ L<fmt(1)>
 L<Text::Autoformat>, L<Text::LineFold>, L<Text::Wrap>,
 L<Unicode::LineBreak>, and L<Unicode::GCString>.
 
+=back
+
 =head1 AUTHOR
 
 Tom Christiansen <tchrist@perl.com>
