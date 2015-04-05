@@ -793,7 +793,7 @@ sub handle_options {
 
     my @no_types = map { "no$_" } @yes_types;
 
-    if (@no_types ~~ %Opt && @yes_types ~~ %Opt ) {
+    if ( ( grep { exists $Opt{$_} } @no_types ) && ( grep { exists $Opt{$_} } @yes_types ) ) {
 	# can't have both
 	pod2usage("Usage error: incompatible mix of yes and no options");
     }
@@ -1382,7 +1382,8 @@ sub is_runnable {
 }
 
 sub stupid_evil_and_wrong {
-    return lc $OSNAME ~~ [ qw<dos os2 netware symbian mswin32> ];
+	my $name = lc $OSNAME;
+    return grep { $name eq $_ } qw<dos os2 netware symbian mswin32>;
 }
 
 #################################################################

@@ -80,7 +80,7 @@ sub refont {
         die if $@;
         #s/ /\N{NO-BREAK SPACE}\N{NO-BREAK SPACE}/g;
         s/ /\N{NO-BREAK SPACE}/g;
-        s/\p{Upper}\K/\N{NARROW NO-BREAK SPACE}/g if $name ~~ [ qr/fraktur/i, qr/script/i ];
+        s/\p{Upper}\K/\N{NARROW NO-BREAK SPACE}/g if $name =~ m/fraktur|script/i;
         printf "%26s %s\n", "$name:", $_  unless $orig eq $_;
     } 
 

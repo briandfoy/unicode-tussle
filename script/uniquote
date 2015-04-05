@@ -230,12 +230,12 @@ sub set_encoding(*$) {
 
     my $enc_name;
 
-    if (%Opt ~~ ["bytes", "octal"]) {
+    if ( grep { exists $Opt{$_} } qw(bytes octal) ) {
         $enc_name = "bytes";
     }
     elsif (my $enc = $Opt{encoding}) {
         $enc =~ s/^://;
-        if ($enc ~~ [qw(bytes crlf utf8)]) {
+        if ( grep { $enc eq $_ } qw(bytes crlf utf8) ) {
             $enc_name = $enc;
         } else {
             $enc_name = "encoding($enc)";
@@ -2866,11 +2866,11 @@ sub commaʼd_list {
         when (0)  { return q() }
         when (1)  { return $arg[0] }
         when (2)  {
-            panic("list @arg already has an and in it") if @arg ~~ /\band\b/;
+            panic("list @arg already has an and in it") if grep /\band\b/, @arg;
             return "$arg[0] and $arg[1]";
         }
         default   {
-            panic("list @arg already has an and in it") if @arg ~~ /\band\b/;
+            panic("list @arg already has an and in it") if grep /\band\b/, @arg;
             return join "$sepchar " => (
                 @arg[ 0 .. ($#arg-1) ],
                 "and $arg[-1]",
@@ -3164,7 +3164,7 @@ First public release February 27, 2011.
 
 =head1 AUTHOR
 
-Tom Christiansen <I<tchrist@perl.com>>
+Tom Christiansen C<< <tchrist@perl.com> >>
 
 =head1 COPYRIGHT AND LICENCE
 
