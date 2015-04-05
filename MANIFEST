@@ -5,6 +5,7 @@ lib/Unicode/Tussle.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
+MANIFEST.SKIP
 META.json
 META.yml
 README.pod
