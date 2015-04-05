@@ -55,3 +55,4 @@ script/uniwide
 script/vowel-sigs
 t/compile.t
 xt/changes.t
+xt/pod.t
