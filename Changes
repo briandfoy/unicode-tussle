@@ -1,6 +1,6 @@
 Revision history for Perl module Unicode::Tussle
 
-1.09 2015-04-11T23:09:59Z
+1.11 2015-04-11T23:09:59Z
 	* Require v5.14, which some scripts need
 
 1.09 2015-04-05T11:55:32Z
