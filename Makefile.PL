@@ -48,7 +48,7 @@ my $github    = 'https://github.com/briandfoy/Unicode-Tussle';
 my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
 my %WriteMakefile = (
-	'MIN_PERL_VERSION' => '5.010001',
+	'MIN_PERL_VERSION' => '5.014001',
 
 	'NAME'           => $module,
 	'VERSION_FROM'   => $main_file,
