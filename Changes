@@ -14,7 +14,6 @@ Revision history for Perl module Unicode::Tussle
 1.07 - 2014-08-26
 	* Don't install everything in script/ RT #98126 (Non-programs installed to bindir)
 
-
 1.05 - 2013-12-02
 	* Remove uses of my $_, which is now an experimental and warning
 	feature.
