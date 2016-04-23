@@ -67,7 +67,8 @@ my %WriteMakefile = (
 		},
 
 	'TEST_REQUIRES' => {
-		'Test::More' => '0.94',
+		'Test::More'    => '0.94',
+		'MIME::Charset' => '0.011.1',
 		},
 
 	'PREREQ_PM'     => {
