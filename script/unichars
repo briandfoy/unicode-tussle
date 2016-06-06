@@ -540,7 +540,8 @@ sub is_runnable {
 }
 
 sub stupid_evil_and_wrong {
-    return lc $^O ~~ [ qw<dos os2 netware symbian mswin32> ];
+    state $stupid_evil_and_wrong = { map { $_ => 1 } qw<dos os2 netware symbian mswin32> };
+    return $stupid_evil_and_wrong->{ lc $^O };
 }
 
 sub panic {
