@@ -35,7 +35,8 @@ eval {
 	require Lingua::JA::Romanize::Japanese;
 	Lingua::JA::Romanize::Japanese->import;
 	} or do {
-	croak( "Could not load Lingua::JA::Romanize::Japanese! Perhaps you need to install it" );
+		croak( "Could not load Lingua::JA::Romanize::Japanese! Perhaps you need to install it" );
+	};
 
 use Lingua::ZH::Romanize::Pinyin;
 use Lingua::KO::Romanize::Hangul;
