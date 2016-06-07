@@ -1,5 +1,10 @@
 Revision history for Perl module Unicode::Tussle
 
+1.111_01 2016-06-07T21:58:53Z
+	* Be careful about loading Lingua::JA::Romanize::Japanese in hantest
+	since some places have trouble installing it. Don't make that failure
+	a compilation error.
+
 1.111 2016-06-07T18:55:18Z
 	* Removed a smart-match in unichars
 
