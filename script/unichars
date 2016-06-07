@@ -1,5 +1,5 @@
-#!/usr/local/bin/perl 
-#!/usr/bin/env   perl 
+#!/usr/local/bin/perl
+#!/usr/bin/env   perl
 #!/bin/sh
 
 ######################################################################
@@ -32,7 +32,7 @@ eval 'exec perl -x -S $0 ${1+"$@"}'
 ###   with wherever you have a late enough version of Perl is      ###
 ###   installed.  Will run under 5.10, but prefers 5.12 or better. ###
 ######################################################################
-#!/usr/local/bin/perl 
+#!/usr/local/bin/perl
 # ^^^^^^^^^^^^^^  <=== CHANGE ME                                   ###
 ######################################################################
 
@@ -116,7 +116,7 @@ exit;
 sub   IT() { $_ }
 sub NAME() { charnames::viacode(ord $_) || "" }
 
-sub genfuncs  { 
+sub genfuncs  {
 
     for my $nf ( qw< NFD NFC NFKD NFKC FCD FCC > ) {
 	no strict "refs";
@@ -124,7 +124,7 @@ sub genfuncs  {
 	    require Unicode::Normalize;
 	    "Unicode::Normalize::$nf"->($_);
 	};
-    } 
+    }
 
     for my $check ( qw< checkNFD checkNFC checkNFKD checkNFKC checkFCD checkFCC > ) {
 	no strict "refs";
@@ -138,19 +138,19 @@ sub genfuncs  {
 		return 0 == 1;
 	    }
 	}
-    } 
+    }
 
-    for my $nf ( qw< Singleton Exclusion NonStDecomp Comp_Ex 
-		     NFD_NO  NFC_NO  NFC_MAYBE 
-		    NFKD_NO NFKC_NO NFKC_MAYBE > 
-		) 
+    for my $nf ( qw< Singleton Exclusion NonStDecomp Comp_Ex
+		     NFD_NO  NFC_NO  NFC_MAYBE
+		    NFKD_NO NFKC_NO NFKC_MAYBE >
+		)
     {
 	no strict "refs";
 	*$nf = sub() {
 	    require Unicode::Normalize;
 	    "Unicode::Normalize::is$nf"->(ord);
 	};
-    } 
+    }
 
 
     for my $nl ( 1 .. 4 ) {
@@ -163,11 +163,11 @@ sub genfuncs  {
 		require Unicode::Collate::Locale;
 		$class = Unicode::Collate::Locale:: ;
 		push @args, locale => $Opt{locale};
-	    } 
+	    }
 	    state $coll = $class->new(@args);
 	    return $coll->getSortKey($_[0]);
 	};
-    } 
+    }
 
     no warnings "once";
     *UCA = \&UCA1;
@@ -177,7 +177,7 @@ sub genfuncs  {
 sub CF() {
     $CF = casefold(ord);
     return ($CF && $CF->{status}) || "";
-} 
+}
 
 sub NUM() {
     require Unicode::UCD;
@@ -188,8 +188,8 @@ sub NUM() {
     } else {
 	# trick to quiet zero-conversion under -w
 	return 0 == 1;
-    } 
-} 
+    }
+}
 
 ################################################################
 
@@ -210,7 +210,7 @@ sub main() {
 
     if ($Opt{verbose}) {
 	print STDERR "$0: $Shown_Count code points matched.\n";
-    } 
+    }
 
     close(STDOUT) || warn "$0: close stdout failed: $!\n";
 
@@ -218,7 +218,7 @@ sub main() {
 	exit 0;
     } else {
 	exit 1;
-    } 
+    }
 }
 
 ################################################################
@@ -239,7 +239,7 @@ sub check_options() {
 		    --category
 		    --script
 		};
-    } 
+    }
 
     GetOptions(\%Opt, qw[
 
@@ -329,7 +329,7 @@ END_TEST
             |Q|
             |Q|	        debug(sprintf("testing code point %X", ord()));
             |Q|
-            |Q|		my $result = 
+            |Q|		my $result =
             |Q|
 START_CODE
 
@@ -437,31 +437,31 @@ CODEPOINT:
 
 	if ($Opt{category}) {
 	    display sprintf("GC=%2s ", $CI->{category});
-	} 
+	}
 
 	if ($Opt{casefold}) {
 	    display sprintf("CF=%1s ", CF());
-	} 
+	}
 
 	if ($Opt{bidi}) {
 	    display sprintf("BC=%-3s ", $CI->{bidi});
-	} 
+	}
 
 	if ($Opt{numeric}) {
 	    display sprintf("%6s=NV  ", $CI->{numeric});
-	} 
+	}
 
 	if ($Opt{block}) {
 	    display sprintf("BLK=%-22s ", underscore($CI->{block}));
-	} 
+	}
 
 	if ($Opt{script}) {
 	    display sprintf("SC=%-12s ", titlecase($CI->{script}));
-	} 
+	}
 
 	if ($Opt{combining}) {
 	    display sprintf("CC=%-3s ", $CI->{combining});
-	} 
+	}
 
         display sprintf "%s\n", charnames::viacode($codepoint) || "<unnamed codepoint>";
     }
@@ -472,13 +472,13 @@ sub underscore {
     local $_ = shift();
     y/ /_/;
     return $_;
-} 
+}
 
 sub titlecase {
     local $_ = shift();
     s/[-_]\K(\p{Ll})/\u$1/g;
     return $_;
-} 
+}
 
 
 sub display {
@@ -540,7 +540,8 @@ sub is_runnable {
 }
 
 sub stupid_evil_and_wrong {
-    return lc $^O ~~ [ qw<dos os2 netware symbian mswin32> ];
+	state $stupid_evil_and_wrong = { map { $_ => 1 } qw<dos os2 netware symbian mswin32> };
+    return exists $stupid_evil_and_wrong->{ lc $^O };
 }
 
 sub panic {
@@ -601,8 +602,8 @@ sub start_pager {
 sub fork_pager {
     if (-t STDOUT) {
 
-    } 
-} 
+    }
+}
 
 
 ################################################################
@@ -637,12 +638,12 @@ OPTIONS:
 
  Display Options:
 
-    --category  -c  include the general category (GC=) 
-    --script    -s  include the script name (SC=) 
-    --block     -b  include the block name (BLK=) 
-    --bidi      -B  include the bidi class (BC=) 
+    --category  -c  include the general category (GC=)
+    --script    -s  include the script name (SC=)
+    --block     -b  include the block name (BLK=)
+    --bidi      -B  include the bidi class (BC=)
     --combining -C  include the canonical combining class (CCC=)
-    --numeric   -n  include the numeric value (NV=) 
+    --numeric   -n  include the numeric value (NV=)
     --casefold  -f  include the casefold status
     --decimal   -d  include the decimal representation of the code point
 
@@ -664,9 +665,9 @@ OPTIONS:
      NFD, NFC, NFKD, NFKC, FCD, FCC  (normalization)
      UCA, UCA1, UCA2, UCA3, UCA4 (binary sort keys)
 
-     Singleton, Exclusion, NonStDecomp, Comp_Ex 
-     checkNFD, checkNFC, checkNFKD, checkNFKC, checkFCD, checkFCC 
-     NFD_NO, NFC_NO, NFC_MAYBE, NFKD_NO, NFKC_NO, NFKC_MAYBE 
+     Singleton, Exclusion, NonStDecomp, Comp_Ex
+     checkNFD, checkNFC, checkNFKD, checkNFKC, checkFCD, checkFCC
+     NFD_NO, NFC_NO, NFC_MAYBE, NFKD_NO, NFKC_NO, NFKC_MAYBE
 
 =head1 DESCRIPTION
 
