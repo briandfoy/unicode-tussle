@@ -1,7 +1,7 @@
 package Unicode::Tussle;
 use vars qw( $VERSION );
 
-$VERSION = '1.11';
+$VERSION = '1.111';
 
 =encoding utf8
 
@@ -23,7 +23,7 @@ of the characters in these examples. George Douros’s Symbola font,
 which handles Unicode 6.0, is a good one:
 http://users.teilar.gr/~g1951d/
 
-=head1 OSCON scripts 
+=head1 OSCON scripts
 
 =head2 OSCON scripts description #1/2
 
@@ -45,10 +45,10 @@ http://users.teilar.gr/~g1951d/
         nfd, nfc, nfkd, nfkc - Unicode normalization filters
         nfcheck - report which which of NF{,K}[DC} apply to any given file
           % nfcheck leo hantest nunez tc macroman
-            leo:        NFC      NFD      
-            hantest:    NFC               
-            nunez:      NFC NFKC          
-            tc:         NFC NFKC NFD NFKD 
+            leo:        NFC      NFD
+            hantest:    NFC
+            nunez:      NFC NFKC
+            tc:         NFC NFKC NFD NFKD
 
     (RE)CASING FILTER PROGRAMS:
         lc - filter to do the Unicode toLower casemapping
@@ -58,7 +58,7 @@ http://users.teilar.gr/~g1951d/
             % echo "filter to convert a title's words to the right case" | tc
               Filter To Convert A Title's Words To The Right Case
         titulate - \u\L-converts string args to English **HEADLINE** case (NB: headline != titlecase)
-            % titulate "filter to CONVERT a title's words to the right case" 
+            % titulate "filter to CONVERT a title's words to the right case"
               Filter to Convert a Title's Words to the Right Case
         uc - filter to do the Unicode toUpper casemapping
             % echo "filter to convert a title's words to the right case" | uc
@@ -67,7 +67,7 @@ http://users.teilar.gr/~g1951d/
     FONT GAME PROGRAMS:
         leo - uʍopəpᴉsdn sƃuᴉɥʇ əʇᴉɹʍ oʇ ɹəʇlᴉɟ
         unifont - filter for showing all Unicode "alternate font" letters
-            % echo hic sunt data unicodica | unifont 
+            % echo hic sunt data unicodica | unifont
                     Double-Struck: 𝕙𝕚𝕔 𝕤𝕦𝕟𝕥 𝕕𝕒𝕥𝕒 𝕦𝕟𝕚𝕔𝕠𝕕𝕚𝕔𝕒
                         Monospace: 𝚑𝚒𝚌 𝚜𝚞𝚗𝚝 𝚍𝚊𝚝𝚊 𝚞𝚗𝚒𝚌𝚘𝚍𝚒𝚌𝚊
                        Sans-Serif: 𝗁𝗂𝖼 𝗌𝗎𝗇𝗍 𝖽𝖺𝗍𝖺 𝗎𝗇𝗂𝖼𝗈𝖽𝗂𝖼𝖺
@@ -99,10 +99,10 @@ http://users.teilar.gr/~g1951d/
     MODULES
         ForbidUnderscore.pm - "no Underscore;" forbids unlocalized $_ access
         FixString.pm - tries to sort text items with numbers, including Roman, intelligently,
-                       includes support for Unicode Romans, and for Romans written in Latin 
+                       includes support for Unicode Romans, and for Romans written in Latin
                        script, but requires Roman.pm module for the latter.  Falls back to the UCA.
         tchrist-unicode-charclasses__alpha.java - EGAD! I talked them into making most of
-                       this functionality part of JDK7. 
+                       this functionality part of JDK7.
 
     LIBRARIES:
         unicore/{all,html,uwords}_alias.pl - a forgotten charnames facility
@@ -133,7 +133,7 @@ http://users.teilar.gr/~g1951d/
     Unix Tool Rewrites
         (not fmt  but) unifmt       - like `fmt` but uses the Unicode Linebreaking Algorithm (ULA)
         (not grep but) tcgrep       - like `grep`, but groks unicode patterns and data
-        (not look but) unilook      - improved `look` + `grep` + `agrep` on included `words.utf8` 
+        (not look but) unilook      - improved `look` + `grep` + `agrep` on included `words.utf8`
         (not mv   but) rename       - a better version of rename, takes a perl pattern
         (not od   but) uniquote     - like `cat -v` or `od`, but better
         (not sort but) ucsort       - `sort` input records according to the Unicode Collation Algorithm (UCA)
@@ -175,9 +175,9 @@ http://users.teilar.gr/~g1951d/
 
 A few use Unicode not just in literals, but in identifiers, too:
 
-    % tcgrep '^\h*(use|require)\h+(charnames|re|Unicode|Encode|DBM_Filter|feature|open|Lingua|utf8|v?5|encoding|bytes|locale)\b' * 
+    % tcgrep '^\h*(use|require)\h+(charnames|re|Unicode|Encode|DBM_Filter|feature|open|Lingua|utf8|v?5|encoding|bytes|locale)\b' *
 
-    hypertest:  my @ὑπέρμεγας = ( 
+    hypertest:  my @ὑπέρμεγας = (
 
     leo:        my    $ʇndʇno = uʍopəpᴉƨdn($input);
     leo:        say   $ʇndʇno;
@@ -280,7 +280,7 @@ A few use Unicode not just in literals, but in identifiers, too:
     nfkd:          use open     qw[ :std IO :utf8 ];
     nfkd:          use Unicode::Normalize;
 
-    nunez:         use 5.10.1;   
+    nunez:         use 5.10.1;
     nunez:         use utf8;
     nunez:         use charnames qw< :full >;
     nunez:         use Unicode::Collate;
@@ -293,7 +293,7 @@ A few use Unicode not just in literals, but in identifiers, too:
     tc:            use Unicode::Normalize  qw< NFD NFC >;
 
     tcgrep:        use re "eval";
-    tcgrep:        use charnames qw[ :full 
+    tcgrep:        use charnames qw[ :full
 
     uc:            use v5.12;
     uc:            use utf8;
@@ -346,7 +346,7 @@ A few use Unicode not just in literals, but in identifiers, too:
     uninarrow:     use open qw(:std :utf8);
 
     uniprops:      use 5.10.0;     # but prefer 5.12.0
-    uniprops:      use charnames qw[ 
+    uniprops:      use charnames qw[
     uniprops:      use Encode              qw[ decode              ];
 
     uniquote:      use 5.10.1;
@@ -384,7 +384,7 @@ A few use Unicode not just in literals, but in identifiers, too:
 
 =head1 OSCON script demos
 
-There's absolutely nothing like examples. 
+There's absolutely nothing like examples.
 
 =head2  Demo of uniprops
 
@@ -1865,7 +1865,7 @@ it.
 
 =head1 COPYRIGHT
 
-Copyright 2011-2013, Tom Christiansen.
+Copyright 2011-2016w, Tom Christiansen.
 
 =head1 LICENSE
 
