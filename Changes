@@ -1,5 +1,8 @@
 Revision history for Perl module Unicode::Tussle
 
+1.111 2016-06-07T18:55:18Z
+	* Removed a smart-match in unichars
+
 1.11 2015-04-11T23:09:59Z
 	* Require v5.14, which some scripts need
 
