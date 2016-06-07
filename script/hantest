@@ -180,7 +180,7 @@ my $japanese = <<'DONE WITH JAPANESE';
 
     Tokyo (東京 Tōkyō, "Eastern Capital"), officially Tokyo Metropolis (東京都 Tōkyō-to),is one of the 47 prefectures of Japan. It is located on the eastern side of the main island Honshū and includes the Izu Islands and Ogasawara Islands. Tokyo Metropolis was formed in 1943 from the merger of the former Tokyo Prefecture (東京府 Tōkyō-fu) and the city of Tokyo (東京市 Tōkyō-shi).
 
-    Kyoto (京都 Kyōto) (Japanese pronunciation: [kʲoːto]) is a city in the central part of the island of Honshū, Japan. 
+    Kyoto (京都 Kyōto) (Japanese pronunciation: [kʲoːto]) is a city in the central part of the island of Honshū, Japan.
 
     The Japanese language is written with a combination of three scripts: Chinese characters called kanji (漢字), and two syllabic scripts made up of modified Chinese characters, hiragana (ひらがな or 平仮名) and katakana (カタカナ or 片仮名). The Latin alphabet, rōmaji (ローマ字), is also often used in modern Japanese, especially for company names and logos, advertising, and when entering Japanese text into a computer.
 
@@ -549,87 +549,87 @@ __END__
 
 花落知多少？	faa1 lok6 zi1 do1 siu2?
 
-Due to its status as a prestige dialect, it often called "Standard 
-Cantonese" (simplified Chinese: 标准粤语; traditional Chinese: 標準粵語; 
-Jyutping: biu1zeon2 jyut6jyu5; Guangdong Romanization：Biu1 zên2 yud6 
+Due to its status as a prestige dialect, it often called "Standard
+Cantonese" (simplified Chinese: 标准粤语; traditional Chinese: 標準粵語;
+Jyutping: biu1zeon2 jyut6jyu5; Guangdong Romanization：Biu1 zên2 yud6
 yu5).
 
-Chinese has a word 青 (qīng) that can refer to both, though it also has 
+Chinese has a word 青 (qīng) that can refer to both, though it also has
 separate words for blue (蓝 / 藍, lán) and green (绿 / 綠, lǜ).
 
-The modern Chinese language has the blue-green distinction (蓝/ 藍 lán 
-for blue and 绿 / 緑 lǜ for green); however, another word which predates 
-the modern vernacular, qīng (Chinese: 青), is also used. It can refer to 
-either blue or green, or even (though much less frequently) to black, as 
-in xuánqīng (Chinese: 玄青 where Chinese: 玄 refers to black). For 
-example, the Flag of the Republic of China is today still referred to as 
-qīng tiān, bái rì, mǎn dì hóng ("Blue Sky, White Sun, Whole Ground Red" 
-— Chinese: 青天，白日，满地红); whereas qīng cài (Chinese: 青菜) is the 
-Chinese word for "green vegetable". Qīng 青 was the traditional 
-designation of both blue and green for much of the history of the 
-Chinese language, while 蓝 lán and 绿 lǜ were introduced relatively more 
-recently, as a part of the adoption of modern Vernacular Chinese as the 
+The modern Chinese language has the blue-green distinction (蓝/ 藍 lán
+for blue and 绿 / 緑 lǜ for green); however, another word which predates
+the modern vernacular, qīng (Chinese: 青), is also used. It can refer to
+either blue or green, or even (though much less frequently) to black, as
+in xuánqīng (Chinese: 玄青 where Chinese: 玄 refers to black). For
+example, the Flag of the Republic of China is today still referred to as
+qīng tiān, bái rì, mǎn dì hóng ("Blue Sky, White Sun, Whole Ground Red"
+— Chinese: 青天，白日，满地红); whereas qīng cài (Chinese: 青菜) is the
+Chinese word for "green vegetable". Qīng 青 was the traditional
+designation of both blue and green for much of the history of the
+Chinese language, while 蓝 lán and 绿 lǜ were introduced relatively more
+recently, as a part of the adoption of modern Vernacular Chinese as the
 social norm, replacing Classical Chinese.
 
-The Chinese version is simply, 妈妈给我们的钱,我已经买了糖了. Māma gěi 
-wǒmen de qián, wǒ yǐjīng mǎile táng le. This is translated somewhat 
-directly as, "The money Mom gave us, I already bought candy," lacking a 
+The Chinese version is simply, 妈妈给我们的钱,我已经买了糖了. Māma gěi
+wǒmen de qián, wǒ yǐjīng mǎile táng le. This is translated somewhat
+directly as, "The money Mom gave us, I already bought candy," lacking a
 preface as in English.
 
-Another major difference between the syntax of Chinese and languages 
+Another major difference between the syntax of Chinese and languages
 like English lies in the stacking order of modifying clauses. 昨天发脾气
-的外交警察取消了沒有交钱的那些人的入境证. Zuótiān fāpíqì de wàijiāo 
-jǐngchá qǔxiāole méiyǒu jiāoqián de nàxiē rén de rùjìngzhèng. Using the 
+的外交警察取消了沒有交钱的那些人的入境证. Zuótiān fāpíqì de wàijiāo
+jǐngchá qǔxiāole méiyǒu jiāoqián de nàxiē rén de rùjìngzhèng. Using the
 Chinese order in English, that sentence would be [blah blah blah].
 
 Tones http://en.wikipedia.org/wiki/Cantonese_phonology#Tones
 
-Guangzhou Cantonese has seven tones, but Hong Kong Cantonese has six 
-with the high-falling tone merging with the high tone. Although it is 
-often said to have nine or eleven, the additional tones added in the 
-counts are entering tones. In Chinese, the number of possible tones 
-depends on the syllable type. There are six contour tones in syllables 
-that end in a vowel or nasal consonant. (Some of these have more than 
-one realization, but such differences are seldom used to distinguish 
-words.) In syllables that end in a stop consonant, the number of tones 
-is reduced to three; in Chinese descriptions, these "entering tones" are 
-treated separately, so that Cantonese is traditionally said to have nine 
-tones. However, phonetically these are a conflation of tone and syllable 
-type; the number of phonemic tones is six in Hong Kong and seven in 
+Guangzhou Cantonese has seven tones, but Hong Kong Cantonese has six
+with the high-falling tone merging with the high tone. Although it is
+often said to have nine or eleven, the additional tones added in the
+counts are entering tones. In Chinese, the number of possible tones
+depends on the syllable type. There are six contour tones in syllables
+that end in a vowel or nasal consonant. (Some of these have more than
+one realization, but such differences are seldom used to distinguish
+words.) In syllables that end in a stop consonant, the number of tones
+is reduced to three; in Chinese descriptions, these "entering tones" are
+treated separately, so that Cantonese is traditionally said to have nine
+tones. However, phonetically these are a conflation of tone and syllable
+type; the number of phonemic tones is six in Hong Kong and seven in
 Guangzhou.
 
 Syllable type Open syllables Stopped syllables
 
-d.=dark, l.=light, U.=upper, L.=lower 	Tone name	d.level	 
-d.rising	 d.depart.	 l.level	l.rising l.depart.	 
-U. d.enter. L. d.enter. l.enter. 			(陰平)	 (陰上)	 
-(陰去)	 (陽平)		(陽上)	 (陽去)	 (上陰入) (下陰入)	 (陽入) 
-Description		high level medium	 medium	 low falling	
-low	 low	 high		medium	 low 			high 
-falling rising	 level	 v.l. level	rising	 level	 level	level	 
-level Yale or Jyutping 	 tone number	1	 2		 3		 
-4		5	 6		 7 (or 1)	8 (or 3) 9 (or 
-6) Example		詩	 史	 試		 時		
-市	 是	 識		錫	 食 Tone letter	siː˥, siː˥˧ 
-siː˧˥	 siː˧	 siː˨˩, siː˩	siː˩˧	 siː˨	 sɪk˥	sɛːk˧	 sɪk˨ 
-IPA diacritic	síː, sîː sǐː	 sīː		 si̖ː, sı̏ː	 si̗ː		 
-sìː	 sɪ́k	 sɛ̄ːk	 sɪ̀k Yale diacritic	sī, sì	 sí	 si		 
+d.=dark, l.=light, U.=upper, L.=lower 	Tone name	d.level
+d.rising	 d.depart.	 l.level	l.rising l.depart.
+U. d.enter. L. d.enter. l.enter. 			(陰平)	 (陰上)
+(陰去)	 (陽平)		(陽上)	 (陽去)	 (上陰入) (下陰入)	 (陽入)
+Description		high level medium	 medium	 low falling
+low	 low	 high		medium	 low 			high
+falling rising	 level	 v.l. level	rising	 level	 level	level
+level Yale or Jyutping 	 tone number	1	 2		 3
+4		5	 6		 7 (or 1)	8 (or 3) 9 (or
+6) Example		詩	 史	 試		 時
+市	 是	 識		錫	 食 Tone letter	siː˥, siː˥˧
+siː˧˥	 siː˧	 siː˨˩, siː˩	siː˩˧	 siː˨	 sɪk˥	sɛːk˧	 sɪk˨
+IPA diacritic	síː, sîː sǐː	 sīː		 si̖ː, sı̏ː	 si̗ː
+sìː	 sɪ́k	 sɛ̄ːk	 sɪ̀k Yale diacritic	sī, sì	 sí	 si
 sīh, sìh	síh	 sih	 sīk		sek	 sihk
 
-For purposes of meters in Chinese poetry, the first and fourth tones are 
+For purposes of meters in Chinese poetry, the first and fourth tones are
 the "level tones" (平聲), while the rest are the "oblique tones" (仄聲).
 
-The first tone can be either high level or high falling usually without 
-affecting the meaning of the words being spoken. Most speakers are in 
-general not consciously aware of when they use and when to use high 
-level and high falling. In Hong Kong, most speakers have merged the high 
-and high falling tones. In Guangzhou, the high falling tone is 
+The first tone can be either high level or high falling usually without
+affecting the meaning of the words being spoken. Most speakers are in
+general not consciously aware of when they use and when to use high
+level and high falling. In Hong Kong, most speakers have merged the high
+and high falling tones. In Guangzhou, the high falling tone is
 disappearing as well, but is still prevalent among certain words (saam-
 high falling means the number three, where saam-high means shirt).
 
-The numbers "394052786" when pronounced in Cantonese, will give the nine 
-tones in order (Romanisation (Yale) saam1, gau2, sei3, ling4, ng5, yi6, 
-chat7, baat8, luk9), thus giving a good mnemonic for remembering the 
+The numbers "394052786" when pronounced in Cantonese, will give the nine
+tones in order (Romanisation (Yale) saam1, gau2, sei3, ling4, ng5, yi6,
+chat7, baat8, luk9), thus giving a good mnemonic for remembering the
 nine tones.
 
 CJK 春曉 is chūn xǐao in Mandarin.
@@ -643,7 +643,7 @@ CJK 孟浩然 is mèng hào rán in Pinyin.
 
 
 CJK 春眠不覺曉 is chūn mían bù júe xǐao in Mandarin.
-CJK 春眠不覺曉 is ceon¹/ceon˥ min⁴/min˨˩ bat¹ gaau³ hiu²/hiu˧˥ in 
+CJK 春眠不覺曉 is ceon¹/ceon˥ min⁴/min˨˩ bat¹ gaau³ hiu²/hiu˧˥ in
     Cantonese.
 CJK 春眠不覺曉 is chūn mían bú jìao xǐao in Pinyin.
 
@@ -664,7 +664,7 @@ CJK 花落知多少 is hūa là zhī dūo shǎo in Pinyin.
 
 
 CJK 标准粤语 is bīao zhǔn yùe yǔ in Mandarin.
-CJK 标准粤语 is biu¹/biu˥ zeon²/zeon˧˥ jyut⁶/jyut˨ jyu⁵/jyu˩˧ in 
+CJK 标准粤语 is biu¹/biu˥ zeon²/zeon˧˥ jyut⁶/jyut˨ jyu⁵/jyu˩˧ in
     Cantonese.
 CJK 标准粤语 is biao zhǔn yue yu in Pinyin.
 
@@ -781,16 +781,16 @@ CJK 我已经买了糖了 is ngo⁵/ngo˩˧ ji⁵/ji˩˧ ging¹/ging˥ maai⁵/m
 CJK 我已经买了糖了 is wǒ yǐ jing mai le táng le in Pinyin.
 
 
-CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zúo tīan fā pí 
-    qì de wài jīao jǐng chá qǔ xīao le méi yǒu jīao qían de nà xīe rén de rù 
+CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zúo tīan fā pí
+    qì de wài jīao jǐng chá qǔ xīao le méi yǒu jīao qían de nà xīe rén de rù
     jìng zhèng in Mandarin.
-CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zok³ tin¹/tin˥ 
-    faat³/faat˧ pei⁴/pei˨˩ hei³/hei˧ di¹ ngoi⁶ gaau¹/gaau˥ ging²/ging˧˥ 
-    caat³/caat˧ ceoi²/ceoi˧˥ siu¹/siu˥ liu⁵/liu˩˧ mut⁶/mut˨ jau⁵ gaau¹/gaau˥ 
-    cin² di¹ aa⁶ se¹/se˥ jan⁴/jan˨˩ di¹ jap⁶/jap˨ ging²/ging˧˥ zing³/zing˧ 
+CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zok³ tin¹/tin˥
+    faat³/faat˧ pei⁴/pei˨˩ hei³/hei˧ di¹ ngoi⁶ gaau¹/gaau˥ ging²/ging˧˥
+    caat³/caat˧ ceoi²/ceoi˧˥ siu¹/siu˥ liu⁵/liu˩˧ mut⁶/mut˨ jau⁵ gaau¹/gaau˥
+    cin² di¹ aa⁶ se¹/se˥ jan⁴/jan˨˩ di¹ jap⁶/jap˨ ging²/ging˧˥ zing³/zing˧
     in Cantonese.
-CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zúo tīan fa pí 
-    qì de wài jīao jǐng chá qǔ xīao le méi yǒu jīao qian de nǎ xīe rén de rù 
+CJK 昨天发脾气的外交警察取消了沒有交钱的那些人的入境证 is zúo tīan fa pí
+    qì de wài jīao jǐng chá qǔ xīao le méi yǒu jīao qian de nǎ xīe rén de rù
     jìng zheng in Pinyin.
 
 
@@ -899,18 +899,18 @@ CJK 仄聲 is zè shēng in Pinyin.
 
 The Korean word 푸르다 (pureuda) can mean either green or blue.
 
-The native Korean word 푸르다 (Revised Romanization: pureu-da adj.) may 
-mean either blue or green, or bluish green. This word 푸르다 is used as 
-in 푸른 하늘 (pureun haneul, blue sky) for blue or as in 푸른 숲 (pureun 
-sup, green forest) for green. Distinct words for blue and green are also 
-used; 파란 (paran adj.), 파란색/파랑 (paransaek/parang n.) for blue, 
-초록 (chorok adj./n.), 초록색 (choroksaek n. or for short, 녹색 noksaek 
-n.) for green. However, in the case of a traffic light, paran is used 
-for the green light meaning go, even though the word is typically used 
-to mean blue. Cheong 청 is also used for both blue and green. It is a 
-loan from Chinese (靑, pinyin: qing) and is used in the proper name 
-Cheong Wa Dae (청와대 or Hanja: 靑瓦臺), the Blue House, which is the 
-executive office and official residence of the President of the Republic 
+The native Korean word 푸르다 (Revised Romanization: pureu-da adj.) may
+mean either blue or green, or bluish green. This word 푸르다 is used as
+in 푸른 하늘 (pureun haneul, blue sky) for blue or as in 푸른 숲 (pureun
+sup, green forest) for green. Distinct words for blue and green are also
+used; 파란 (paran adj.), 파란색/파랑 (paransaek/parang n.) for blue,
+초록 (chorok adj./n.), 초록색 (choroksaek n. or for short, 녹색 noksaek
+n.) for green. However, in the case of a traffic light, paran is used
+for the green light meaning go, even though the word is typically used
+to mean blue. Cheong 청 is also used for both blue and green. It is a
+loan from Chinese (靑, pinyin: qing) and is used in the proper name
+Cheong Wa Dae (청와대 or Hanja: 靑瓦臺), the Blue House, which is the
+executive office and official residence of the President of the Republic
 of Korea.
 
 CJK 靑 is cheng in Korean.
@@ -935,37 +935,37 @@ Korean 청와대 is cheong wa dae.
 
 
 
-The Japanese language is written with a combination of three scripts: 
-Chinese characters called kanji (漢字), and two syllabic scripts made up 
-of modified Chinese characters, hiragana (ひらがな or 平仮名) and 
-katakana (カタカナ or 片仮名). The Latin alphabet, rōmaji (ローマ字), is 
-also often used in modern Japanese, especially for company names and 
+The Japanese language is written with a combination of three scripts:
+Chinese characters called kanji (漢字), and two syllabic scripts made up
+of modified Chinese characters, hiragana (ひらがな or 平仮名) and
+katakana (カタカナ or 片仮名). The Latin alphabet, rōmaji (ローマ字), is
+also often used in modern Japanese, especially for company names and
 logos, advertising, and when entering Japanese text into a computer.
 
-The main distinction in Japanese accents is between Tokyo-type 	(東京式 	
-Tōkyō-shiki?) and Kyoto-Osaka-type 	(京阪式 	Keihan-shiki?), 
+The main distinction in Japanese accents is between Tokyo-type 	(東京式
+Tōkyō-shiki?) and Kyoto-Osaka-type 	(京阪式 	Keihan-shiki?),
 though Kyūshū-type dialects form a third, smaller group.
 
-In Japanese, the word for blue (青 ao) is often used for colors that 
-English speakers would refer to as green, such as the color of a traffic 
+In Japanese, the word for blue (青 ao) is often used for colors that
+English speakers would refer to as green, such as the color of a traffic
 signal meaning "go".
 
-The Japanese word ao (青, n., aoi (青い, adj.)), exactly the same kanji 
-character as the Chinese qīng above, can refer to either blue or green 
-depending on the situation. Modern Japanese has also adopted the Chinese 
-word for green (緑 midori), although this was not always so. Ancient 
-Japanese did not have this distinction: the word midori only came into 
-use in the Heian period, and at that time (and for a long time 
-thereafter) midori was still considered a shade of ao. Educational 
-materials distinguishing green and blue only came into use after World 
-War II, during the Occupation[citation needed]: thus, even though most 
-Japanese consider them to be green, the word ao is still used to 
-describe certain vegetables, apples and vegetation. Ao is also the name 
+The Japanese word ao (青, n., aoi (青い, adj.)), exactly the same kanji
+character as the Chinese qīng above, can refer to either blue or green
+depending on the situation. Modern Japanese has also adopted the Chinese
+word for green (緑 midori), although this was not always so. Ancient
+Japanese did not have this distinction: the word midori only came into
+use in the Heian period, and at that time (and for a long time
+thereafter) midori was still considered a shade of ao. Educational
+materials distinguishing green and blue only came into use after World
+War II, during the Occupation[citation needed]: thus, even though most
+Japanese consider them to be green, the word ao is still used to
+describe certain vegetables, apples and vegetation. Ao is also the name
 for the color of a traffic light, which is bluer than in English-
-speaking countries. However, most other objects—a green car, a green 
-sweater, and so forth—will generally be called midori. Japanese people 
-also sometimes use the word guriin (グリーン), based on the English word 
-"green", for colors. The language also has several other words meaning 
+speaking countries. However, most other objects—a green car, a green
+sweater, and so forth—will generally be called midori. Japanese people
+also sometimes use the word guriin (グリーン), based on the English word
+"green", for colors. The language also has several other words meaning
 specific shades of green and blue.
 
 CJK 漢字 is kara aza in Japanese.
