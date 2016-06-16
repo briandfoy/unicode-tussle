@@ -217,7 +217,7 @@ ARG: for (@ARGV) {
             if (/^\p{HexDigit}+$/) {
                 $codepoint = hex();
             } else {
-                printf STDERR "$0: no character named ". quote($_). "\n";
+                print STDERR "$0: no character named ". quote($_). "\n";
                 $Errors++;
                 next ARG;
             }
@@ -367,7 +367,7 @@ EO_WARNING
         if ($@ =~ /is illegal/) {
             chomp $@;
             $@ =~ s/ at \S+ line \d+//;
-            printf STDERR "$0: $@\n";
+            print STDERR "$0: $@\n";
             $Errors++;
             # return;
         }
