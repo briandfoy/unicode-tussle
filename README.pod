@@ -2,6 +2,15 @@
 
 =encoding utf8
 
+=for HTML <a href="https://travis-ci.org/briandfoy/Unicode-Tussle"><img src="https://travis-ci.org/briandfoy/Unicode-Tussle.svg?branch=master"></a>
+
+=for HTML <a href='https://coveralls.io/github/briandfoy/Unicode-Tussle?branch=master'><img src='https://coveralls.io/repos/github/briandfoy/Unicode-Tussle/badge.svg?branch=master' alt='Coverage Status' /></a>
+
+=for HTML <a href="https://github.com/briandfoy/Unicode-Tussle/blob/master/LICENSE"><img src="https://img.shields.io/cpan/l/Unicode::Tussle.svg" /></a>
+
+=for HTML <a href="http://www.metacpan.org/module/Unicode::Tussle"><img src="https://img.shields.io/cpan/v/Unicode::Tussle.svg" /></A>
+
+
 =head1 The Unicode::Tussle module
 
 This is the I<README> for the L<Unicode::Tussle> Perl module. You're probably 
