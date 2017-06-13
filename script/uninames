@@ -119,7 +119,7 @@ sub main() {
             no warnings "utf8";
 	    my $chr = chr($ord);
             if ($chr =~ /[\pC\pZ]/) {
-                printf("--- ",   $ord);
+                print("--- ",   $ord);
             }
             else {
 		print " " if $chr =~ /\p{BC=NSM}/;
