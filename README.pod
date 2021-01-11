@@ -2,6 +2,12 @@
 
 =encoding utf8
 
+=for HTML <a href="../../actions?query=workflow%3Amacos"><img src="../../workflows/macos/badge.svg"></a>
+
+=for HTML <a href="../../actions?query=workflow%3Aubuntu"><img src="../../workflows/ubuntu/badge.svg"></a>
+
+=for HTML <a href="../../actions?query=workflow%3Awindows"><img src="../../workflows/windows/badge.svg"></a>
+
 =for HTML <a href="https://ci.appveyor.com/project/briandfoy/unicode-tussle"><img src="https://ci.appveyor.com/api/projects/status/b5x6bkf2l3wji2ux?svg=true" /></a>
 
 =for HTML <a href='https://coveralls.io/github/briandfoy/Unicode-Tussle?branch=master'><img src='https://coveralls.io/repos/github/briandfoy/Unicode-Tussle/badge.svg?branch=master' alt='Coverage Status' /></a>
