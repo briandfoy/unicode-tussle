@@ -144,6 +144,8 @@ sub process_input {
 
     sub stringify(_);
 
+	{
+	no warnings qw(experimental::smartmatch);
     given (%Opt) {
 	when (["octal"])    { *stringify = \&convert_to_octal	  }
 	when (["bytes"])    { *stringify = \&convert_to_bytes	  }
@@ -153,6 +155,7 @@ sub process_input {
 	when (["xml"])      { *stringify = \&convert_to_xml	  }
 	when (["names"])    { *stringify = \&convert_to_names	  }
 	default		    { *stringify = \&convert_to_U_numbers }
+    }
     }
 
 
@@ -2862,6 +2865,7 @@ sub convert_to_bytes(_) {
 sub commaʼd_list {
     my($argc, @arg) = (scalar @_, @_);
     my $sepchar = grep(/,/ => @arg) ? ";" : ",";
+	no warnings qw(experimental::smartmatch);
     given ($argc)  {
         when (0)  { return q() }
         when (1)  { return $arg[0] }
