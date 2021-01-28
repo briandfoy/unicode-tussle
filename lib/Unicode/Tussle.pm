@@ -1865,7 +1865,7 @@ it.
 
 =head1 COPYRIGHT
 
-Copyright 2011-2016w, Tom Christiansen.
+Copyright 2011-2021, Tom Christiansen.
 
 =head1 LICENSE
 
