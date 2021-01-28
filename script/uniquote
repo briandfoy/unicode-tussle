@@ -116,10 +116,10 @@ sub set_traps() {
     };
 
     # now promote run-time warnings into stackdumped exceptions
-    #   *unless* we're in an try block, in which 
+    #   *unless* we're in an try block, in which
     #   case just generate a clucking stackdump instead
     $SIG{__WARN__} = sub {
-	if ($^S) { cluck   "Trapped warning: @_" } 
+	if ($^S) { cluck   "Trapped warning: @_" }
 	else     { confess "Deadly warning: @_"  }
     };
 
@@ -1169,25 +1169,25 @@ my %html5_2unicode = (
 	  "rarrbfs" => "\N{RIGHTWARDS ARROW FROM BAR TO BLACK DIAMOND}",	# ⤠
 	   "larrfs" => "\N{LEFTWARDS ARROW TO BLACK DIAMOND}",	# ⤝
 	   "rarrfs" => "\N{RIGHTWARDS ARROW TO BLACK DIAMOND}",	# ⤞
-	    "numsp" => "\N{FIGURE SPACE}",	#  
-    "ZeroWidthSpace" => "\N{ZERO WIDTH SPACE}",	# ​
-    "NegativeThickSpace" => "\N{ZERO WIDTH SPACE}",	# ​
-    "NegativeMediumSpace" => "\N{ZERO WIDTH SPACE}",	# ​
-    "NegativeThinSpace" => "\N{ZERO WIDTH SPACE}",	# ​
-    "NegativeVeryThinSpace" => "\N{ZERO WIDTH SPACE}",	# ​
+	    "numsp" => "\N{FIGURE SPACE}",	#
+    "ZeroWidthSpace" => "\N{ZERO WIDTH SPACE}",	#
+    "NegativeThickSpace" => "\N{ZERO WIDTH SPACE}",	#
+    "NegativeMediumSpace" => "\N{ZERO WIDTH SPACE}",	#
+    "NegativeThinSpace" => "\N{ZERO WIDTH SPACE}",	#
+    "NegativeVeryThinSpace" => "\N{ZERO WIDTH SPACE}",	#
     "NonBreakingSpace" => "\N{NO-BREAK SPACE}",	#  
 	     "nbsp" => "\N{NO-BREAK SPACE}",	#  
-      "MediumSpace" => "\N{MEDIUM MATHEMATICAL SPACE}",	#  
-	     "emsp" => "\N{EM SPACE}",	#  
-	   "emsp13" => "\N{THREE-PER-EM SPACE}",	#  
-	   "emsp14" => "\N{FOUR-PER-EM SPACE}",	#  
-	     "ensp" => "\N{EN SPACE}",	#  
-	"ThinSpace" => "\N{THIN SPACE}",	#  
-	   "thinsp" => "\N{THIN SPACE}",	#  
-	   "puncsp" => "\N{PUNCTUATION SPACE}",	#  
-       "ThickSpace" => "\N{MEDIUM MATHEMATICAL SPACE}\N{HAIR SPACE}",	#   
-    "VeryThinSpace" => "\N{HAIR SPACE}",	#  
-	   "hairsp" => "\N{HAIR SPACE}",	#  
+      "MediumSpace" => "\N{MEDIUM MATHEMATICAL SPACE}",	#
+	     "emsp" => "\N{EM SPACE}",	#
+	   "emsp13" => "\N{THREE-PER-EM SPACE}",	#
+	   "emsp14" => "\N{FOUR-PER-EM SPACE}",	#
+	     "ensp" => "\N{EN SPACE}",	#
+	"ThinSpace" => "\N{THIN SPACE}",	#
+	   "thinsp" => "\N{THIN SPACE}",	#
+	   "puncsp" => "\N{PUNCTUATION SPACE}",	#
+       "ThickSpace" => "\N{MEDIUM MATHEMATICAL SPACE}\N{HAIR SPACE}",	#
+    "VeryThinSpace" => "\N{HAIR SPACE}",	#
+	   "hairsp" => "\N{HAIR SPACE}",	#
 	   "lbrace" => "{",	# { # {
 	   "rbrace" => "}",	# } # }
 	   "nVdash" => "\N{DOES NOT FORCE}",	# ⊮
@@ -1666,7 +1666,7 @@ my %html5_2unicode = (
 	     "dash" => "\N{HYPHEN}",	# ‐
 	   "hyphen" => "\N{HYPHEN}",	# ‐
 	      "shy" => "\N{SOFT HYPHEN}",	# ­
-	  "NewLine" => "\n",	# 
+	  "NewLine" => "\n",	#
 	   "Nacute" => "\N{LATIN CAPITAL LETTER N WITH ACUTE}",	# Ń
 	   "nacute" => "\N{LATIN SMALL LETTER N WITH ACUTE}",	# ń
 	      "reg" => "\N{REGISTERED SIGN}",	# ®
@@ -1741,7 +1741,7 @@ my %html5_2unicode = (
 	       "af" => "\N{FUNCTION APPLICATION}",	# ⁡
     "ApplyFunction" => "\N{FUNCTION APPLICATION}",	# ⁡
 	   "prurel" => "\N{PRECEDES UNDER RELATION}",	# ⊰
-	      "Tab" => "\N{CHARACTER TABULATION}",	#                            
+	      "Tab" => "\N{CHARACTER TABULATION}",	#
 	      "sum" => "\N{N-ARY SUMMATION}",	# ∑
 	      "Sum" => "\N{N-ARY SUMMATION}",	# ∑
 	    "awint" => "\N{ANTICLOCKWISE INTEGRATION}",	# ⨑
@@ -2773,7 +2773,7 @@ sub convert_to_html4(_) {
             my $codepoint = charnames::vianame($usym) || panic("huh?");
             $entity->{ chr $codepoint } = "&$hsym;";
         }
-        debug("entity count: " . keys %$entity); 
+        debug("entity count: " . keys %$entity);
     }
     no warnings "utf8";
     local $_ = $_[0];
@@ -2799,7 +2799,7 @@ sub convert_to_html5(_) {
         while (my($hsym, $ustr) = each %html5_2unicode) {
             $entity->{ $ustr } = "&$hsym;";
         }
-        debug("entity count: " . keys %$entity); 
+        debug("entity count: " . keys %$entity);
     }
     no warnings "utf8";
     local $_ = $_[0];
@@ -3000,7 +3000,7 @@ in a Perl literal.
 Use B<--endings> or C<-e> to cat like C<cat -e> and add a dollar at the end
 of each line so trailing spaces become apparent.
 
-Use B<--backslash> or C<-t> to show tabs and other ASCII control codes 
+Use B<--backslash> or C<-t> to show tabs and other ASCII control codes
 as backslash escapes.
 
 By default, I<uniquote> converts each such code points into the form
@@ -3151,7 +3151,7 @@ utf8:\tna\N{SQUARE ROOT}\N{LATIN CAPITAL LETTER O WITH STROKE}ve fa\N{SQUARE ROO
 
 Exits 0 if all is well, 1 otherwise.
 
-Errors include inaccessible files, bogus encodings, 
+Errors include inaccessible files, bogus encodings,
 and contents that do not match a specified encoding.
 
 =head1 BUGS
