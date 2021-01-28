@@ -1,0 +1,41 @@
+name: macos
+
+on:
+    push:
+        branches:
+            - '*'
+        tags-ignore:
+            - '*'
+        pull_request:
+
+jobs:
+    perl:
+        runs-on: macOS-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Platform check
+              run: uname -a
+            - name: Set up Perl
+              run: brew install perl
+            - name: Perl version check
+              run: perl -V
+            - name: Prepare cpan
+              run: |
+                openssl version
+                cpan -M https://www.cpan.org -T IO::Socket::SSL ExtUtils::MakeMaker
+            - name: Install dependencies
+              run: |
+                cpan -M https://www.cpan.org -T App::a2p App::find2perl MIME::Parser
+            - name: Run tests
+              run: |
+                perl Makefile.PL
+                make test
+            - name: Run tests in parallel
+              run: |
+                perl Makefile.PL
+                HARNESS_OPTIONS=j10 make test
+            - name: Run dist tests
+              run: |
+                perl Makefile.PL
+                make disttest
