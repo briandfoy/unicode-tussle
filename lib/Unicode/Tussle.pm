@@ -1,3 +1,5 @@
+use v5.14;
+
 package Unicode::Tussle;
 use vars qw( $VERSION );
 
