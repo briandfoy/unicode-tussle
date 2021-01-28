@@ -1,0 +1,74 @@
+# Ancient source control
+CVS
+.svn/
+
+# macOS things
+.DS_Store
+*.icloud
+
+# File extensions
+.jekyll
+.jekyll-metadata
+.precomp
+.vagrant
+*.bak
+*.bs
+*.dat
+*.debug
+*.gz
+*.html
+*.lock
+*.log
+*.new
+*.o
+*.old
+*.orig
+*.patch
+*.png
+*.rej
+*.sqlite
+*.swo
+*.swp
+*.tar
+*.tar.gz
+*.tgz
+*.tmp
+*.tmproj
+*.yml
+*.zip
+*~
+
+# BBEdit things
+*.bbproj
+*.bbproject
+
+# GitHub things
+.github_token
+
+# Perl module things
+_build
+.build/
+.last_cover_stats
+.lwpcookies
+.prove
+blib/
+Build
+Build.bat
+Changes*[123456789]
+cover_db/
+inc/
+Makefile
+Makefile*[123456789]
+MANIFEST*[123456789]
+META.*
+MYMETA.*
+nytprof.out
+pm_to_blib
+
+# Ruby things
+Gemfile
+Gemfile.lock
+
+
+
+
