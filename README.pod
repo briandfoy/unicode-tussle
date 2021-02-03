@@ -2,11 +2,11 @@
 
 =encoding utf8
 
-=for HTML <a href="../../actions?query=workflow%3Amacos"><img src="../../workflows/macos/badge.svg"></a>
+=for HTML <a href="https://www.github.com/briandfoy/unicode-tussle/actions?query=workflow%3Amacos"><img src="../../workflows/macos/badge.svg"></a>
 
-=for HTML <a href="../../actions?query=workflow%3Aubuntu"><img src="../../workflows/ubuntu/badge.svg"></a>
+=for HTML <a href="https://www.github.com/briandfoy/unicode-tussle/actions?query=workflow%3Aubuntu"><img src="../../workflows/ubuntu/badge.svg"></a>
 
-=for HTML <a href="../../actions?query=workflow%3Awindows"><img src="../../workflows/windows/badge.svg"></a>
+=for HTML <a href="https://www.github.com/briandfoy/unicode-tussle/actions?query=workflow%3Awindows"><img src="../../workflows/windows/badge.svg"></a>
 
 =for HTML <a href="https://ci.appveyor.com/project/briandfoy/unicode-tussle"><img src="https://ci.appveyor.com/api/projects/status/b5x6bkf2l3wji2ux?svg=true" /></a>
 
