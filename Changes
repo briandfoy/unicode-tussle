@@ -1,5 +1,11 @@
 Revision history for Perl module Unicode::Tussle
 
+1.114 2021-12-11T01:57:39Z
+	* Make Lingua::JA::Romanize::Japanese optional since it tries to
+	download data files that have disappeared. I have a patched version
+	at https://github.com/briandfoy/lingua-ja-romanize-japanese that
+	fixes the issues.
+
 1.111_01 2016-06-07T21:58:53Z
 	* Be careful about loading Lingua::JA::Romanize::Japanese in hantest
 	since some places have trouble installing it. Don't make that failure
