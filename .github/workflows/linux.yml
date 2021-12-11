@@ -60,7 +60,7 @@ jobs:
               run: |
                 curl -L https://cpanmin.us | perl - App::cpanminus
                 cpanm --notest IO::Socket::SSL App::Cpan ExtUtils::MakeMaker LWP LWP::Protocol::https
-                cat /github/home/.cpan/CPAN/MyConfig.pm
+                cat $HOME/.cpan/CPAN/MyConfig.pm
                 cpan -M https://www.cpan.org -T ExtUtils::MakeMaker
             - name: Install dependencies
               run: |
