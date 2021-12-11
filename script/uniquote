@@ -2870,7 +2870,7 @@ sub commaʼd_list {
 	return $arg[0] if @arg == 1;
 
 	panic("list @arg already has an and in it") if grep /\band\b/, @arg;
-	return "$arg[0] and $arg[1]"; if @arg == 2;
+	return "$arg[0] and $arg[1]" if @arg == 2;
 
 	return join "$sepchar " => (
 		@arg[ 0 .. ($#arg-1) ],
