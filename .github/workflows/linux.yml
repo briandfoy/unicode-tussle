@@ -65,7 +65,7 @@ jobs:
                 git clone https://github.com/briandfoy/unicode-unihan.git
                 ( cd unicode-unihan && cpanm . )
                 apt-get update
-                apt-get upgrade
+                apt-get -y upgrade
                 apt-get -y install libdb-dev
                 git clone https://github.com/briandfoy/lingua-ja-romanize-japanese.git
                 ( cd lingua-ja-romanize-japanese && cpanm . )
