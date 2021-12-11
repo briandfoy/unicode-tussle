@@ -60,6 +60,12 @@ jobs:
               run: |
                 curl -L https://cpanmin.us | perl - App::cpanminus
                 cpanm --notest IO::Socket::SSL ExtUtils::MakeMaker LWP LWP::Protocol::https ExtUtils::MakeMaker
+            - name: Ugly hack adjustment
+              run: |
+                git clone https://github.com/briandfoy/unicode-unihan.git
+                ( cd unicode-unihan && cpanm . )
+                git clone https://github.com/briandfoy/lingua-ja-romanize-japanese.git
+                ( cd lingua-ja-romanize-japanese && cpanm . )
             - name: Install dependencies
               run: |
                 cpanm --notest --verbose Unicode::Unihan
