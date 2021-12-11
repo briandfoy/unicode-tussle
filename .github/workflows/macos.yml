@@ -3,9 +3,23 @@ name: macos
 on:
     push:
         branches:
-            - '*'
+            - '**'
+            - '!**linux**'
+            - '!**windows**'
         tags-ignore:
-            - '*'
+            # I tag release pushes but those should have already been tested
+            - 'release-*'
+        paths-ignore:
+            # list all the files which are irrelevant to the tests
+            # non-code, support files, docs, etc
+            - '.appveyor.yml'
+            - '.github/workflows/macos.yml'
+            - '.github/workflows/ubuntu.yml'
+            - '.gitignore'
+            - '.releaserc'
+            - 'Changes'
+            - 'LICENSE'
+            - 'README.pod'
         pull_request:
 
 jobs:
@@ -17,13 +31,17 @@ jobs:
             - name: Platform check
               run: uname -a
             - name: Set up Perl
-              run: brew install perl
+              run: |
+                brew install perl
+                ls -d /usr/local/Cellar/perl/*/bin | head -1 >> $GITHUB_PATH
+                perl -v | perl -0777 -ne 'm/(v5\.\d+)/ && print "PERL_VERSION=$1"' >> $GITHUB_ENV
             - name: Perl version check
               run: perl -V
             - name: Prepare cpan
               run: |
                 openssl version
-                cpan -M https://www.cpan.org -T IO::Socket::SSL ExtUtils::MakeMaker
+                cpan -M http://www.cpan.org -T IO::Socket::SSL LWP::Protocol::https
+                cpan -M https://www.cpan.org -T ExtUtils::MakeMaker
             - name: Install dependencies
               run: |
                 cpan -M https://www.cpan.org -T .
