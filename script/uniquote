@@ -2865,22 +2865,17 @@ sub convert_to_bytes(_) {
 sub commaʼd_list {
     my($argc, @arg) = (scalar @_, @_);
     my $sepchar = grep(/,/ => @arg) ? ";" : ",";
-	no warnings qw(experimental::smartmatch);
-    given ($argc)  {
-        when (0)  { return q() }
-        when (1)  { return $arg[0] }
-        when (2)  {
-            panic("list @arg already has an and in it") if grep /\band\b/, @arg;
-            return "$arg[0] and $arg[1]";
-        }
-        default   {
-            panic("list @arg already has an and in it") if grep /\band\b/, @arg;
-            return join "$sepchar " => (
-                @arg[ 0 .. ($#arg-1) ],
-                "and $arg[-1]",
-            );
-        }
-    }
+
+	return q() unless @arg;
+	return $arg[0] if @arg == 1;
+
+	panic("list @arg already has an and in it") if grep /\band\b/, @arg;
+	return "$arg[0] and $arg[1]"; if @arg == 2;
+
+	return join "$sepchar " => (
+		@arg[ 0 .. ($#arg-1) ],
+		"and $arg[-1]",
+	);
 }
 
 sub usage($) {
