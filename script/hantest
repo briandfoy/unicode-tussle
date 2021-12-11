@@ -31,6 +31,8 @@ use Unicode::LineBreak qw(:all);        # UAX#14-C2
 
 use Lingua::KO::Hangul::Util    qw[ :all ];
 
+our $VERSION = "1.001";
+
 eval {
 	require Lingua::JA::Romanize::Japanese;
 	Lingua::JA::Romanize::Japanese->import;
