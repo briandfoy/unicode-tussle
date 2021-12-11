@@ -62,7 +62,7 @@ jobs:
                 cpanm --notest IO::Socket::SSL ExtUtils::MakeMaker LWP LWP::Protocol::https ExtUtils::MakeMaker
             - name: Install dependencies
               run: |
-                cpanm --installdeps .
+                cpanm --notest --installdeps .
             - name: Run tests
               run: |
                 perl Makefile.PL
