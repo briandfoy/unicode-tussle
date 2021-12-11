@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
 #
 # búsqueda-libre:
-# 
+#
 #    Cómo se debiera ordenar y buscar palabras en Unicode
-#    que pueden llevarse marcas diacríticas (o no) sin que 
-#    éstas afecten la búsqueda.  También cómo cambiar el 
+#    que pueden llevarse marcas diacríticas (o no) sin que
+#    éstas afecten la búsqueda.  También cómo cambiar el
 #    orden para que no cuente con artículos al principio
 #    del los nombres, como se hace con los títulos de libros &c.
 #
@@ -14,7 +14,7 @@
 #############################################
 
 use utf8;
-use 5.10.1;   
+use 5.10.1;
 use strict;
 use warnings; # FATAL => "all";
 use autodie;
@@ -25,7 +25,7 @@ use Unicode::Collate;
 
 # Por desgracia, la próxima linea no funciona,
 # gracias al imperialismo lingüística. L)
-#### use Castelano;  
+#### use Castelano;
 
 my $INCLUÍR_NINGUNOS               = 0;
 my $SI_IMPORTAN_MARCAS_DIACRÍTICAS = 0;
@@ -44,7 +44,7 @@ binmode(STDOUT, ":utf8");
 # Ésta próxima pueblacita está demasiada larga para la pantalla. :(
 #
 #    La Ciudad de Nuestra Señora la Reina de Los Ángeles de Porciúncula, California Alta
-# 
+#
 # Pues, o sea que su nombre lo es. :)
 
 my @ciudades_españolas = ordenar_a_la_española(<<'LA_ÚLTIMA' =~ /\S.*\S/g);
@@ -103,12 +103,13 @@ for my $aldea (@ciudades_españolas) {
 sub cuántos_sitios {
     my @lista = @_;
     my $cantidad = @_;
-    given ($cantidad) {
-        when (0)  { return    "ningún sitio"    }
-        when (1)  { return   "un solo sitio"    }
-        when (2)  { return "un par de sitios"   }
-        default   { return "$cantidad sitios"   }
-    }
+
+    my %allowed = map { $_, 1 } qw(0 1 2);
+    return
+    ( "ningún sitio", "un solo sitio", "un par de sitios" )[ $cantidad ]
+    	if exists $allowed{$cantidad};
+
+    return "$cantidad sitios";
 }
 
 sub enfilar {
@@ -118,15 +119,13 @@ sub enfilar {
        $separador  = "\N{SEMICOLON}"   if first { /$separador/ } @lista;
        $separador .= "\N{SPACE}";
 
-    given (scalar @lista) {
-        when (0)  { return ""                       }
-        when (1)  { return "@lista"                 }
-        when (2)  { return join " y " => @lista     }
-        default   { return
-            join($separador  => @lista[ 0 .. ($#lista-1) ])
+    my %allowed = map { $_, 1 } qw(0 1 2);
+    return
+    ( "", "@lista", join " y ", @lista  )[ @lista ]
+    	if exists $allowed{ scalar @lista };
+
+    return join($separador  => @lista[ 0 .. ($#lista-1) ])
                      . " y $lista[$#lista]";
-        }
-    }
 }
 
 ###################################################

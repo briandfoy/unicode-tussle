@@ -144,20 +144,20 @@ sub process_input {
 
     sub stringify(_);
 
-	{
-	no warnings qw(experimental::smartmatch);
-    given (%Opt) {
-	when (["octal"])    { *stringify = \&convert_to_octal	  }
-	when (["bytes"])    { *stringify = \&convert_to_bytes	  }
-	when (["hex"]) 	    { *stringify = \&convert_to_hex  	  }
-	when (["html4"])     { *stringify = \&convert_to_html4	  }
-	when (["html5"])     { *stringify = \&convert_to_html5	  }
-	when (["xml"])      { *stringify = \&convert_to_xml	  }
-	when (["names"])    { *stringify = \&convert_to_names	  }
-	default		    { *stringify = \&convert_to_U_numbers }
-    }
-    }
+	my %stringify = (
+		'octal' => \&convert_to_octal,
+		'bytes' => \&convert_to_bytes,
+		'hex'   => \&convert_to_hex,
+		'html4' => \&convert_to_html4,
+		'html5' => \&convert_to_html5,
+		'names' => \&convert_to_names,
+	);
 
+	my( $code_ref ) =
+		map { exists $stringify{$_} ? $stringify{$_} : () }
+		keys %Opt;
+	$code_ref = \&convert_to_U_numbers unless defined $code_ref;
+	*stringify = $code_ref;
 
     unshift(@ARGV, "-") if @ARGV == 0;
 
