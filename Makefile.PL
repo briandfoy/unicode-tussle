@@ -75,7 +75,10 @@ my %WriteMakefile = (
 		'Unicode::GCString'              => '0',
 		'Unicode::Unihan'                => '0',
 		'Lingua::KO::Hangul::Util'       => '0',
-		'Lingua::JA::Romanize::Japanese' => '0',
+# This is broken on CPAN because the source files have disappeared
+# I have a patch https://github.com/briandfoy/lingua-ja-romanize-japanese
+# SKK files are at https://github.com/skk-dev/dict
+#		'Lingua::JA::Romanize::Japanese' => '0',
 		'Lingua::ZH::Romanize::Pinyin'   => '0',
 		'Lingua::KO::Romanize::Hangul'   => '0',
 		},

@@ -35,7 +35,12 @@ eval {
 	require Lingua::JA::Romanize::Japanese;
 	Lingua::JA::Romanize::Japanese->import;
 	} or do {
-		croak( "Could not load Lingua::JA::Romanize::Japanese! Perhaps you need to install it" );
+		croak( <<"HERE" );
+Could not load Lingua::JA::Romanize::Japanese.
+You may need to install this yourself because version 0.23 on CPAN
+requires files from a missing website. There's a patched version at
+https://github.com/briandfoy/lingua-ja-romanize-japanese
+HERE
 	};
 
 use Lingua::ZH::Romanize::Pinyin;

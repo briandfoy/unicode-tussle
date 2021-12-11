@@ -24,6 +24,13 @@ looking at this because you don't know where else to find what you're
 looking for. Read this once and you might never have to read one again
 for any Perl module.
 
+=head2
+
+If you want to use the `hantest` program, you need to install a patched
+version of L<Lingua::JA::Romanize::Japanese> from L<https://github.com/briandfoy/lingua-ja-romanize-japanese>.
+The CPAN version of the module tries to install data files from a
+website that doesn't exist. The data files are at L<https://github.com/skk-dev/dict>.
+
 =head2 Documentation
 
 To read about L<Unicode::Tussle>, look at the embedded documentation
