@@ -24,12 +24,26 @@ looking at this because you don't know where else to find what you're
 looking for. Read this once and you might never have to read one again
 for any Perl module.
 
-=head2
+=head2 Legacy module adjustments
 
 If you want to use the `hantest` program, you need to install a patched
 version of L<Lingua::JA::Romanize::Japanese> from L<https://github.com/briandfoy/lingua-ja-romanize-japanese>.
 The CPAN version of the module tries to install data files from a
 website that doesn't exist. The data files are at L<https://github.com/skk-dev/dict>.
+
+You may also need a patched version on L<Unicode::Unihan> from L<https://github.com/briandfoy/unicode-unihan>.
+That module is generally fine for most people, but since it uses whatever
+DB implementation it finds, there are some file extension issues it does
+not account for.
+
+If you run into problems with either of these modules, install them first
+then try to install this module:
+
+	% git clone https://github.com/briandfoy/lingua-ja-romanize-japanese.git /tmp/lingua-ja-romanize-japanese
+	% ( cd /tmp/lingua-ja-romanize-japanese && cpan . )
+
+	% git clone https://github.com/briandfoy/unicode-unihan.git /tmp/unicode-unihan
+	% ( cd /tmp/unicode-unihan && cpan . )
 
 =head2 Documentation
 
