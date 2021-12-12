@@ -13,8 +13,8 @@ Unicode::Tussle - Tom's Unicode Scripts So Life is Easier
 
 =head1 SYNOPSIS
 
-This is a collection of separate program. See the documentation for each
-program.
+This is a collection of separate programs from Tom Christiansen. See
+the documentation for each program.
 
 =head1 DESCRIPTION
 
