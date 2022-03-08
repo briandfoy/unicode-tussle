@@ -53,17 +53,8 @@ name instead of the file location:
 
 	% perldoc Unicode::Tussle
 
-You can read the documentation and inspect the meta data on one of the
-CPAN web interfaces, such as L<CPAN Search|http://search.cpan.org/dist/Unicode-Tussle> or
-L<MetaCPAN|http://www.metacpan.org/module/Unicode::Tussle>:
-
-=over 4
-
-=item *	L<http://search.cpan.org/dist/Unicode-Tussle>
-
-=item *	L<http://www.metacpan.org/module/Unicode::Tussle>
-
-=back
+You can read the documentation and inspect the meta data on
+L<MetaCPAN|http://www.metacpan.org/module/Unicode::Tussle>.
 
 The standard module documentation has example uses in the SYNOPSIS
 section, but you can also look in the I<examples/> directory (if it's
