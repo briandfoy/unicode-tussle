@@ -31,11 +31,6 @@ version of L<Lingua::JA::Romanize::Japanese> from L<https://github.com/briandfoy
 The CPAN version of the module tries to install data files from a
 website that doesn't exist. The data files are at L<https://github.com/skk-dev/dict>.
 
-You may also need a patched version on L<Unicode::Unihan> from L<https://github.com/briandfoy/unicode-unihan>.
-That module is generally fine for most people, but since it uses whatever
-DB implementation it finds, there are some file extension issues it does
-not account for.
-
 If you run into problems with either of these modules, install them first
 then try to install this module:
 
