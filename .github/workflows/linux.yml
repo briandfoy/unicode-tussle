@@ -1,6 +1,6 @@
 # brian's standard GitHub Actions Ubuntu config for Perl 5 modules
-# version 20220307.001
-# https://github.com/briandfoy/github_actions
+# version 20220825.001
+# https://github.com/briandfoy/github_workflows
 # https://github.com/features/actions
 # This file is licensed under the Artistic License 2.0
 name: ubuntu
@@ -19,6 +19,7 @@ on:
             # list all the files which are irrelevant to the tests
             # non-code, support files, docs, etc
             - '.appveyor.yml'
+            - '.gitattributes'
             - '.github/workflows/macos.yml'
             - '.github/workflows/windows.yml'
             - '.github/workflows/release.yml'
@@ -35,8 +36,7 @@ jobs:
         strategy:
           matrix:
             os:
-                - ubuntu-18.04
-                - ubuntu-20.04
+                - ubuntu-22.04
             perl-version:
                 - '5.14'
                 - '5.16'
@@ -48,6 +48,7 @@ jobs:
                 - '5.28'
                 - '5.30'
                 - '5.32'
+                - '5.34'
                 - 'latest'
         container:
             image: perl:${{ matrix.perl-version }}
@@ -71,11 +72,6 @@ jobs:
 # Need HTTP::Tiny 0.055 or later.
             - name: Install cpanm and multiple modules
               run: |
-                apt-get update
-                apt-get -y upgrade
-                apt-get -y install libdb-dev
-                git clone https://github.com/briandfoy/lingua-ja-romanize-japanese.git /tmp/lingua-ja-romanize-japanese
-                ( cd /tmp/lingua-ja-romanize-japanese && cpanm . )
                 curl -L https://cpanmin.us | perl - App::cpanminus
                 cpanm --notest IO::Socket::SSL App::Cpan HTTP::Tiny
                 cpan -M https://www.cpan.org -T ExtUtils::MakeMaker Test::Manifest
