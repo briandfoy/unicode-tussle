@@ -1862,7 +1862,7 @@ and useful program, so here are 861 of them, ucsorted, of course.
 
 Tom Christiansen C<< <tchrist@perl.org> >> wrote all the code.
 
-brian d foy C<< <brian.d.foy@gmail.com> >> wrapped the distribution around
+brian d foy C<< <briandfoy@pobox.com> >> wrapped the distribution around
 it.
 
 =head1 COPYRIGHT
