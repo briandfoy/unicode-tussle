@@ -55,6 +55,7 @@ script/unititle
 script/uniwc
 script/uniwide
 script/vowel-sigs
+SECURITY.md
 t/compile.t
 xt/changes.t
 xt/pod.t
