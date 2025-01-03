@@ -1,9 +1,24 @@
 # brian's standard GitHub Actions macOS config for Perl 5 modules
-# version 20220902.001
+# version 20250101.001
 # https://github.com/briandfoy/github_workflows
 # https://github.com/features/actions
 # This file is licensed under the Artistic License 2.0
+#
+# This uses the AUTOMATED_TESTING environment that you can set up
+# in your repo settings. Or not. It still works if it isn't defined.
+# In that environment, add whatever environment variables or secrets
+# that you want.
+---
 name: macos
+
+# https://github.com/actions/checkout/issues/1590
+env:
+    ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+# https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/using-concurrency
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref || github.run_id }}
+    cancel-in-progress: true
 
 on:
     push:
@@ -32,10 +47,13 @@ on:
             - 'Changes'
             - 'LICENSE'
             - 'README.pod'
-        pull_request:
+            - 'README.md'
+            - 'SECURITY.md'
+    pull_request:
 
 jobs:
     perl:
+        environment: automated_testing
         runs-on: macOS-latest
         steps:
             - uses: actions/checkout@v3
@@ -44,7 +62,7 @@ jobs:
             - name: Set up Perl
               run: |
                 brew install perl
-                ls -d /usr/local/Cellar/perl/*/bin | head -1 >> $GITHUB_PATH
+                ls -d /opt/homebrew/Cellar/perl/*/bin | head -1 >> $GITHUB_PATH
                 perl -v | perl -0777 -ne 'm/(v5\.\d+)/ && print "PERL_VERSION=$1"' >> $GITHUB_ENV
             - name: Perl version check
               run: perl -V
@@ -67,7 +85,7 @@ jobs:
 # but that's not a big deal.
             - name: Install dependencies
               run: |
-                cpan -M https://www.cpan.org -T .
+                cpan -M https://www.cpan.org -T . ${{ vars.EXTRA_CPAN_MODULES }}
             - name: Run tests
               run: |
                 perl Makefile.PL
@@ -102,7 +120,7 @@ jobs:
             - name: Run coverage tests
               if: env.PERL_VERSION != 'v5.8'
               env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                 cpan -M https://www.cpan.org -T Devel::Cover Devel::Cover::Report::Coveralls
                 perl Makefile.PL
