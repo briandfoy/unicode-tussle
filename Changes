@@ -1,5 +1,8 @@
 Revision history for Perl module Unicode::Tussle
 
+1.119 2025-01-03T13:02:12Z
+	* fix distro to include havshpx again (now in fun/) (#25)
+
 1.118 2025-01-03T06:22:33Z
 	* refresh distro and move to BRIANDFOY
 
