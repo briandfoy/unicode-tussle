@@ -1,6 +1,7 @@
 Changes
 data/words.utf8
 INSTALL.SKIP
+fun/havshpx
 java/tchrist-unicode-charclasses__alpha.java
 lib/Unicode/Tussle.pm
 LICENSE
@@ -15,7 +16,6 @@ script/es-sort
 script/FixString.pm
 script/ForbidUnderscore.pm
 script/hantest
-script/havshpx
 script/hypertest
 script/lc
 script/leo
