@@ -1,5 +1,8 @@
 Revision history for Perl module Unicode::Tussle
 
+1.118 2025-01-03T06:22:33Z
+	* refresh distro and move to BRIANDFOY
+
 1.115 2021-12-11T19:27:48Z
 	* Remove some uses of given-when, merely to help the tests pass on
 	older versions of Perl.
