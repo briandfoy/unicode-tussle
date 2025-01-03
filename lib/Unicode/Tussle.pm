@@ -3,7 +3,7 @@ use v5.14;
 package Unicode::Tussle;
 use vars qw( $VERSION );
 
-$VERSION = '1.118';
+$VERSION = '1.119';
 
 =encoding utf8
 
