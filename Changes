@@ -1,5 +1,8 @@
 Revision history for Perl module Unicode::Tussle
 
+1.121 2025-01-28T19:23:04Z
+	* Upgrade to UCD 15 (Thomas Sibley, #26)
+
 1.119 2025-01-03T13:02:12Z
 	* fix distro to include havshpx again (now in fun/) (#25)
 
