@@ -81,7 +81,7 @@ sub rx_pos($);
 our $VERSION = "5.2 (2017-06-10)";
 our %Opt;
 
-our $Embedded_UCD_Version = qv(9.0.0);
+our $Embedded_UCD_Version = qv(13.0.0);
 
 $| = 1;		    # command buffering speeds up pipes
 $0 = basename($0);  # shorten up warnings/errors
