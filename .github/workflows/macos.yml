@@ -23,9 +23,6 @@
 #                       but only on macOS. Other workflows won't use this.
 #                       this is useful to install very particular
 #                       modules, such as DBD::mysql@4.050
-
-
-
 ---
 name: macos
 
