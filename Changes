@@ -1,5 +1,8 @@
 Revision history for Perl module Unicode::Tussle
 
+1.122 2025-04-16T06:36:37Z
+	* require a newer version.pm for v5.10.1 tests
+
 1.121 2025-01-28T19:23:04Z
 	* Upgrade to UCD 15 (Thomas Sibley, #26)
 
