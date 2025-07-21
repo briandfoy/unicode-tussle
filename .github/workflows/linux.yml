@@ -1,5 +1,5 @@
 # brian's standard GitHub Actions Ubuntu config for Perl 5 modules
-# version 20250617.003
+# version 20250703.001
 # https://github.com/briandfoy/github_workflows
 # https://github.com/features/actions
 # This file is licensed under the Artistic License 2.0
@@ -38,6 +38,10 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref || github.run_id }}
     cancel-in-progress: true
 
+permissions:
+    actions: write
+    contents: read
+
 on:
     push:
         branches:
@@ -70,7 +74,7 @@ on:
     pull_request:
     # weekly build on the master branch just to see what CPAN is doing
     schedule:
-        - cron: "37 3 * * 0"
+        - cron: "59 4 * * 6"
 jobs:
     perl:
         environment: automated_testing
@@ -80,14 +84,6 @@ jobs:
                 os:
                     - ubuntu-latest
                 perl-version:
-                    - '5.14-buster'
-                    - '5.16-buster'
-                    - '5.18-buster'
-                    - '5.20-buster'
-                    - '5.22-buster'
-                    - '5.24-buster'
-                    - '5.26-buster'
-                    - '5.28-buster'
                     - '5.30-bullseye'
                     - '5.32-bullseye'
                     - '5.34-bullseye'
