@@ -1,5 +1,5 @@
 # brian's standard GitHub Actions Ubuntu config for Perl 5 modules
-# version 20260126.001
+# version 20260831.001
 # https://github.com/briandfoy/github_workflows
 # https://github.com/features/actions
 # This file is licensed under the Artistic License 2.0
@@ -76,7 +76,7 @@ on:
     pull_request:
     # weekly build on the master branch just to see what CPAN is doing
     schedule:
-        - cron: "22 1 * * 4"
+        - cron: "12 19 * * 4"
 jobs:
     perl:
         environment: automated_testing
@@ -112,7 +112,7 @@ jobs:
             - name: Restore Perl modules
               id: perl-modules-cache-restore
               continue-on-error: true
-              uses: actions/cache/restore@v4
+              uses: actions/cache/restore@v6
               with:
                 key: ${{ runner.os }}-${{ matrix.perl-version }}-modules
                 path: |
@@ -200,7 +200,7 @@ jobs:
             - name: Save Perl modules
               continue-on-error: true
               id: perl-modules-cache-save
-              uses: actions/cache/save@v4
+              uses: actions/cache/save@v6
               if: always()
               with:
                 key: ${{ steps.perl-modules-cache-restore.outputs.cache-primary-key }}
